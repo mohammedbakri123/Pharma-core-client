@@ -1,5 +1,17 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/core/components/ui/card";
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Line, LineChart, PieChart, Pie, Cell } from "recharts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
+import {
+  Bar,
+  BarChart,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Line,
+  LineChart,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
 import { TrendingUp, Package, Users, DollarSign } from "lucide-react";
 
 const salesData = [
@@ -24,17 +36,41 @@ export default function Reports() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-heading font-bold text-foreground">التقارير التحليلية</h2>
-        <p className="text-muted-foreground">تحليل شامل لأداء الصيدلية والمبيعات.</p>
+        <h2 className="text-3xl font-heading font-bold text-foreground">
+          التقارير التحليلية
+        </h2>
+        <p className="text-muted-foreground">
+          تحليل شامل لأداء الصيدلية والمبيعات.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Quick summary cards in reports */}
         {[
-          { label: "نمو المبيعات", value: "+15%", icon: TrendingUp, color: "text-green-600" },
-          { label: "دوران المخزون", value: "4.2x", icon: Package, color: "text-blue-600" },
-          { label: "الاحتفاظ بالمرضى", value: "88%", icon: Users, color: "text-purple-600" },
-          { label: "متوسط الفاتورة", value: "85 ر.س", icon: DollarSign, color: "text-teal-600" },
+          {
+            label: "نمو المبيعات",
+            value: "+15%",
+            icon: TrendingUp,
+            color: "text-green-600",
+          },
+          {
+            label: "دوران المخزون",
+            value: "4.2x",
+            icon: Package,
+            color: "text-blue-600",
+          },
+          {
+            label: "الاحتفاظ بالمرضى",
+            value: "88%",
+            icon: Users,
+            color: "text-purple-600",
+          },
+          {
+            label: "متوسط الفاتورة",
+            value: "85 ر.س",
+            icon: DollarSign,
+            color: "text-teal-600",
+          },
         ].map((stat, i) => (
           <Card key={i}>
             <CardContent className="p-6 flex items-center justify-between">
@@ -57,10 +93,27 @@ export default function Reports() {
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={salesData}>
-                  <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                  <Tooltip contentStyle={{ textAlign: 'right' }} />
-                  <Line type="monotone" dataKey="value" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 4 }} />
+                  <XAxis
+                    dataKey="name"
+                    stroke="#888888"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis
+                    stroke="#888888"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <Tooltip contentStyle={{ textAlign: "right" }} />
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -75,9 +128,18 @@ export default function Reports() {
             <div className="h-[300px] flex items-center justify-center">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={categoryData} innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">
+                  <Pie
+                    data={categoryData}
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
                     {categoryData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
                     ))}
                   </Pie>
                   <Tooltip />
@@ -86,7 +148,10 @@ export default function Reports() {
               <div className="space-y-2">
                 {categoryData.map((entry, index) => (
                   <div key={index} className="flex items-center gap-2 text-sm">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index] }} />
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: COLORS[index] }}
+                    />
                     <span>{entry.name}</span>
                   </div>
                 ))}

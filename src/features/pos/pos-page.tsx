@@ -1,30 +1,88 @@
 import { useState } from "react";
-import { Button } from "@/core/components/ui/button";
-import { Input } from "@/core/components/ui/input";
-import { Card, CardContent } from "@/core/components/ui/card";
-import { ScrollArea } from "@/core/components/ui/scroll-area";
-import { Separator } from "@/core/components/ui/separator";
-import { 
-  Search, 
-  Trash2, 
-  Plus, 
-  Minus, 
-  CreditCard, 
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input";
+import { Card, CardContent } from "@/ui/card";
+import { ScrollArea } from "@/ui/scroll-area";
+import { Separator } from "@/ui/separator";
+import {
+  Search,
+  Trash2,
+  Plus,
+  Minus,
+  CreditCard,
   Banknote,
   User,
-  ScanBarcode
+  ScanBarcode,
 } from "lucide-react";
 
 const products = [
-  { id: 1, name: "أموكسيسيلين 500 ملغ", price: 12.50, category: "مضادات حيوية", color: "bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400" },
-  { id: 2, name: "ايبوبروفين 400 ملغ", price: 8.99, category: "مسكنات آلام", color: "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400" },
-  { id: 3, name: "باراسيتامول 500 ملغ", price: 5.00, category: "مسكنات آلام", color: "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400" },
-  { id: 4, name: "فيتامين سي 1000 ملغ", price: 15.00, category: "مكملات غذائية", color: "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400" },
-  { id: 5, name: "ضمادات (عبوة)", price: 4.50, category: "إسعافات أولية", color: "bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400" },
-  { id: 6, name: "شراب للسعال", price: 12.00, category: "البرد والإنفلونزا", color: "bg-purple-100 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400" },
-  { id: 7, name: "كريم مطهر", price: 7.25, category: "إسعافات أولية", color: "bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400" },
-  { id: 8, name: "ميزان حرارة", price: 25.00, category: "أجهزة طبية", color: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300" },
-  { id: 9, name: "كمامات (10 قطع)", price: 3.50, category: "وقاية", color: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300" },
+  {
+    id: 1,
+    name: "أموكسيسيلين 500 ملغ",
+    price: 12.5,
+    category: "مضادات حيوية",
+    color: "bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400",
+  },
+  {
+    id: 2,
+    name: "ايبوبروفين 400 ملغ",
+    price: 8.99,
+    category: "مسكنات آلام",
+    color: "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400",
+  },
+  {
+    id: 3,
+    name: "باراسيتامول 500 ملغ",
+    price: 5.0,
+    category: "مسكنات آلام",
+    color: "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400",
+  },
+  {
+    id: 4,
+    name: "فيتامين سي 1000 ملغ",
+    price: 15.0,
+    category: "مكملات غذائية",
+    color:
+      "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400",
+  },
+  {
+    id: 5,
+    name: "ضمادات (عبوة)",
+    price: 4.5,
+    category: "إسعافات أولية",
+    color:
+      "bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400",
+  },
+  {
+    id: 6,
+    name: "شراب للسعال",
+    price: 12.0,
+    category: "البرد والإنفلونزا",
+    color:
+      "bg-purple-100 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400",
+  },
+  {
+    id: 7,
+    name: "كريم مطهر",
+    price: 7.25,
+    category: "إسعافات أولية",
+    color:
+      "bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400",
+  },
+  {
+    id: 8,
+    name: "ميزان حرارة",
+    price: 25.0,
+    category: "أجهزة طبية",
+    color: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
+  },
+  {
+    id: 9,
+    name: "كمامات (10 قطع)",
+    price: 3.5,
+    category: "وقاية",
+    color: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
+  },
 ];
 
 interface CartItem {
@@ -39,11 +97,13 @@ export default function POS() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const addToCart = (product: any) => {
-    setCart(prev => {
-      const existing = prev.find(item => item.id === product.id);
+    setCart((prev) => {
+      const existing = prev.find((item) => item.id === product.id);
       if (existing) {
-        return prev.map(item => 
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        return prev.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
         );
       }
       return [...prev, { ...product, quantity: 1 }];
@@ -51,24 +111,31 @@ export default function POS() {
   };
 
   const updateQuantity = (id: number, delta: number) => {
-    setCart(prev => prev.map(item => {
-      if (item.id === id) {
-        const newQty = Math.max(0, item.quantity + delta);
-        return { ...item, quantity: newQty };
-      }
-      return item;
-    }).filter(item => item.quantity > 0));
+    setCart((prev) =>
+      prev
+        .map((item) => {
+          if (item.id === id) {
+            const newQty = Math.max(0, item.quantity + delta);
+            return { ...item, quantity: newQty };
+          }
+          return item;
+        })
+        .filter((item) => item.quantity > 0)
+    );
   };
 
   const removeFromCart = (id: number) => {
-    setCart(prev => prev.filter(item => item.id !== id));
+    setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const subtotal = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
   const tax = subtotal * 0.15; // 15% VAT
   const total = subtotal + tax;
 
-  const filteredProducts = products.filter(p => 
+  const filteredProducts = products.filter((p) =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -79,8 +146,8 @@ export default function POS() {
         <div className="flex gap-4">
           <div className="relative flex-1">
             <Search className="absolute right-3 top-3 h-5 w-5 text-muted-foreground" />
-            <Input 
-              placeholder="البحث عن منتجات..." 
+            <Input
+              placeholder="البحث عن منتجات..."
               className="pr-10 h-11 text-lg"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -94,20 +161,28 @@ export default function POS() {
         <ScrollArea className="flex-1 pl-4">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-4">
             {filteredProducts.map((product) => (
-              <Card 
-                key={product.id} 
+              <Card
+                key={product.id}
                 className="cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 group bg-card"
                 onClick={() => addToCart(product)}
               >
                 <CardContent className="p-4 flex flex-col items-center text-center h-full justify-between gap-4">
-                  <div className={`w-12 h-12 rounded-full ${product.color} flex items-center justify-center font-bold text-lg mb-2 group-hover:scale-110 transition-transform`}>
+                  <div
+                    className={`w-12 h-12 rounded-full ${product.color} flex items-center justify-center font-bold text-lg mb-2 group-hover:scale-110 transition-transform`}
+                  >
                     {product.name.charAt(0)}
                   </div>
                   <div>
-                    <h3 className="font-medium text-sm line-clamp-2 leading-tight mb-1">{product.name}</h3>
-                    <p className="text-xs text-muted-foreground">{product.category}</p>
+                    <h3 className="font-medium text-sm line-clamp-2 leading-tight mb-1">
+                      {product.name}
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      {product.category}
+                    </p>
                   </div>
-                  <div className="font-bold text-lg text-primary">{product.price.toFixed(2)} ر.س</div>
+                  <div className="font-bold text-lg text-primary">
+                    {product.price.toFixed(2)} ر.س
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -138,26 +213,48 @@ export default function POS() {
             </div>
           ) : (
             cart.map((item) => (
-              <div key={item.id} className="flex items-center gap-3 animate-in fade-in slide-in-from-left-4 duration-300 text-right">
+              <div
+                key={item.id}
+                className="flex items-center gap-3 animate-in fade-in slide-in-from-left-4 duration-300 text-right"
+              >
                 <div className="w-10 h-10 rounded bg-muted flex items-center justify-center font-bold text-muted-foreground text-xs">
                   {item.name.charAt(0)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <h4 className="text-sm font-medium truncate">{item.name}</h4>
-                  <p className="text-xs text-muted-foreground">{item.price.toFixed(2)} ر.س / للوحدة</p>
+                  <p className="text-xs text-muted-foreground">
+                    {item.price.toFixed(2)} ر.س / للوحدة
+                  </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button variant="outline" size="icon" className="h-6 w-6 rounded-full" onClick={() => updateQuantity(item.id, -1)}>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-6 w-6 rounded-full"
+                    onClick={() => updateQuantity(item.id, -1)}
+                  >
                     <Minus className="w-3 h-3" />
                   </Button>
-                  <span className="w-4 text-center text-sm font-medium">{item.quantity}</span>
-                  <Button variant="outline" size="icon" className="h-6 w-6 rounded-full" onClick={() => updateQuantity(item.id, 1)}>
+                  <span className="w-4 text-center text-sm font-medium">
+                    {item.quantity}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-6 w-6 rounded-full"
+                    onClick={() => updateQuantity(item.id, 1)}
+                  >
                     <Plus className="w-3 h-3" />
                   </Button>
                 </div>
                 <div className="text-left min-w-[80px]">
-                  <div className="font-bold text-sm">{(item.price * item.quantity).toFixed(2)} ر.س</div>
-                  <button onClick={() => removeFromCart(item.id)} className="text-destructive text-[10px] hover:underline">
+                  <div className="font-bold text-sm">
+                    {(item.price * item.quantity).toFixed(2)} ر.س
+                  </div>
+                  <button
+                    onClick={() => removeFromCart(item.id)}
+                    className="text-destructive text-[10px] hover:underline"
+                  >
                     حذف
                   </button>
                 </div>
@@ -184,14 +281,24 @@ export default function POS() {
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <Button variant="outline" className="w-full border-primary/20 text-primary hover:bg-primary/5">
+            <Button
+              variant="outline"
+              className="w-full border-primary/20 text-primary hover:bg-primary/5"
+            >
               <CreditCard className="w-4 h-4 ml-2" /> بطاقة
             </Button>
-            <Button variant="outline" className="w-full border-primary/20 text-primary hover:bg-primary/5">
+            <Button
+              variant="outline"
+              className="w-full border-primary/20 text-primary hover:bg-primary/5"
+            >
               <Banknote className="w-4 h-4 ml-2" /> نقداً
             </Button>
           </div>
-          <Button className="w-full text-lg py-6 font-bold shadow-lg shadow-primary/20" size="lg" disabled={cart.length === 0}>
+          <Button
+            className="w-full text-lg py-6 font-bold shadow-lg shadow-primary/20"
+            size="lg"
+            disabled={cart.length === 0}
+          >
             إتمام الدفع
           </Button>
         </div>

@@ -2,12 +2,12 @@ import { Switch, Route } from "wouter";
 // import { Toaster } from "@/core/components/ui/toaster";
 import { TooltipProvider } from "@/ui/tooltip";
 import { Layout } from "@/layout/layout";
-import POS from "@/features/pos/pos-page";
-import Patients from "@/features/patients/patients-page";
-import Settings from "@/features/settings/settings-page";
-import Reports from "@/features/reports/reports-page";
-import Invoices from "@/features/invoices/invoices-page";
-import NotFound from "@/features/not-found/not-found-page";
+import POS from "@/features/pos/Pos";
+import Patients from "@/features/patients/Patients";
+import Settings from "@/features/settings/Settings";
+import Reports from "@/features/reports/Reports";
+import Invoices from "@/features/invoices/Invoices";
+import NotFound from "@/pages/NotFoundPage";
 import DashboardPage from "@/pages/DashboardPage";
 import InventoryPage from "@/pages/InventoryPage";
 

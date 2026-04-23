@@ -1,7 +1,8 @@
 import Sidebar from "./Sidebar";
 import Header from "./Header";
+import { Outlet } from "react-router-dom";
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout() {
   return (
     <div
       className="flex h-screen bg-background font-sans overflow-hidden"
@@ -18,7 +19,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {/* Content */}
         <main className="flex-1 overflow-auto bg-background/50 p-6">
           <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {children}
+            <Outlet />
           </div>
         </main>
       </div>

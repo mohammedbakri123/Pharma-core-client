@@ -3,13 +3,14 @@ import { Input } from "@/ui/input";
 import { Search, Bell, Sun, Moon } from "lucide-react";
 import { cn } from "@/utils/utils";
 import { useEffect, useState } from "react";
+import ThemeToggle from "@/ui/ThemeToggle";
 
 export default function Header() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  // const [isDarkMode, setIsDarkMode] = useState(false);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", isDarkMode);
-  }, [isDarkMode]);
+  // useEffect(() => {
+  //   document.documentElement.classList.toggle("dark", isDarkMode);
+  // }, [isDarkMode]);
 
   const connectionState = {
     label: "خدمة .NET غير متاحة",
@@ -32,7 +33,7 @@ export default function Header() {
       </div>
 
       <div className="flex items-center gap-4">
-        <Button
+        {/* <Button
           variant="ghost"
           size="icon"
           onClick={() => setIsDarkMode(!isDarkMode)}
@@ -43,7 +44,8 @@ export default function Header() {
           ) : (
             <Moon className="w-5 h-5" />
           )}
-        </Button>
+        </Button> */}
+        <ThemeToggle />
 
         <div
           className={cn(

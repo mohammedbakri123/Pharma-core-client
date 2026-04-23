@@ -1,4 +1,4 @@
-import Inventory from "@/features/inventory/Inventory";
+import Inventory from "@features/inventory/Inventory";
 
 function InventoryPage() {
   return <Inventory />;

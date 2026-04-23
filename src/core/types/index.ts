@@ -11,3 +11,4 @@ export * from "./expense";
 export * from "./payment";
 export * from "./user";
 export * from "./inventory";
+export * from "./system";

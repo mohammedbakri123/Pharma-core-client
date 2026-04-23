@@ -1,4 +1,4 @@
-import Login from "@/features/authentication/Login";
+import Login from "@features/authentication/Login";
 
 function LoginPage() {
   return <Login />;

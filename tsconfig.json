@@ -7,6 +7,8 @@
     "noEmit": true,
     "module": "ESNext",
     "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "forceConsistentCasingInFileNames": true,
     "lib": ["esnext", "dom", "dom.iterable"],
     "jsx": "preserve",
     "esModuleInterop": true,
@@ -15,8 +17,10 @@
     "moduleResolution": "bundler",
     "baseUrl": ".",
     "types": ["node", "vite/client"],
-    "paths": {
-      "@/*": ["src/*"]
-    }
+  "paths": {
+    "@/*": ["src/core/*"],
+    "@features/*": ["src/features/*"],
+    "@pages/*": ["src/core/pages/*"]
+  }
   }
 }

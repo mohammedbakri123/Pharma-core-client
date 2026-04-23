@@ -23,12 +23,14 @@ export default defineConfig({
         ]
       : []),
   ],
-  resolve: {
-    alias: {
-      "@": path.resolve(import.meta.dirname, "src"),
-      "@assets": path.resolve(import.meta.dirname, "attached_assets"),
+    resolve: {
+      alias: {
+        "@": path.resolve(import.meta.dirname, "src/core"),
+        "@features": path.resolve(import.meta.dirname, "src/features"),
+        "@pages": path.resolve(import.meta.dirname, "src/core/pages"),
+        "@assets": path.resolve(import.meta.dirname, "attached_assets"),
+      },
     },
-  },
   build: {
     outDir: path.resolve(import.meta.dirname, "dist"),
     emptyOutDir: true,

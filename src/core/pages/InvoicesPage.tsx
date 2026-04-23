@@ -1,4 +1,4 @@
-import Invoices from "@/features/invoices/Invoices";
+import Invoices from "@features/invoices/Invoices";
 
 function InvoicesPage() {
   return <Invoices />;

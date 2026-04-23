@@ -1,17 +1,17 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import Patients from "@/features/patients/Patients";
-import Settings from "@/features/settings/Settings";
-import Invoices from "@/features/invoices/Invoices";
-import DashboardPage from "@core/pages/DashboardPage";
-import InventoryPage from "@core/pages/InventoryPage";
-import Reports from "@/features/reports/Reports";
-import RegisterPage from "@core/pages/RegisterPage";
-import NotFound from "@core/pages/NotFoundPage";
-import LoginPage from "@core/pages/LoginPage";
-import { Layout } from "@/core/layout/layout";
-import POS from "@/features/pos/Pos";
+import Patients from "@features/patients/Patients";
+import Settings from "@features/settings/Settings";
+import Invoices from "@features/invoices/Invoices";
+import DashboardPage from "@/pages/DashboardPage";
+import InventoryPage from "@/pages/InventoryPage";
+import Reports from "@features/reports/Reports";
+import RegisterPage from "@/pages/RegisterPage";
+import NotFound from "@/pages/NotFoundPage";
+import LoginPage from "@/pages/LoginPage";
+import { Layout } from "@/layout/layout";
+import POS from "@features/pos/Pos";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 const queryClient = new QueryClient({

@@ -1,4 +1,4 @@
-import POS from "@/features/pos/Pos";
+import POS from "@features/pos/Pos";
 
 function PosPage() {
   return <POS />;

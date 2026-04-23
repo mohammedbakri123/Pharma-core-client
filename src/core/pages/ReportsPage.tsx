@@ -1,4 +1,4 @@
-import Reports from "@/features/reports/Reports";
+import Reports from "@features/reports/Reports";
 
 function ReportsPage() {
   return <Reports />;

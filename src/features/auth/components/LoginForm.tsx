@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/ui/button";
-import { LogIn } from "lucide-react";
 import AuthInput from "./AuthInput";
 import { loginSchema, type LoginInput } from "@/lib/validators";
 
@@ -29,17 +28,15 @@ export function LoginForm({ onSubmit, isPending, error }: LoginFormProps) {
       <AuthInput
         type="text"
         placeholder="اسم المستخدم"
-        icon={<LogIn size={16} />}
         error={errors.userName?.message}
-        {...register("userName")}
+        registration={register("userName")}
       />
 
       <AuthInput
         type="password"
         placeholder="كلمة المرور"
-        icon={<LogIn size={16} />}
         error={errors.password?.message}
-        {...register("password")}
+        registration={register("password")}
       />
 
       {error && (

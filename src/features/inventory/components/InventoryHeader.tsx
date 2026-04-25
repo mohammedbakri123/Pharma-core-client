@@ -13,9 +13,21 @@ export default function InventoryHeader() {
         </p>
       </div>
 
-      <Button className="bg-primary hover:bg-primary/90 shadow-md">
-        <Plus className="w-4 h-4 ml-2" /> إضافة صنف جديد
-      </Button>
+      <div>
+        <Button className="bg-primary hover:bg-primary/90 shadow-md">
+          عرض الاصناف
+        </Button>
+        <Button className="bg-primary hover:bg-primary/90 shadow-md">
+          عرض الفئات{" "}
+        </Button>
+        <Button className="bg-primary hover:bg-primary/90 shadow-md">
+          عرض الادوية المنتهية الصلاحية
+        </Button>
+        <Button className="bg-primary hover:bg-primary/90 shadow-md">
+          <Plus className="mr-2" />
+          إضافة مخزون جديد
+        </Button>
+      </div>
     </div>
   );
 }

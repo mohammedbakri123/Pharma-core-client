@@ -6,7 +6,11 @@ import {
   deleteCategory,
   restoreCategory,
 } from "./api";
-import type { CategoryDto, CreateCategoryRequest, UpdateCategoryRequest } from "./types";
+import type {
+  CategoryDto,
+  CreateCategoryRequest,
+  UpdateCategoryRequest,
+} from "./types";
 import CategoryTable from "./components/CategoryTable";
 import CategoryFormOverlay from "./components/CategoryFormOverlay";
 
@@ -16,15 +20,30 @@ export default function CategoryManager() {
   const [error, setError] = useState<string | null>(null);
   const [showOverlay, setShowOverlay] = useState(false);
   const [overlayMode, setOverlayMode] = useState<"add" | "edit">("add");
-  const [selectedCategory, setSelectedCategory] = useState<CategoryDto | undefined>();
+  const [selectedCategory, setSelectedCategory] = useState<
+    CategoryDto | undefined
+  >();
   const [actionLoading, setActionLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
+  const [search, setSearch] = useState("");
+  const [pagination, setPagination] = useState({
+    total: 0,
+    page: 1,
+    limit: 20,
+  });
 
   const fetchCategories = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await getCategories();
+      const response = await getCategories({
+        page,
+        limit,
+        search: search || undefined,
+      });
       setCategories(response.data.categories);
+      setPagination(response.data.pagination);
     } catch (err) {
       setError("فشل في تحميل الفئات");
       console.error("Error fetching categories:", err);
@@ -35,7 +54,7 @@ export default function CategoryManager() {
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [page, search]);
 
   const handleAdd = () => {
     setOverlayMode("add");
@@ -68,13 +87,18 @@ export default function CategoryManager() {
     }
   };
 
-  const handleSubmit = async (data: CreateCategoryRequest | UpdateCategoryRequest) => {
+  const handleSubmit = async (
+    data: CreateCategoryRequest | UpdateCategoryRequest
+  ) => {
     setActionLoading(true);
     try {
       if (overlayMode === "add") {
         await createCategory(data as CreateCategoryRequest);
       } else if (selectedCategory) {
-        await updateCategory(selectedCategory.categoryId, data as UpdateCategoryRequest);
+        await updateCategory(
+          selectedCategory.categoryId,
+          data as UpdateCategoryRequest
+        );
       }
       setShowOverlay(false);
       fetchCategories();
@@ -84,6 +108,8 @@ export default function CategoryManager() {
       setActionLoading(false);
     }
   };
+
+  const totalPages = Math.ceil(pagination.total / pagination.limit);
 
   return (
     <div className="p-6">
@@ -97,7 +123,10 @@ export default function CategoryManager() {
             إضافة فئة
           </button>
           <button
-            onClick={fetchCategories}
+            onClick={() => {
+              setPage(1);
+              fetchCategories();
+            }}
             className="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/90"
             disabled={loading}
           >
@@ -105,6 +134,20 @@ export default function CategoryManager() {
           </button>
         </div>
       </div>
+
+      <div className="mb-4">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1);
+          }}
+          placeholder="البحث عن فئة..."
+          className="w-full max-w-sm p-2 border rounded-md"
+        />
+      </div>
+
       {loading ? (
         <div className="text-center py-8">جاري التحميل...</div>
       ) : error ? (
@@ -114,12 +157,36 @@ export default function CategoryManager() {
           لا توجد فئات لعرضها
         </p>
       ) : (
-        <CategoryTable
-          categories={categories}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          onRestore={handleRestore}
-        />
+        <>
+          <CategoryTable
+            categories={categories}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onRestore={handleRestore}
+          />
+
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-2 mt-4">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page <= 1}
+                className="px-3 py-1 border rounded-md disabled:opacity-50"
+              >
+                السابق
+              </button>
+              <span className="px-4">
+                صفحة {pagination.page} من {totalPages} ({pagination.total} فئة)
+              </span>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page >= totalPages}
+                className="px-3 py-1 border rounded-md disabled:opacity-50"
+              >
+                التالي
+              </button>
+            </div>
+          )}
+        </>
       )}
       {showOverlay && (
         <CategoryFormOverlay

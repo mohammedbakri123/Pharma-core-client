@@ -1,6 +1,5 @@
 export * from "./api";
 export * from "./medicine";
-export * from "./category";
 export * from "./customer";
 export * from "./supplier";
 export * from "./sale";

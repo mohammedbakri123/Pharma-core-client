@@ -1,7 +1,6 @@
 export { api } from "./client";
 export * from "./medicines";
 export * from "./inventory";
-export * from "./categories";
 export * from "./customers";
 export * from "./suppliers";
 export * from "./pos";

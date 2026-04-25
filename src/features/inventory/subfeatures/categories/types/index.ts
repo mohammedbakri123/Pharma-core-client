@@ -1,7 +1,7 @@
 export interface CategoryDto {
   categoryId: number;
-  name: string;
-  arabicName: string | null;
+  categoryName: string;
+  categoryArabicName: string | null;
   isDeleted: boolean;
   deletedAt: string | null;
 }

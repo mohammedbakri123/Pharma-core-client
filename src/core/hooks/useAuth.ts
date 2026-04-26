@@ -1,4 +1,4 @@
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore } from "@features/auth/store/authStore";
 import { UserRole } from "@features/auth/types";
 
 export function useAuth() {

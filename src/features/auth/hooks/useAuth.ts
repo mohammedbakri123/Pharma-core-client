@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosResponse } from "axios";
 import { authApi } from "../api";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore } from "@features/auth/store/authStore";
 import type { LoginRequest, LoginResponse } from "../types";
 
 export function useLogin() {
@@ -9,7 +9,8 @@ export function useLogin() {
   const setAuth = useAuthStore((state) => state.setAuth);
 
   return useMutation({
-    mutationFn: (data: LoginRequest) => authApi.login(data) as Promise<AxiosResponse<LoginResponse>>,
+    mutationFn: (data: LoginRequest) =>
+      authApi.login(data) as Promise<AxiosResponse<LoginResponse>>,
     onSuccess: (response) => {
       const { token, user } = response.data;
       setAuth({ token, user });

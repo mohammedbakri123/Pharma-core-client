@@ -1,60 +1,25 @@
-import { useState, useEffect } from "react";
-import {
-  getCategories,
-  createCategory,
-  updateCategory,
-  deleteCategory,
-  restoreCategory,
-} from "./api";
-import type {
-  CategoryDto,
-  CreateCategoryRequest,
-  UpdateCategoryRequest,
-} from "./types";
-import CategoryTable from "./components/CategoryTable";
-import CategoryFormOverlay from "./components/CategoryFormOverlay";
+import { useState } from "react";
+import { useCategories, useCreateCategory, useUpdateCategory, useDeleteCategory, useRestoreCategory } from "../hooks/useCategories";
+import type { CategoryDto, CreateCategoryRequest, UpdateCategoryRequest } from "../types";
+import CategoryTable from "../components/CategoryTable";
+import CategoryFormOverlay from "../components/CategoryFormOverlay";
 
-export default function CategoryManager() {
-  const [categories, setCategories] = useState<CategoryDto[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [showOverlay, setShowOverlay] = useState(false);
-  const [overlayMode, setOverlayMode] = useState<"add" | "edit">("add");
-  const [selectedCategory, setSelectedCategory] = useState<
-    CategoryDto | undefined
-  >();
-  const [actionLoading, setActionLoading] = useState(false);
+export default function CategoryPage() {
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [search, setSearch] = useState("");
-  const [pagination, setPagination] = useState({
-    total: 0,
-    page: 1,
-    limit: 20,
-  });
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [overlayMode, setOverlayMode] = useState<"add" | "edit">("add");
+  const [selectedCategory, setSelectedCategory] = useState<CategoryDto | undefined>();
 
-  const fetchCategories = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await getCategories({
-        page,
-        limit,
-        search: search || undefined,
-      });
-      setCategories(response.data.categories);
-      setPagination(response.data.pagination);
-    } catch (err) {
-      setError("فشل في تحميل الفئات");
-      console.error("Error fetching categories:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data, isLoading, error, refetch } = useCategories({ page, limit, search });
+  const createMutation = useCreateCategory();
+  const updateMutation = useUpdateCategory();
+  const deleteMutation = useDeleteCategory();
+  const restoreMutation = useRestoreCategory();
 
-  useEffect(() => {
-    fetchCategories();
-  }, [page, search]);
+  const categories = data?.data.categories ?? [];
+  const pagination = data?.data.pagination ?? { total: 0, page: 1, limit: 10 };
 
   const handleAdd = () => {
     setOverlayMode("add");
@@ -70,42 +35,28 @@ export default function CategoryManager() {
 
   const handleDelete = async (categoryId: number) => {
     if (!confirm("هل أنت متأكد من حذف هذه الفئة؟")) return;
-    try {
-      await deleteCategory(categoryId);
-      fetchCategories();
-    } catch (err) {
-      console.error("Error deleting category:", err);
-    }
+    await deleteMutation.mutateAsync(categoryId);
   };
 
   const handleRestore = async (categoryId: number) => {
-    try {
-      await restoreCategory(categoryId);
-      fetchCategories();
-    } catch (err) {
-      console.error("Error restoring category:", err);
-    }
+    await restoreMutation.mutateAsync(categoryId);
   };
 
   const handleSubmit = async (
     data: CreateCategoryRequest | UpdateCategoryRequest
   ) => {
-    setActionLoading(true);
     try {
       if (overlayMode === "add") {
-        await createCategory(data as CreateCategoryRequest);
+        await createMutation.mutateAsync(data as CreateCategoryRequest);
       } else if (selectedCategory) {
-        await updateCategory(
-          selectedCategory.categoryId,
-          data as UpdateCategoryRequest
-        );
+        await updateMutation.mutateAsync({
+          id: selectedCategory.categoryId,
+          data: data as UpdateCategoryRequest,
+        });
       }
       setShowOverlay(false);
-      fetchCategories();
     } catch (err) {
       console.error("Error saving category:", err);
-    } finally {
-      setActionLoading(false);
     }
   };
 
@@ -125,10 +76,10 @@ export default function CategoryManager() {
           <button
             onClick={() => {
               setPage(1);
-              fetchCategories();
+              refetch();
             }}
             className="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/90"
-            disabled={loading}
+            disabled={isLoading}
           >
             تحديث
           </button>
@@ -148,10 +99,12 @@ export default function CategoryManager() {
         />
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <div className="text-center py-8">جاري التحميل...</div>
       ) : error ? (
-        <div className="text-destructive text-center py-8">{error}</div>
+        <div className="text-destructive text-center py-8">
+          فشل في تحميل الفئات
+        </div>
       ) : categories.length === 0 ? (
         <p className="text-muted-foreground text-center py-8">
           لا توجد فئات لعرضها
@@ -194,7 +147,10 @@ export default function CategoryManager() {
           category={selectedCategory}
           onSubmit={handleSubmit}
           onClose={() => setShowOverlay(false)}
-          isLoading={actionLoading}
+          isLoading={
+            createMutation.isPending ||
+            updateMutation.isPending
+          }
         />
       )}
     </div>

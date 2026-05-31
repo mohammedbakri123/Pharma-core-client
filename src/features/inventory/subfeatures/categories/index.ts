@@ -1,4 +1,4 @@
-export { default as CategoryPage } from "./pages/CategoryPage";
+export { default, default as CategoryPage } from "./pages/CategoryPage";
 export { default as CategoryTable } from "./components/CategoryTable";
 export { default as CategoryFormOverlay } from "./components/CategoryFormOverlay";
 export { 

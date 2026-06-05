@@ -1,7 +1,4 @@
-export enum UserRole {
-  Admin = 1,
-  Cashier = 2,
-}
+
 
 export interface User {
   userId: number;
@@ -26,4 +23,9 @@ export interface LoginRequest {
 export interface LoginResponse {
   token: string;
   user: AuthenticatedUser;
+}
+
+export enum UserRole {
+  Admin = 1,
+  Cashier = 2,
 }

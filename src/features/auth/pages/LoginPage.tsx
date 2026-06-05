@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useLogin } from "../hooks/useAuth";
 import { LoginForm } from "../components/LoginForm";
 import AuthLayout from "../components/AuthLayout";
+import { toast } from "@/hooks/use-toast";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -9,9 +10,30 @@ export default function LoginPage() {
 
   const onSubmit = (data: Parameters<typeof loginMutation.mutate>[0], e?: React.FormEvent) => {
     if (e) e.preventDefault();
+    const t = toast({
+      title: "جاري تسجيل الدخول...",
+      description: "يرجى الانتظار",
+    });
     loginMutation.mutate(data, {
       onSuccess: () => {
+        t.update({
+          id: t.id,
+          title: "تم تسجيل الدخول بنجاح",
+          description: "مرحباً بك",
+        });
         navigate("/");
+      },
+      onError: (error: any) => {
+        const message =
+          error?.response?.data?.message ??
+          error?.message ??
+          "فشل تسجيل الدخول. تأكد من البيانات.";
+        t.update({
+          id: t.id,
+          title: "فشل تسجيل الدخول",
+          description: message,
+          variant: "destructive",
+        });
       },
     });
   };

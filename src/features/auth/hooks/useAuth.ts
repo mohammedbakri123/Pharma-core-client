@@ -2,7 +2,25 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosResponse } from "axios";
 import { authApi } from "../api";
 import { useAuthStore } from "@features/auth/store/authStore";
-import type { LoginRequest, LoginResponse } from "../types";
+import { UserRole, type LoginRequest, type LoginResponse } from "../types";
+
+
+export function useAuth() {
+  const { user, token, isAuthenticated, setAuth, logout, hasRole } =
+    useAuthStore();
+
+  return {
+    user,
+    token,
+    isAuthenticated,
+    setAuth,
+    logout,
+    hasRole,
+    isAdmin: hasRole(UserRole.Admin),
+    isCashier: hasRole(UserRole.Cashier),
+  };
+}
+
 
 export function useLogin() {
   const queryClient = useQueryClient();

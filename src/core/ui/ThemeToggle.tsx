@@ -12,6 +12,16 @@ export default function ThemeToggle() {
     localStorage.setItem("theme", isDarkMode ? "dark" : "light");
   }, [isDarkMode]);
 
+  useEffect(() => {
+    const handleThemeEvent = () => {
+      setIsDarkMode(localStorage.getItem("theme") === "dark");
+    };
+    window.addEventListener("theme-change", handleThemeEvent);
+    return () => {
+      window.removeEventListener("theme-change", handleThemeEvent);
+    };
+  }, []);
+
   return (
     <Button
       variant="ghost"
@@ -22,4 +32,5 @@ export default function ThemeToggle() {
       {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
     </Button>
   );
+
 }

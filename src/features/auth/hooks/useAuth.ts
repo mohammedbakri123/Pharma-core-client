@@ -60,3 +60,34 @@ export function useLogout() {
     },
   });
 }
+
+import { usersApi } from "@/api";
+
+export function useUpdateProfile() {
+  const queryClient = useQueryClient();
+  const user = useAuthStore((state) => state.user);
+  const setAuth = useAuthStore((state) => state.setAuth);
+  const token = useAuthStore((state) => state.token);
+
+  return useMutation({
+    mutationFn: async (data: { userName?: string; password?: string; phoneNumber?: string; address?: string }) => {
+      if (!user) throw new Error("User not authenticated");
+      const response = await usersApi.update(user.userId, data);
+      return response.data;
+    },
+    onSuccess: (updatedUser) => {
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      // Update store state so the username updates in the sidebar
+      if (user && token) {
+        setAuth({
+          token,
+          user: {
+            ...user,
+            userName: updatedUser.userName,
+          },
+        });
+      }
+    },
+  });
+}
+

@@ -1,6 +1,10 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { usersApi } from "@/api";
+import {
+  useUsersList,
+  useCreateUser,
+  useDeleteUser,
+  useCurrentUser,
+} from "../hooks/useSettings";
 import { UserRole } from "@features/auth/types";
 import { 
   Card, 
@@ -15,7 +19,6 @@ import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { Badge } from "@/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { useAuthStore } from "@features/auth/store/authStore";
 import { 
   UserPlus, 
   Users, 
@@ -33,14 +36,11 @@ import {
 
 export default function UsersSettings() {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useCurrentUser();
   
-  // States
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddingUser, setIsAddingUser] = useState(false);
   
-  // Add User Form States
   const [newUserName, setNewUserName] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newPhone, setNewPhone] = useState("");
@@ -48,80 +48,56 @@ export default function UsersSettings() {
   const [newRole, setNewRole] = useState<UserRole>(UserRole.Cashier);
   const [formError, setFormError] = useState("");
 
-  // Query: Fetch users list
-  const { data: usersResponse, isLoading, isError, refetch } = useQuery({
-    queryKey: ["users-list"],
-    queryFn: async () => {
-      const res = await usersApi.getAll({ limit: 100 });
-      return res.data;
-    },
-  });
-
+  const { data: usersResponse, isLoading, isError, refetch } = useUsersList();
   const users = usersResponse?.users || [];
 
-  // Mutation: Create user
-  const createUserMutation = useMutation({
-    mutationFn: async () => {
-      if (!newUserName.trim() || newUserName.length < 3) {
-        throw new Error("اسم المستخدم يجب أن لا يقل عن 3 أحرف");
-      }
-      if (!newPassword || newPassword.length < 6) {
-        throw new Error("كلمة المرور يجب أن لا تقل عن 6 أحرف");
-      }
-      return usersApi.create({
+  const createUserMutation = useCreateUser();
+  const deleteUserMutation = useDeleteUser();
+
+  const handleAddUserSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError("");
+
+    if (!newUserName.trim() || newUserName.length < 3) {
+      setFormError("اسم المستخدم يجب أن لا يقل عن 3 أحرف");
+      return;
+    }
+    if (!newPassword || newPassword.length < 6) {
+      setFormError("كلمة المرور يجب أن لا تقل عن 6 أحرف");
+      return;
+    }
+
+    createUserMutation.mutate(
+      {
         userName: newUserName,
         password: newPassword,
         phoneNumber: newPhone || undefined,
         address: newAddress || undefined,
         role: newRole,
-      });
-    },
-    onSuccess: () => {
-      toast({
-        title: "تمت إضافة المستخدم",
-        description: `تم إنشاء حساب المستخدم ${newUserName} بنجاح.`,
-      });
-      // Reset form
-      setNewUserName("");
-      setNewPassword("");
-      setNewPhone("");
-      setNewAddress("");
-      setNewRole(UserRole.Cashier);
-      setIsAddingUser(false);
-      setFormError("");
-      // Invalidate users list
-      queryClient.invalidateQueries({ queryKey: ["users-list"] });
-    },
-    onError: (error: any) => {
-      setFormError(error.message || error.response?.data?.message || "حدث خطأ أثناء إضافة المستخدم.");
-    },
-  });
-
-  // Mutation: Delete user
-  const deleteUserMutation = useMutation({
-    mutationFn: async (userId: number) => {
-      return usersApi.delete(userId);
-    },
-    onSuccess: (_, deletedId) => {
-      toast({
-        title: "تم حذف المستخدم",
-        description: "تم تعطيل/حذف حساب المستخدم بنجاح.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["users-list"] });
-    },
-    onError: (error: any) => {
-      toast({
-        variant: "destructive",
-        title: "فشل الحذف",
-        description: error.response?.data?.message || "حدث خطأ أثناء حذف المستخدم.",
-      });
-    },
-  });
-
-  const handleAddUserSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormError("");
-    createUserMutation.mutate();
+      },
+      {
+        onSuccess: () => {
+          toast({
+            title: "تمت إضافة المستخدم",
+            description: `تم إنشاء حساب المستخدم ${newUserName} بنجاح.`,
+          });
+          setNewUserName("");
+          setNewPassword("");
+          setNewPhone("");
+          setNewAddress("");
+          setNewRole(UserRole.Cashier);
+          setIsAddingUser(false);
+          setFormError("");
+        },
+        onError: (error: any) => {
+          setFormError(
+            error?.message ||
+              error?.response?.data?.message ||
+              "حدث خطأ أثناء إضافة المستخدم."
+          );
+        },
+      }
+    );
   };
 
   const handleDeleteUser = (userId: number, userName: string) => {
@@ -135,11 +111,26 @@ export default function UsersSettings() {
     }
 
     if (confirm(`هل أنت متأكد من رغبتك في حذف حساب المستخدم: ${userName}؟`)) {
-      deleteUserMutation.mutate(userId);
+      deleteUserMutation.mutate(userId, {
+        onSuccess: () => {
+          toast({
+            title: "تم حذف المستخدم",
+            description: "تم تعطيل/حذف حساب المستخدم بنجاح.",
+          });
+        },
+        onError: (error: any) => {
+          toast({
+            variant: "destructive",
+            title: "فشل الحذف",
+            description:
+              error?.response?.data?.message ||
+              "حدث خطأ أثناء حذف المستخدم.",
+          });
+        },
+      });
     }
   };
 
-  // Filter users based on search query
   const filteredUsers = users.filter((u) => 
     u.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     (u.phoneNumber && u.phoneNumber.includes(searchQuery))

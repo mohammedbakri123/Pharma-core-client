@@ -1,7 +1,7 @@
-import Settings from "@features/settings/Settings";
+import SettingsPage from "@features/settings/pages/SettingsPage";
 
-function SettingsPage() {
-  return <Settings />;
+function SettingsPageWrapper() {
+  return <SettingsPage />;
 }
 
-export default SettingsPage;
+export default SettingsPageWrapper;

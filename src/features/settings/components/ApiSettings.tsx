@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getHealth } from "@/api";
+import { useApiHealth } from "../hooks/useSettings";
 import { Label } from "@/ui/label";
 import { Input } from "@/ui/input";
 import { Button } from "@/ui/button";
@@ -14,22 +13,13 @@ export default function ApiSettings() {
 
   const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5084";
 
-  // React Query to check health
   const { 
     data: healthResponse, 
     isLoading, 
     refetch, 
     isError,
     isRefetching
-  } = useQuery({
-    queryKey: ["api-health"],
-    queryFn: async () => {
-      const res = await getHealth();
-      return res.data;
-    },
-    retry: 1,
-    refetchInterval: 20000, // automatic check every 20 seconds
-  });
+  } = useApiHealth();
 
   const handleTestConnection = async () => {
     setIsTesting(true);

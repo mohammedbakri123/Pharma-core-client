@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -6,6 +6,7 @@ import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { usePharmacyInfo } from "../hooks/useSettings";
 import { Save, RefreshCw, Landmark, Phone, Mail, FileText, MapPin } from "lucide-react";
 
 const infoSchema = z.object({
@@ -21,7 +22,7 @@ type InfoFormValues = z.infer<typeof infoSchema>;
 
 export default function PharmacyInfoForm() {
   const { toast } = useToast();
-  const [isSaving, setIsSaving] = useState(false);
+  const { info, save, isSaving } = usePharmacyInfo();
 
   const {
     register,
@@ -30,47 +31,27 @@ export default function PharmacyInfoForm() {
     formState: { errors, isDirty },
   } = useForm<InfoFormValues>({
     resolver: zodResolver(infoSchema),
-    defaultValues: {
-      name: "فارماكور المركزية",
-      license: "PH-8829-NYC",
-      address: "123 مجمع المدينة الطبي",
-      phone: "+966 50 123 4567",
-      email: "info@pharmacore.com",
-      taxNumber: "300012345600003",
-    },
+    defaultValues: info,
   });
 
-  // Load from localStorage on mount
   useEffect(() => {
-    const savedData = localStorage.getItem("pharmacy_info");
-    if (savedData) {
-      try {
-        reset(JSON.parse(savedData));
-      } catch (e) {
-        console.error("Error loading pharmacy info", e);
-      }
-    }
-  }, [reset]);
+    reset(info);
+  }, [info, reset]);
 
   const onSubmit = async (data: InfoFormValues) => {
-    setIsSaving(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 600));
     try {
-      localStorage.setItem("pharmacy_info", JSON.stringify(data));
+      await save(data);
       toast({
         title: "تم حفظ معلومات الصيدلية",
         description: "تم تحديث البيانات العامة بنجاح وسوف تظهر في الفواتير المطبوعة.",
       });
-      reset(data); // reset dirty state
+      reset(data);
     } catch (error) {
       toast({
         variant: "destructive",
         title: "خطأ في الحفظ",
         description: "فشل حفظ البيانات العامة.",
       });
-    } finally {
-      setIsSaving(false);
     }
   };
 

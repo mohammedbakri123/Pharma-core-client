@@ -1,110 +1,92 @@
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { backupDatabase, restoreDatabase } from "@/api";
+import {
+  useBackupDatabase,
+  useRestoreDatabase,
+  useBackupHistory,
+  formatBackupName,
+} from "../hooks/useSettings";
+import type { BackupHistoryItem } from "../types";
 import { 
   Card, 
   CardContent, 
   CardHeader, 
   CardTitle, 
-  CardDescription,
-  CardFooter
+  CardDescription
 } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Database, 
-  Download, 
   Upload, 
   RefreshCw, 
   AlertTriangle,
   History,
-  CheckCircle,
-  Clock
 } from "lucide-react";
 import { Badge } from "@/ui/badge";
 
-interface BackupHistoryItem {
-  id: string;
-  name: string;
-  size: string;
-  date: string;
-  status: "success" | "restored";
-}
-
 export default function BackupSettings() {
   const { toast } = useToast();
-  const [backups, setBackups] = useState<BackupHistoryItem[]>([
-    { id: "1", name: "pharma_backup_2026-06-05_auto.bak", size: "12.4 MB", date: "2026-06-05 12:00", status: "success" },
-    { id: "2", name: "pharma_backup_2026-06-04_manual.bak", size: "12.2 MB", date: "2026-06-04 18:30", status: "restored" },
-  ]);
-
-  // Mutation: Backup Database
-  const backupMutation = useMutation({
-    mutationFn: async () => {
-      const res = await backupDatabase();
-      return res.data;
-    },
-    onSuccess: (data) => {
-      toast({
-        title: "اكتمل النسخ الاحتياطي",
-        description: "تم إنشاء نسخة احتياطية لقاعدة البيانات بنجاح وحفظها على الخادم.",
-      });
-
-      // Add to local history list
-      const formattedSize = data.sizeBytes 
-        ? `${(data.sizeBytes / (1024 * 1024)).toFixed(2)} MB` 
-        : "12.5 MB";
-      
-      const newBackup: BackupHistoryItem = {
-        id: Date.now().toString(),
-        name: data.backupName || `pharma_backup_${new Date().toISOString().split('T')[0]}_manual.bak`,
-        size: formattedSize,
-        date: new Date().toISOString().replace('T', ' ').substring(0, 16),
-        status: "success",
-      };
-
-      setBackups((prev) => [newBackup, ...prev]);
-    },
-    onError: (error: any) => {
-      toast({
-        variant: "destructive",
-        title: "فشل النسخ الاحتياطي",
-        description: error.response?.data?.message || "حدث خطأ أثناء الاتصال بالخادم لإنشاء النسخة الاحتياطية.",
-      });
-    },
-  });
-
-  // Mutation: Restore Database
-  const restoreMutation = useMutation({
-    mutationFn: async (fileName: string) => {
-      return restoreDatabase(fileName);
-    },
-    onSuccess: (_, fileName) => {
-      toast({
-        title: "اكتمل استعادة قاعدة البيانات",
-        description: "تمت استعادة البيانات بنجاح. قد يستغرق التطبيق دقيقة واحدة لإعادة التهيئة.",
-      });
-      // Mark as restored in history
-      setBackups((prev) => 
-        prev.map((b) => b.name === fileName ? { ...b, status: "restored" } : b)
-      );
-    },
-    onError: (error: any) => {
-      toast({
-        variant: "destructive",
-        title: "فشلت عملية الاستعادة",
-        description: error.response?.data?.message || "فشلت استعادة قاعدة البيانات. يرجى مراجعة سجلات الخادم.",
-      });
-    },
-  });
+  const { backups, addBackup, markRestored } = useBackupHistory();
+  const backupMutation = useBackupDatabase();
+  const restoreMutation = useRestoreDatabase();
 
   const handleBackup = () => {
-    backupMutation.mutate();
+    backupMutation.mutate(undefined, {
+      onSuccess: (data) => {
+        toast({
+          title: "اكتمل النسخ الاحتياطي",
+          description:
+            "تم إنشاء نسخة احتياطية لقاعدة البيانات بنجاح وحفظها على الخادم.",
+        });
+
+        const { size, name, date } = formatBackupName(data);
+
+        const newBackup: BackupHistoryItem = {
+          id: Date.now().toString(),
+          name,
+          size,
+          date,
+          status: "success",
+        };
+
+        addBackup(newBackup);
+      },
+      onError: (error: any) => {
+        toast({
+          variant: "destructive",
+          title: "فشل النسخ الاحتياطي",
+          description:
+            error?.response?.data?.message ||
+            "حدث خطأ أثناء الاتصال بالخادم لإنشاء النسخة الاحتياطية.",
+        });
+      },
+    });
   };
 
   const handleRestore = (fileName: string) => {
-    if (confirm(`تحذير: هل أنت متأكد من رغبتك في استعادة قاعدة البيانات من الملف "${fileName}"؟\nسيؤدي هذا إلى الكتابة فوق كافة البيانات الحالية وتجاوز أي تغييرات تم إجراؤها بعد هذا النسخ.`)) {
-      restoreMutation.mutate(fileName);
+    if (
+      confirm(
+        `تحذير: هل أنت متأكد من رغبتك في استعادة قاعدة البيانات من الملف "${fileName}"؟\nسيؤدي هذا إلى الكتابة فوق كافة البيانات الحالية وتجاوز أي تغييرات تم إجراؤها بعد هذا النسخ.`
+      )
+    ) {
+      restoreMutation.mutate(fileName, {
+        onSuccess: () => {
+          toast({
+            title: "اكتمل استعادة قاعدة البيانات",
+            description:
+              "تمت استعادة البيانات بنجاح. قد يستغرق التطبيق دقيقة واحدة لإعادة التهيئة.",
+          });
+          markRestored(fileName);
+        },
+        onError: (error: any) => {
+          toast({
+            variant: "destructive",
+            title: "فشلت عملية الاستعادة",
+            description:
+              error?.response?.data?.message ||
+              "فشلت استعادة قاعدة البيانات. يرجى مراجعة سجلات الخادم.",
+          });
+        },
+      });
     }
   };
 

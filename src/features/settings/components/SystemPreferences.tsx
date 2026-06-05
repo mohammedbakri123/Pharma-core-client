@@ -1,60 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Label } from "@/ui/label";
 import { Switch } from "@/ui/switch";
 import { Separator } from "@/ui/separator";
 import { Input } from "@/ui/input";
 import { Button } from "@/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useSystemPreferences } from "../hooks/useSettings";
 import { Save, RefreshCw, Printer, AlertTriangle, Percent, Moon, Sun, ShieldAlert } from "lucide-react";
 
 export default function SystemPreferences() {
   const { toast } = useToast();
+  const { preferences, setTheme, setPreference, save } = useSystemPreferences();
   const [isSaving, setIsSaving] = useState(false);
-
-  // States
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    return localStorage.getItem("theme") === "dark";
-  });
-  const [autoLogout, setAutoLogout] = useState(true);
-  const [autoPrint, setAutoPrint] = useState(true);
-  const [stockThreshold, setStockThreshold] = useState(10);
-  const [defaultTax, setDefaultTax] = useState(15);
-
-  // Load settings on mount
-  useEffect(() => {
-    const savedAutoLogout = localStorage.getItem("pref_auto_logout");
-    if (savedAutoLogout !== null) setAutoLogout(savedAutoLogout === "true");
-
-    const savedAutoPrint = localStorage.getItem("pref_auto_print");
-    if (savedAutoPrint !== null) setAutoPrint(savedAutoPrint === "true");
-
-    const savedThreshold = localStorage.getItem("pref_stock_threshold");
-    if (savedThreshold !== null) setStockThreshold(Number(savedThreshold));
-
-    const savedTax = localStorage.getItem("pref_default_tax");
-    if (savedTax !== null) setDefaultTax(Number(savedTax));
-  }, []);
-
-  // Sync theme when isDarkMode changes
-  const handleThemeChange = (checked: boolean) => {
-    setIsDarkMode(checked);
-    document.documentElement.classList.toggle("dark", checked);
-    localStorage.setItem("theme", checked ? "dark" : "light");
-    // Dispatch event to sync ThemeToggle component
-    window.dispatchEvent(new Event("theme-change"));
-  };
 
   const handleSave = async () => {
     setIsSaving(true);
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
     try {
-      localStorage.setItem("pref_auto_logout", String(autoLogout));
-      localStorage.setItem("pref_auto_print", String(autoPrint));
-      localStorage.setItem("pref_stock_threshold", String(stockThreshold));
-      localStorage.setItem("pref_default_tax", String(defaultTax));
-
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      await save();
       toast({
         title: "تم حفظ التفضيلات",
         description: "تم تحديث إعدادات وتفضيلات النظام بنجاح.",
@@ -77,7 +40,7 @@ export default function SystemPreferences() {
       <div className="flex items-center justify-between gap-4">
         <div className="space-y-1 text-right flex-1">
           <Label className="flex items-center gap-1.5 font-semibold">
-            {isDarkMode ? <Moon className="w-4 h-4 text-primary" /> : <Sun className="w-4 h-4 text-primary" />}
+            {preferences.isDarkMode ? <Moon className="w-4 h-4 text-primary" /> : <Sun className="w-4 h-4 text-primary" />}
             الوضع الداكن (Dark Mode)
           </Label>
           <p className="text-xs text-muted-foreground">
@@ -85,8 +48,8 @@ export default function SystemPreferences() {
           </p>
         </div>
         <Switch 
-          checked={isDarkMode} 
-          onCheckedChange={handleThemeChange} 
+          checked={preferences.isDarkMode} 
+          onCheckedChange={setTheme} 
         />
       </div>
 
@@ -103,8 +66,8 @@ export default function SystemPreferences() {
           </p>
         </div>
         <Switch 
-          checked={autoLogout} 
-          onCheckedChange={setAutoLogout} 
+          checked={preferences.autoLogout} 
+          onCheckedChange={(v) => setPreference("autoLogout", v)} 
         />
       </div>
 
@@ -121,8 +84,8 @@ export default function SystemPreferences() {
           </p>
         </div>
         <Switch 
-          checked={autoPrint} 
-          onCheckedChange={setAutoPrint} 
+          checked={preferences.autoPrint} 
+          onCheckedChange={(v) => setPreference("autoPrint", v)} 
         />
       </div>
 
@@ -141,8 +104,8 @@ export default function SystemPreferences() {
               type="number"
               min={1}
               max={1000}
-              value={stockThreshold}
-              onChange={(e) => setStockThreshold(Number(e.target.value))}
+              value={preferences.stockThreshold}
+              onChange={(e) => setPreference("stockThreshold", Number(e.target.value))}
               className="text-right focus-visible:ring-primary/30"
             />
             <span className="text-sm text-muted-foreground min-w-[40px]">عبوات</span>
@@ -162,8 +125,8 @@ export default function SystemPreferences() {
               type="number"
               min={0}
               max={100}
-              value={defaultTax}
-              onChange={(e) => setDefaultTax(Number(e.target.value))}
+              value={preferences.defaultTax}
+              onChange={(e) => setPreference("defaultTax", Number(e.target.value))}
               className="text-right focus-visible:ring-primary/30"
             />
             <span className="text-sm text-muted-foreground min-w-[40px]">%</span>

@@ -11,7 +11,7 @@ export default function ApiSettings() {
   const { toast } = useToast();
   const [isTesting, setIsTesting] = useState(false);
 
-  const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5084";
+  const baseURL = import.meta.env.VITE_API_BASE_URL;
 
   const { 
     data: healthResponse, 
@@ -28,7 +28,7 @@ export default function ApiSettings() {
       if (res.data && !res.isError) {
         toast({
           title: "تم الاتصال بنجاح",
-          description: `تم اختبار الاتصال بالخادم. الحالة: ${res.data.status || "Ok"}، قاعدة البيانات: ${res.data.databaseStatus || "متصلة"}`,
+          description: `تم اختبار الاتصال بالخادم. الحالة: ${res.data.status || "Ok"}، قاعدة البيانات: ${res.data.database || "متصلة"}`,
         });
       } else {
         throw new Error("Offline");
@@ -52,7 +52,7 @@ export default function ApiSettings() {
 
   const getDatabaseStatusBadge = () => {
     if (isLoading) return <span className="text-muted-foreground text-sm">جاري الفحص...</span>;
-    if (isError || healthResponse?.databaseStatus !== "connected") {
+    if (isError || healthResponse?.database !== "connected") {
       return (
         <span className="text-red-500 text-sm font-semibold flex items-center gap-1 justify-end">
           <Database className="w-4 h-4" /> غير متصلة

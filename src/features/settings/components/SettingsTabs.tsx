@@ -1,7 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/ui/tabs";
 import GeneralSettings from "./GeneralSettings";
 import UsersSettings from "./UsersSettings";
-import BackupSettings from "./BackupSettings";
 import { Landmark, Users, Database } from "lucide-react";
 
 export default function SettingsTabs() {
@@ -37,7 +36,7 @@ export default function SettingsTabs() {
       </TabsContent>
 
       <TabsContent value="backup" className="animate-in fade-in slide-in-from-bottom-2 duration-300 outline-none">
-        <BackupSettings />
+        {/* <BackupSettings /> */}
       </TabsContent>
     </Tabs>
   );

@@ -2,7 +2,7 @@ export interface HealthCheckDto {
   status: string;
   timestamp: string;
   version?: string;
-  databaseStatus: string;
+  database: string;
 }
 
 export interface BackupResultDto {

@@ -11,5 +11,5 @@ export * from "./expenses";
 export * from "./payments";
 export * from "./invoices";
 export * from "./reports";
-export * from "./users";
-export * from "./system";
+export * from "../../features/settings/api/users";
+export * from "../../features/settings/api/system";

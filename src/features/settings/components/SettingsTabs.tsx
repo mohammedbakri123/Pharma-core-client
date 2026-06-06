@@ -7,12 +7,12 @@ import { Landmark, Users, Database } from "lucide-react";
 export default function SettingsTabs() {
   return (
     <Tabs defaultValue="general" className="w-full" dir="rtl">
-      <TabsList className="grid w-full grid-cols-3 max-w-lg bg-muted/40 p-1.5 rounded-xl border border-border/40 mb-6">
+      <TabsList className="grid w-full grid-cols-3 max-w-lg bg-muted/40 p-1.5 rounded-xl border border-border/40 mb-6 h-auto">
         <TabsTrigger 
           value="general" 
           className="rounded-lg py-2.5 text-sm font-bold flex items-center justify-center gap-1.5 transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm cursor-pointer"
         >
-          <Landmark className="w-4 h-4" /> عام والنظام
+          <Landmark className="w-4 h-4" /> عام 
         </TabsTrigger>
         <TabsTrigger 
           value="users" 

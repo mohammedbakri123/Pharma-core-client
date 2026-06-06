@@ -1,4 +1,4 @@
-import api from "./client";
+import api from "../../../core/api/client";
 import type { HealthCheckDto, BackupResultDto } from "@/types";
 
 export const getHealth = () =>

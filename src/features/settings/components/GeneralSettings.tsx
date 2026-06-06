@@ -6,36 +6,18 @@ import {
   CardDescription,
 } from "@/ui/card";
 
-import PharmacyInfoForm from "./PharmacyInfoForm";
-import SystemPreferences from "./SystemPreferences";
+
 import ApiSettings from "./ApiSettings";
 
 export default function GeneralSettings() {
   return (
     <div className="space-y-6">
       {/* Pharmacy Info */}
-      <Card>
-        <CardHeader className="text-right">
-          <CardTitle>معلومات الصيدلية</CardTitle>
-          <CardDescription>
-            المعلومات العامة لفرع الصيدلية الخاص بك.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <PharmacyInfoForm />
-        </CardContent>
-      </Card>
+      {/* TODO: do this some day */}
 
       {/* System Preferences */}
-      <Card>
-        <CardHeader className="text-right">
-          <CardTitle>تفضيلات النظام</CardTitle>
-          <CardDescription>.ERP تكوين سلوك نظام</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <SystemPreferences />
-        </CardContent>
-      </Card>
+           {/* TODO: do this some day */}
+
 
       {/* API */}
       <Card>

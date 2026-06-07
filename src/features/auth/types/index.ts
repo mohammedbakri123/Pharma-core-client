@@ -26,6 +26,6 @@ export interface LoginResponse {
 }
 
 export enum UserRole {
-  Admin = 1,
-  Cashier = 2,
+  Admin = "admin",
+  Cashier = "cashier",
 }

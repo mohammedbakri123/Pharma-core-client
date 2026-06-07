@@ -23,13 +23,7 @@ export interface BackupHistoryItem {
   status: "success" | "restored";
 }
 
-export interface NewUserPayload {
-  userName: string;
-  password: string;
-  phoneNumber?: string;
-  address?: string;
-  role: number;
-}
+
 
 export interface UpdateUserPayload {
   userName?: string;

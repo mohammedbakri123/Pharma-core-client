@@ -9,9 +9,7 @@ import { UserRole } from "@features/auth/types";
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
+
   CardFooter,
 } from "@/ui/card";
 import { Button } from "@/ui/button";
@@ -31,7 +29,7 @@ import {
   MapPin,
   RefreshCw,
   MoreHorizontal,
-  Edit,
+  Edit2,
 } from "lucide-react";
 import { UserDto } from "@/types";
 import { DataTable, type Column } from "@/ui/data-table";
@@ -185,6 +183,7 @@ export default function UsersSettings() {
   };
 
   const getRoleBadge = (role: UserRole) => {
+    
     if (role === UserRole.Admin)
       return (
         <Badge className="bg-primary hover:bg-primary/95 text-white">
@@ -251,7 +250,7 @@ export default function UsersSettings() {
              
               className="text-muted-foreground  focus:bg-muted/10 cursor-pointer"
             >
-              <Edit/>
+              <Edit2/>
               تعديل المستخدم
             </DropdownMenuItem>
             <DropdownMenuItem

@@ -1,14 +1,12 @@
 import { usersApi } from './../api/users';
 import { useAuthStore } from "@features/auth/store/authStore";
-import type {
-  NewUserPayload,
 
-} from "../types/settings";
 import {
   useMutation,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import { CreateUserRequest } from '@/types';
 
 export function useUsersList(page = 1, limit = 10, search?: string) {
   return useQuery({
@@ -22,7 +20,7 @@ export function useUsersList(page = 1, limit = 10, search?: string) {
 
 export function useCreateUser() {
   return useMutation({
-    mutationFn: (data: NewUserPayload) => usersApi.create(data),
+    mutationFn: (data: CreateUserRequest) => usersApi.create(data),
   });
 }
 

@@ -3,7 +3,13 @@ import { CardHeader,CardTitle ,CardDescription} from "@/ui/card";
 import { Input } from "@/ui/input";
 import { RefreshCw, Search, Users } from "lucide-react";
 
-export default function UserSettingsHeader({searchQuery,setSearchQuery,refetch}) {
+interface UserSettingsHeaderProps {
+  searchQuery: string;
+  setSearchQuery: (value: string) => void;
+  refetch: () => void;
+}
+
+export default function UserSettingsHeader({searchQuery,setSearchQuery,refetch}: UserSettingsHeaderProps) {
   return (
     <CardHeader className="text-right border-b border-border/40 bg-card">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">

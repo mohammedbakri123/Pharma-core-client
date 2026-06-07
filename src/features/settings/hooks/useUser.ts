@@ -10,11 +10,11 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
-export function useUsersList() {
+export function useUsersList(page = 1, limit = 10, search?: string) {
   return useQuery({
-    queryKey: ["users-list"],
+    queryKey: ["users-list", page, limit, search],
     queryFn: async () => {
-      const res = await usersApi.getAll({ limit: 100 });
+      const res = await usersApi.getAll({ page, limit, search: search || undefined });
       return res.data;
     },
   });

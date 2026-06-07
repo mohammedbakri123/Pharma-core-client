@@ -7,8 +7,8 @@ export interface UserDto {
   address: string | null;
   role: UserRole;
   createdAt: string | null;
-  isDeleted: boolean;
-  deletedAt: string | null;
+  // isDeleted: boolean;
+  // deletedAt: string | null;
 }
 
 export interface UserListResponse {

@@ -1,17 +1,9 @@
-import { useState } from "react";
 import {
   useMutation,
   useQuery,
-  useQueryClient,
 } from "@tanstack/react-query";
-import { settingsApi } from "../api";
-import { useAuthStore } from "@features/auth/store/authStore";
-import type {
-  BackupHistoryItem,
-  NewUserPayload,
-  PharmacyInfo,
-  SystemPreferences,
-} from "../types";
+import { settingsApi } from "../api/system";
+
 import type { HealthCheckDto, BackupResultDto } from "@/types";
 
 const PHARMACY_INFO_KEY = "pharmacy_info";
@@ -44,33 +36,4 @@ export function useRestoreDatabase() {
   });
 }
 
-export function useUsersList() {
-  return useQuery({
-    queryKey: ["users-list"],
-    queryFn: async () => {
-      const res = await settingsApi.getUsers({ limit: 100 });
-      return res.data;
-    },
-  });
-}
 
-export function useCreateUser() {
-  return useMutation({
-    mutationFn: (data: NewUserPayload) => settingsApi.createUser(data),
-  });
-}
-
-export function useDeleteUser() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (userId: number) => settingsApi.deleteUser(userId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users-list"] });
-    },
-  });
-}
-
-
-export function useCurrentUser() {
-  return useAuthStore((state) => state.user);
-}

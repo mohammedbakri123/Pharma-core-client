@@ -15,12 +15,11 @@
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
     "moduleResolution": "bundler",
-    "baseUrl": ".",
     "types": ["node", "vite/client"],
   "paths": {
-    "@/*": ["src/core/*"],
-    "@features/*": ["src/features/*"],
-    "@pages/*": ["src/core/pages/*"]
+    "@/*": ["./src/core/*"],
+    "@features/*": ["./src/features/*"],
+    "@pages/*": ["./src/core/pages/*"]
   }
   }
 }

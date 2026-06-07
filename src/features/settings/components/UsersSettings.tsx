@@ -4,7 +4,7 @@ import {
   useCreateUser,
   useDeleteUser,
   useCurrentUser,
-} from "../hooks/useSettings";
+} from "../hooks/useUser";
 import { UserRole } from "@features/auth/types";
 import { 
   Card, 
@@ -33,6 +33,7 @@ import {
   UserX,
   X
 } from "lucide-react";
+import { UserDto } from "@/types";
 
 export default function UsersSettings() {
   const { toast } = useToast();
@@ -131,13 +132,13 @@ export default function UsersSettings() {
     }
   };
 
-  const filteredUsers = users.filter((u) => 
+  const filteredUsers = users.filter((u : UserDto) => 
     u.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     (u.phoneNumber && u.phoneNumber.includes(searchQuery))
   );
 
-  const getRoleBadge = (role: number) => {
-    if (role === 1) return <Badge className="bg-primary hover:bg-primary/95 text-white">مدير النظام</Badge>;
+  const getRoleBadge = (role: UserRole) => {
+    if (role === UserRole.Admin) return <Badge className="bg-primary hover:bg-primary/95 text-white">مدير النظام</Badge>;
     return <Badge variant="secondary">صيدلاني / كاشير</Badge>;
   };
 
@@ -358,7 +359,7 @@ export default function UsersSettings() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/40">
-                {filteredUsers.map((u) => (
+                {filteredUsers.map((u: UserDto) => (
                   <tr key={u.userId} className="hover:bg-muted/20 transition-colors">
                     <td className="py-3 px-4 font-semibold text-foreground flex items-center gap-2 justify-end">
                       {u.userName}

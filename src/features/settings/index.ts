@@ -21,4 +21,4 @@ export {
   formatBackupName,
 } from "./hooks/useSettings";
 export * from "./api";
-export * from "./types";
+export * from "./types/settings";

@@ -7,6 +7,6 @@ export * from "./purchase";
 export * from "./salesReturn";
 export * from "./expense";
 export * from "./payment";
-export * from "./user";
+export * from "../../features/settings/types/user";
 export * from "./inventory";
 export * from "./system";

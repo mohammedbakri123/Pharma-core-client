@@ -30,6 +30,8 @@ import {
   Phone,
   MapPin,
   RefreshCw,
+  MoreHorizontal,
+  Edit,
 } from "lucide-react";
 import { UserDto } from "@/types";
 import { DataTable, type Column } from "@/ui/data-table";
@@ -43,6 +45,12 @@ import {
   DialogFooter,
 } from "@/ui/dialog";
 import { ConfirmDialog } from "@/ui/confirm-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/ui/dropdown-menu";
 import UserSettingsHeader from "./UserSettingsHeader";
 
 const PAGE_LIMIT = 10;
@@ -227,18 +235,38 @@ export default function UsersSettings() {
       headerClassName: "text-center",
       className: "text-center",
       render: (u) => (
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => handleDeleteUser(u.userId, u.userName)}
-          disabled={
-            u.userId === currentUser?.userId || deleteUserMutation.isPending
-          }
-          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-8 w-8 transition-colors shrink-0"
-          title="حذف المستخدم"
-        >
-          <Trash2 className="w-4 h-4" />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground h-8 w-8 shrink-0"
+            >
+              <MoreHorizontal className="w-4 h-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="min-w-40">
+              <DropdownMenuItem
+              onClick={() => {}}
+             
+              className="text-muted-foreground  focus:bg-muted/10 cursor-pointer"
+            >
+              <Edit/>
+              تعديل المستخدم
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleDeleteUser(u.userId, u.userName)}
+              disabled={
+                u.userId === currentUser?.userId || deleteUserMutation.isPending
+              }
+              className="text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer"
+            >
+              <Trash2 className="w-4 h-4" />
+              حذف المستخدم
+            </DropdownMenuItem>
+
+          </DropdownMenuContent>
+        </DropdownMenu>
       ),
     },
   ];

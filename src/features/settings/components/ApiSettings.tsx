@@ -116,7 +116,7 @@ export default function ApiSettings() {
         {/* Database Status */}
         <div className="space-y-2">
           <Label className="flex items-center gap-1.5 justify-end">
-            <Database className="w-4 h-4 text-primary" /> قاعدة بيانات SQL Server
+            <Database className="w-4 h-4 text-primary" /> قاعدة بيانات PostgreSQL
           </Label>
           <div className="h-10 flex items-center justify-between border border-border/40 px-3 bg-background rounded-md">
             <span>{getDatabaseStatusBadge()}</span>

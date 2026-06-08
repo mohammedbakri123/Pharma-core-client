@@ -1,11 +1,9 @@
-import { cn } from "@/utils/utils";
 import {
   LayoutDashboard,
   ShoppingCart,
   Package,
   Users,
   Settings,
-  TrendingUp,
   FileText,
 } from "lucide-react";
 import logo from "@assets/generated_images/minimalist_pharmacy_logo_icon.png";
@@ -17,7 +15,6 @@ const sidebarItems = [
   { icon: ShoppingCart, label: "نقطة البيع", to: "/pos" },
   { icon: Package, label: "المخزون", to: "/inventory" },
   { icon: Users, label: "العملاء", to: "/customers" },
-  { icon: TrendingUp, label: "التقارير", to: "/reports" },
   { icon: FileText, label: "الفواتير", to: "/invoices" },
   { icon: Settings, label: "الإعدادات", to: "/settings" },
 ];

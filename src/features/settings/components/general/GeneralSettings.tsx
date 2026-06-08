@@ -6,7 +6,6 @@ import {
   CardDescription,
 } from "@/ui/card";
 
-
 import ApiSettings from "./ApiSettings";
 
 export default function GeneralSettings() {
@@ -16,8 +15,7 @@ export default function GeneralSettings() {
       {/* TODO: do this some day */}
 
       {/* System Preferences */}
-           {/* TODO: do this some day */}
-
+      {/* TODO: do this some day */}
 
       {/* API */}
       <Card>

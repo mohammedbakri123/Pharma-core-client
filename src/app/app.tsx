@@ -7,7 +7,6 @@ import SettingsPage from "@/pages/SettingsPage";
 import Invoices from "@features/invoices/Invoices";
 import DashboardPage from "@/pages/DashboardPage";
 import InventoryPage from "@/pages/InventoryPage";
-import Reports from "@features/reports/Reports";
 import NotFound from "@/pages/NotFoundPage";
 import LoginPage from "@/pages/LoginPage";
 import { Layout } from "@/layout/layout";
@@ -44,11 +43,9 @@ function App() {
             <Route path="inventory" element={<InventoryPage />} />
             <Route path="pos" element={<POS />} />
             <Route path="customers" element={<CustomersPage />} />
-            <Route path="reports" element={<Reports />} />
             <Route path="invoices" element={<Invoices />} />
-            <Route path="settings" element={<SettingsPage />} >
-                        <Route path="profile" element={<ProfilePage />} />
-
+            <Route path="settings" element={<SettingsPage />}>
+              <Route path="profile" element={<ProfilePage />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Route>

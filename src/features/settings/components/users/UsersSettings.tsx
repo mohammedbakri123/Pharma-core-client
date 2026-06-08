@@ -1,5 +1,10 @@
 import React from "react";
+import UserHeader from "./UserHeader";
 
 export default function UsersSettings() {
-  return <div>UsersSettings</div>;
+  return (
+    <div>
+      <UserHeader />
+    </div>
+  );
 }

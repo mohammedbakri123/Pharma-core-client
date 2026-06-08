@@ -1,19 +1,15 @@
-import { usersApi } from './../api/users';
+import { usersApi } from "./../api/users";
 import { useAuthStore } from "@features/auth/store/authStore";
 
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { CreateUserRequest } from '@/types';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { CreateUserRequest, GetUsersRequest } from "@/types";
 
-export function useUsersList(page = 1, limit = 10, search?: string) {
+export function useUsersList(params: GetUsersRequest) {
   return useQuery({
-    queryKey: ["users-list", page, limit, search],
+    queryKey: ["users-list", params],
     queryFn: async () => {
-      const res = await usersApi.getAll({ page, limit, search: search || undefined });
-      return res.data;
+      const response = await usersApi.getAll(params);
+      return response.data;
     },
   });
 }
@@ -33,7 +29,6 @@ export function useDeleteUser() {
     },
   });
 }
-
 
 export function useCurrentUser() {
   return useAuthStore((state) => state.user);

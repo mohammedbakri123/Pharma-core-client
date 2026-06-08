@@ -35,3 +35,10 @@ export interface UpdateUserRequest {
   address?: string;
   role?: UserRole;
 }
+
+export interface GetUsersRequest {
+  page?: number;
+  limit?: number;
+  role?: UserRole;
+  search?: string;
+}

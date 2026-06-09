@@ -23,11 +23,10 @@ export default function UserHeader() {
 
       if (searchInput.trim()) {
         params.set("search", searchInput);
+        params.set("page", "1");
       } else {
         params.delete("search");
       }
-
-      params.set("page", "1");
 
       // Avoid unnecessary URL updates
       if (params.toString() !== searchParams.toString()) {

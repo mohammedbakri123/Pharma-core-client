@@ -9,11 +9,11 @@ import { cn } from "@/utils/utils";
 import { useSearchParams } from "react-router-dom";
 
 interface PaginationProps {
-  total: number;
-  limit: number;
+  total: number | undefined;
+  limit: number | undefined;
 }
 
-export function Pagination({ total, limit }: PaginationProps) {
+export function Pagination({ total = 1, limit = 1 }: PaginationProps) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const page = Number(searchParams.get("page") ?? "1");

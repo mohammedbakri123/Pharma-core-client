@@ -8,7 +8,8 @@ import {
   TableRow,
 } from "./table";
 import { cn } from "@/utils/utils";
-import { RefreshCw, SearchX } from "lucide-react";
+import { SearchX } from "lucide-react";
+import { Spinner } from "./spinner";
 
 export interface Column<T> {
   key: string;
@@ -49,7 +50,7 @@ export function DataTable<T>({
   if (isLoading) {
     return (
       <div className="py-10 text-center flex flex-col items-center justify-center gap-2">
-        <RefreshCw className="w-6 h-6 animate-spin text-primary" />
+        <Spinner size={"lg"} />
         <span className="text-sm text-muted-foreground">جاري التحميل...</span>
       </div>
     );
@@ -113,7 +114,7 @@ export function DataTable<T>({
                     ? col.render(item, index)
                     : col.cell
                       ? col.cell(item, index)
-                      : (item as any)[col.key] ?? "-"}
+                      : ((item as any)[col.key] ?? "-")}
                 </TableCell>
               ))}
             </TableRow>

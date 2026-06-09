@@ -2,7 +2,7 @@ import { usersApi } from "./../api/users";
 import { useAuthStore } from "@features/auth/store/authStore";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CreateUserRequest, GetUsersRequest } from "@/types";
+import { CreateUserRequest, GetUsersRequest, UpdateUserRequest } from "@/types";
 
 export function useUsersList(params: GetUsersRequest) {
   return useQuery({
@@ -15,8 +15,24 @@ export function useUsersList(params: GetUsersRequest) {
 }
 
 export function useCreateUser() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (data: CreateUserRequest) => usersApi.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users-list"] });
+    },
+  });
+}
+export function useUpdateUser() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: UpdateUserRequest }) =>
+      usersApi.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users-list"] });
+    },
   });
 }
 

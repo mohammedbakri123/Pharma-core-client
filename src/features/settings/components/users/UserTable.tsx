@@ -21,10 +21,10 @@ import {
   DialogTitle,
   DialogHeader,
   DialogDescription,
-  DialogTrigger,
 } from "@/ui/dialog";
 import CreateEditUserForm from "./CreateEditUserForm";
 import { useState } from "react";
+import DeleteUserDialog from "./DeleteUserDialog";
 
 export default function UserTable() {
   const currentUser = useCurrentUser();
@@ -32,6 +32,7 @@ export default function UserTable() {
   const [searchParams] = useSearchParams();
 
   const [editingUser, setEditingUser] = useState<UserDto | null>(null);
+  const [userToDelete, setUserToDelete] = useState<UserDto | null>(null);
 
   const filters: GetUsersRequest = {
     page: Number(searchParams.get("page") ?? "1"),
@@ -110,8 +111,8 @@ export default function UserTable() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-40">
             <DropdownMenuItem
-              onClick={(e) => {
-                // e.preventDefault();
+              onSelect={(e) => {
+                e.preventDefault();
                 setEditingUser(u);
               }}
             >
@@ -119,8 +120,11 @@ export default function UserTable() {
               تعديل المستخدم
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => {}}
               disabled={u.userId === currentUser?.userId}
+              onSelect={(e) => {
+                e.preventDefault();
+                setUserToDelete(u);
+              }}
               className="text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer"
             >
               <Trash2 className="w-4 h-4" />
@@ -160,10 +164,16 @@ export default function UserTable() {
           <DialogHeader>
             <DialogTitle>تعديل المستخدم</DialogTitle>
           </DialogHeader>
-          <h1>hi</h1>
-          {/* {editingUser && <CreateEditUserForm userToEdit={editingUser} />} */}
+          {editingUser && <CreateEditUserForm userToEdit={editingUser} />}
         </DialogContent>
       </Dialog>
+      <DeleteUserDialog
+        user={userToDelete}
+        open={!!userToDelete}
+        onOpenChange={(open) => {
+          if (!open) setUserToDelete(null);
+        }}
+      />
     </CardContent>
   );
 }

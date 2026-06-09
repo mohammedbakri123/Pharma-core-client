@@ -8,11 +8,12 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 interface CreateEditUserFormProps {
   userToEdit?: UserDto;
-  onCloseDialog?: () => void;
+  onSubmit: (data: CreateUserRequest) => Promise<void>;
 }
 
 export default function CreateEditUserForm({
   userToEdit,
+  onSubmit,
 }: CreateEditUserFormProps) {
   const isEditMode = !!userToEdit;
 
@@ -30,21 +31,16 @@ export default function CreateEditUserForm({
     },
   });
 
-  const onSubmit: SubmitHandler<CreateUserRequest> = async (data) => {
-    console.log(data);
-
-    // Create:
-    // createUserMutation.mutate(data);
-
-    // Edit:
-    // updateUserMutation.mutate({
-    //   id: userToEdit!.id,
-    //   data,
-    // });
+  const handleFormSubmit: SubmitHandler<CreateUserRequest> = async (data) => {
+    await onSubmit(data);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-right">
+    <form
+      onSubmit={handleSubmit(handleFormSubmit)}
+      className="space-y-4 text-right"
+    >
+      {" "}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="userName">اسم المستخدم</Label>
@@ -106,7 +102,6 @@ export default function CreateEditUserForm({
           )}
         </div>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="phoneNumber">رقم الهاتف</Label>
@@ -138,7 +133,6 @@ export default function CreateEditUserForm({
           </div>
         </div>
       </div>
-
       <div className="space-y-2">
         <Label>صلاحية النظام</Label>
 
@@ -172,7 +166,6 @@ export default function CreateEditUserForm({
           <p className="text-sm text-destructive">{errors.role.message}</p>
         )}
       </div>
-
       <Button type="submit" disabled={isSubmitting}>
         {isEditMode ? "حفظ التعديلات" : "إضافة مستخدم"}
       </Button>

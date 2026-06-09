@@ -15,11 +15,23 @@ import { Edit2, MoreHorizontal, Trash, Trash2 } from "lucide-react";
 import { CardContent } from "@/ui/card";
 import { Pagination } from "@/ui/pagination";
 import { useSearchParams } from "react-router-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogHeader,
+  DialogDescription,
+  DialogTrigger,
+} from "@/ui/dialog";
+import CreateEditUserForm from "./CreateEditUserForm";
+import { useState } from "react";
 
 export default function UserTable() {
   const currentUser = useCurrentUser();
 
   const [searchParams] = useSearchParams();
+
+  const [editingUser, setEditingUser] = useState<UserDto | null>(null);
 
   const filters: GetUsersRequest = {
     page: Number(searchParams.get("page") ?? "1"),
@@ -86,7 +98,7 @@ export default function UserTable() {
       headerClassName: "text-center",
       className: "text-center",
       render: (u) => (
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
@@ -98,8 +110,10 @@ export default function UserTable() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-40">
             <DropdownMenuItem
-              onClick={() => {}}
-              className="text-muted-foreground  focus:bg-muted/10 cursor-pointer"
+              onClick={(e) => {
+                // e.preventDefault();
+                setEditingUser(u);
+              }}
             >
               <Edit2 />
               تعديل المستخدم
@@ -136,6 +150,20 @@ export default function UserTable() {
           total={users?.pagination.total}
         />
       }
+      <Dialog
+        open={!!editingUser}
+        onOpenChange={(open) => {
+          if (!open) setEditingUser(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>تعديل المستخدم</DialogTitle>
+          </DialogHeader>
+          <h1>hi</h1>
+          {/* {editingUser && <CreateEditUserForm userToEdit={editingUser} />} */}
+        </DialogContent>
+      </Dialog>
     </CardContent>
   );
 }

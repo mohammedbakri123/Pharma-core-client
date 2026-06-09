@@ -9,15 +9,14 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children, role }: ProtectedRouteProps) {
   const { isAuthenticated, user } = useAuth();
-  console.log(user);
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
- 
   if (role && user?.role !== role) {
-    return <Navigate to="/" replace />;}
+    return <Navigate to="/" replace />;
+  }
 
   return <>{children}</>;
 }

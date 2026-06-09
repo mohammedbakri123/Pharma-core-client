@@ -76,6 +76,7 @@ export function LoginForm({ onSubmit, isPending, error }: LoginFormProps) {
           <KeyRound className="w-3.5 h-3.5" />
           تعبئة بيانات الحساب التجريبي (admin)
         </button>
+        LoginForm
       </div>
     </div>
   );

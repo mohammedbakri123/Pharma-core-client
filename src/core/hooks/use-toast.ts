@@ -87,8 +87,6 @@ export const reducer = (state: State, action: Action): State => {
     case "DISMISS_TOAST": {
       const { toastId } = action;
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
       if (toastId) {
         addToRemoveQueue(toastId);
       } else {
@@ -166,17 +164,19 @@ function toast({ ...props }: Toast) {
 }
 
 function useToast() {
-  const [state, setState] = React.useState<State>(memoryState);
-
-  React.useEffect(() => {
-    listeners.push(setState);
-    return () => {
-      const index = listeners.indexOf(setState);
-      if (index > -1) {
-        listeners.splice(index, 1);
-      }
-    };
-  }, [state]);
+  const state = React.useSyncExternalStore(
+    (onStoreChange) => {
+      listeners.push(onStoreChange);
+      return () => {
+        const index = listeners.indexOf(onStoreChange);
+        if (index > -1) {
+          listeners.splice(index, 1);
+        }
+      };
+    },
+    () => memoryState,
+    () => memoryState
+  );
 
   return {
     ...state,

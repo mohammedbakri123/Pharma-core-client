@@ -8,7 +8,10 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const loginMutation = useLogin();
 
-  const onSubmit = (data: Parameters<typeof loginMutation.mutate>[0], e?: React.FormEvent) => {
+  const onSubmit = (
+    data: Parameters<typeof loginMutation.mutate>[0],
+    e?: React.FormEvent,
+  ) => {
     if (e) e.preventDefault();
     const t = toast({
       title: "جاري تسجيل الدخول...",
@@ -20,6 +23,7 @@ export default function LoginPage() {
           id: t.id,
           title: "تم تسجيل الدخول بنجاح",
           description: "مرحباً بك",
+          variant: "success",
         });
         navigate("/");
       },
@@ -43,7 +47,9 @@ export default function LoginPage() {
       <LoginForm
         onSubmit={onSubmit}
         isPending={loginMutation.isPending}
-        error={loginMutation.error ? new Error(String(loginMutation.error)) : null}
+        error={
+          loginMutation.error ? new Error(String(loginMutation.error)) : null
+        }
       />
     </AuthLayout>
   );

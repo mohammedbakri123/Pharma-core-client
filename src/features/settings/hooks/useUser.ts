@@ -28,8 +28,13 @@ export function useUpdateUser() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: UpdateUserRequest }) =>
-      usersApi.update(id, data),
+    mutationFn: ({ id, data }: { id: number; data: UpdateUserRequest }) => {
+      const cleaned = { ...data };
+      // backend accept password as 6 number or null, so if it is empty "" i set it to null
+
+      if (!cleaned.password) delete cleaned.password;
+      return usersApi.update(id, cleaned);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users-list"] });
     },

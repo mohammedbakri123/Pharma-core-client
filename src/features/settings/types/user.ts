@@ -20,6 +20,14 @@ export interface UserListResponse {
   };
 }
 
+export interface UserFormData {
+  userName: string;
+  password?: string;
+  phoneNumber?: string;
+  address?: string;
+  role?: UserRole;
+}
+
 export interface CreateUserRequest {
   userName: string;
   password: string;

@@ -1,5 +1,5 @@
 import { UserRole } from "@features/auth";
-import { CreateUserRequest, UserDto } from "@/types";
+import { UserFormData, UserDto } from "@/types";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
@@ -8,7 +8,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 interface CreateEditUserFormProps {
   userToEdit?: UserDto;
-  onSubmit: (data: CreateUserRequest) => Promise<void>;
+  onSubmit: (data: UserFormData) => Promise<void>;
 }
 
 export default function CreateEditUserForm({
@@ -21,17 +21,17 @@ export default function CreateEditUserForm({
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<CreateUserRequest>({
+  } = useForm<UserFormData>({
     defaultValues: {
       userName: userToEdit?.userName ?? "",
       phoneNumber: userToEdit?.phoneNumber ?? "",
       address: userToEdit?.address ?? "",
-      role: userToEdit?.role,
+      role: userToEdit?.role ?? UserRole.Cashier,
       password: "",
     },
   });
 
-  const handleFormSubmit: SubmitHandler<CreateUserRequest> = async (data) => {
+  const handleFormSubmit: SubmitHandler<UserFormData> = async (data) => {
     await onSubmit(data);
   };
 
@@ -82,8 +82,10 @@ export default function CreateEditUserForm({
               className="pr-10 text-right bg-background"
               {...register("password", {
                 validate: (value) => {
-                  if (isEditMode && !value) return true;
-
+                  if (!value) {
+                    if (isEditMode) return true;
+                    return "كلمة المرور مطلوبة";
+                  }
                   return (
                     value.length >= 6 ||
                     "كلمة المرور يجب أن تكون 6 أحرف على الأقل"

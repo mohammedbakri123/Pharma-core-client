@@ -1,7 +1,11 @@
 import { Column, DataTable } from "@/ui/data-table";
 import { Badge } from "@/ui/badge";
 
-import { useCurrentUser, useUsersList } from "@features/settings/hooks/useUser";
+import {
+  useCurrentUser,
+  useUpdateUser,
+  useUsersList,
+} from "@features/settings/hooks/useUser";
 import { GetUsersRequest, UserDto } from "@features/settings/types/user";
 import { UserRole } from "@features/auth/types";
 import {
@@ -25,6 +29,7 @@ import {
 import CreateEditUserForm from "./CreateEditUserForm";
 import { useState } from "react";
 import DeleteUserDialog from "./DeleteUserDialog";
+import { useToast } from "@/hooks/use-toast";
 
 export default function UserTable() {
   const currentUser = useCurrentUser();
@@ -33,6 +38,10 @@ export default function UserTable() {
 
   const [editingUser, setEditingUser] = useState<UserDto | null>(null);
   const [userToDelete, setUserToDelete] = useState<UserDto | null>(null);
+
+  const { mutateAsync: updateUser } = useUpdateUser();
+  const [open, setOpen] = useState(false);
+  const { toast } = useToast();
 
   const filters: GetUsersRequest = {
     page: Number(searchParams.get("page") ?? "1"),
@@ -164,7 +173,31 @@ export default function UserTable() {
           <DialogHeader>
             <DialogTitle>تعديل المستخدم</DialogTitle>
           </DialogHeader>
-          {editingUser && <CreateEditUserForm userToEdit={editingUser} />}
+          {editingUser && (
+            <CreateEditUserForm
+              onSubmit={async (data) => {
+                try {
+                  await updateUser({ id: editingUser.userId, data });
+                  toast({
+                    title: "تم تحديث المستخدم",
+                    description: "تم تحديث المستخدم بنجاح.",
+                    variant: "success",
+                  });
+                  setEditingUser(null);
+                } catch (error) {
+                  toast({
+                    variant: "destructive",
+                    title: "فشل تحديث المستخدم",
+                    description:
+                      error instanceof Error
+                        ? error.message
+                        : "حدث خطأ غير متوقع.",
+                  });
+                }
+              }}
+              userToEdit={editingUser}
+            />
+          )}
         </DialogContent>
       </Dialog>
       <DeleteUserDialog

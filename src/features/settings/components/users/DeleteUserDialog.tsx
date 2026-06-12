@@ -7,6 +7,7 @@ import {
   DialogDescription,
 } from "@/ui/dialog";
 import { Button } from "@/ui/button";
+import { useDeleteUser } from "@features/settings/hooks/useUser";
 
 interface DeleteUserDialogProps {
   user: UserDto | null;
@@ -18,12 +19,17 @@ export default function DeleteUserDialog({
   open,
   onOpenChange,
 }: DeleteUserDialogProps) {
+  const { mutate: deleteUser, isPending } = useDeleteUser();
+
   const handleDelete = async () => {
     if (!user) return;
 
     // mutation
-
-    onOpenChange(false);
+    deleteUser(user.userId, {
+      onSuccess: () => {
+        onOpenChange(false);
+      },
+    });
   };
 
   return (
@@ -42,8 +48,12 @@ export default function DeleteUserDialog({
             إلغاء
           </Button>
 
-          <Button variant="destructive" onClick={handleDelete}>
-            حذف
+          <Button
+            variant="destructive"
+            onClick={handleDelete}
+            disabled={isPending}
+          >
+            {isPending ? "جارٍ الحذف..." : "حذف"}
           </Button>
         </div>
       </DialogContent>

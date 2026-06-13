@@ -1,14 +1,25 @@
 import { MedicineApi } from "@/api";
-import { GetMedicinesRequest } from "@/types";
-import { useQuery } from "@tanstack/react-query";
+import { CreateMedicineRequest, GetMedicinesRequest } from "@/types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useMedicineList(params: GetMedicinesRequest) {
-  console.log(params);
   return useQuery({
-    queryKey: ["users-list", params],
+    queryKey: ["medicines-list", params],
     queryFn: async () => {
       const response = await MedicineApi.getMedicines(params);
       return response.data;
+    },
+  });
+}
+
+export function useCreateMedicine() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreateMedicineRequest) =>
+      MedicineApi.createMedicine(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["medicines-list"] });
     },
   });
 }

@@ -10,3 +10,4 @@ export * from "./payment";
 export * from "../../features/settings/types/user";
 export * from "./inventory";
 export * from "./system";
+export * from "../../features/inventory/types/category";

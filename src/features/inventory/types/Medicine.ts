@@ -36,15 +36,15 @@ export interface CreateMedicineRequest {
   arabicName?: string;
   barcode?: string;
   categoryId?: number;
-  unit?: number; // short sent as number
+  unit?: MedicineUnit; // short sent as number
 }
 
 export interface UpdateMedicineRequest {
   name?: string;
   arabicName?: string;
   barcode?: string;
-  categoryId?: number;
-  unit?: number;
+  categoryId?: number | null;
+  unit?: MedicineUnit | null;
 }
 
 export interface GetMedicinesRequest {

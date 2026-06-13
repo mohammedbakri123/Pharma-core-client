@@ -151,7 +151,7 @@ export default function CreateEditMedicineForm({
                 <SelectTrigger className="bg-background">
                   <SelectValue placeholder="اختر الفئة" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent portal={false}>
                   {categoriesLoading ? (
                     <div className="flex justify-center py-2">
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -162,7 +162,7 @@ export default function CreateEditMedicineForm({
                         key={cat.categoryId}
                         value={cat.categoryId.toString()}
                       >
-                        {cat.categoryArabicName}
+                        {cat.arabicName}
                       </SelectItem>
                     ))
                   )}
@@ -189,7 +189,7 @@ export default function CreateEditMedicineForm({
               <SelectTrigger className="bg-background">
                 <SelectValue placeholder="اختر الوحدة" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent portal={false}>
                 {Object.entries(unitLabels).map(([unitValue, label]) => (
                   <SelectItem key={unitValue} value={unitValue}>
                     {label}

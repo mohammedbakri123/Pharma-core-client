@@ -22,7 +22,7 @@ export default function MedicineFooter() {
 
   return (
     <CardFooter className="bg-muted/15 border-t border-border/40 p-4 justify-start">
-      <Dialog open={open} onOpenChange={setOpen} modal={false}>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button className="bg-primary hover:bg-primary/95 text-white flex items-center gap-1.5">
             <Pill className="w-4 h-4 ml-1.5" />

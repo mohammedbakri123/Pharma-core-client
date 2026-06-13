@@ -110,7 +110,13 @@ export default function MedicineTable() {
               <Edit2 />
               تعديل الصنف
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setMedicineToDelete(m);
+              }}
+              className="text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer"
+            >
               <Trash2 className="w-4 h-4" />
               حذف الصنف
             </DropdownMenuItem>

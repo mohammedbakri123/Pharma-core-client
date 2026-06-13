@@ -5,71 +5,25 @@ interface GetBadgeProp {
   unit?: MedicineUnit | null;
 }
 
-//TODO: this is shit i know but we should do it
+const unitConfig: Record<
+  MedicineUnit,
+  { label: string; className: string }
+> = {
+  [MedicineUnit.Box]: { label: "علبة", className: "bg-blue-600 hover:bg-blue-600/95 text-white" },
+  [MedicineUnit.Ampoule]: { label: "امبول", className: "bg-rose-600 hover:bg-rose-600/95 text-white" },
+  [MedicineUnit.Bottle]: { label: "قارورة", className: "bg-purple-600 hover:bg-purple-600/95 text-white" },
+  [MedicineUnit.Inhaler]: { label: "انهيلر", className: "bg-cyan-600 hover:bg-cyan-600/95 text-white" },
+  [MedicineUnit.Patch]: { label: "باتش", className: "bg-lime-600 hover:bg-lime-600/95 text-white" },
+  [MedicineUnit.Pill]: { label: "حبة", className: "bg-amber-600 hover:bg-amber-600/95 text-white" },
+  [MedicineUnit.Sachet]: { label: "ساتشت", className: "bg-pink-600 hover:bg-pink-600/95 text-white" },
+  [MedicineUnit.Strip]: { label: "ستريب", className: "bg-emerald-600 hover:bg-emerald-600/95 text-white" },
+  [MedicineUnit.Tube]: { label: "تيوب", className: "bg-orange-600 hover:bg-orange-600/95 text-white" },
+  [MedicineUnit.Vial]: { label: "فيال", className: "bg-teal-600 hover:bg-teal-600/95 text-white" },
+};
 
 export default function MedicineUnitBadge({ unit }: GetBadgeProp) {
-  switch (unit) {
-    case MedicineUnit.Box:
-      return (
-        <Badge className="bg-primary hover:bg-primary/95 text-white">
-          علبة
-        </Badge>
-      );
+  if (!unit) return <Badge variant="secondary">غير معروف</Badge>;
 
-    case MedicineUnit.Ampoule:
-      return (
-        <Badge className="bg-primary hover:bg-primary/95 text-white">
-          امبول
-        </Badge>
-      );
-    case MedicineUnit.Bottle:
-      return (
-        <Badge className="bg-primary hover:bg-primary/95 text-white">
-          قارورة
-        </Badge>
-      );
-    case MedicineUnit.Inhaler:
-      return (
-        <Badge className="bg-primary hover:bg-primary/95 text-white">
-          انهيلر
-        </Badge>
-      );
-    case MedicineUnit.Patch:
-      return (
-        <Badge className="bg-primary hover:bg-primary/95 text-white">
-          باتش
-        </Badge>
-      );
-    case MedicineUnit.Pill:
-      return (
-        <Badge className="bg-primary hover:bg-primary/95 text-white">حبة</Badge>
-      );
-    case MedicineUnit.Sachet:
-      return (
-        <Badge className="bg-primary hover:bg-primary/95 text-white">
-          ساتشت
-        </Badge>
-      );
-    case MedicineUnit.Strip:
-      return (
-        <Badge className="bg-primary hover:bg-primary/95 text-white">
-          ستريب
-        </Badge>
-      );
-    case MedicineUnit.Tube:
-      return (
-        <Badge className="bg-primary hover:bg-primary/95 text-white">
-          تيوب
-        </Badge>
-      );
-    case MedicineUnit.Vial:
-      return (
-        <Badge className="bg-primary hover:bg-primary/95 text-white">
-          فيال
-        </Badge>
-      );
-
-    default:
-      return <Badge variant="secondary">غير معروف</Badge>;
-  }
+  const { label, className } = unitConfig[unit];
+  return <Badge className={className}>{label}</Badge>;
 }

@@ -1,11 +1,22 @@
 import { GetMedicinesRequest, MedicineDto, MedicineUnit } from "@/types";
-import { useMedicineList } from "@features/inventory/hooks/useMedicine";
+import {
+  useMedicineList,
+  useUpdateMedicine,
+} from "@features/inventory/hooks/useMedicine";
+import { useToast } from "@/hooks/use-toast";
 
 import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Column, DataTable } from "@/ui/data-table";
 import MedicineUnitBadge from "./MedicineUnitBadge";
 import DeleteMedicineDialog from "./DeleteMedicineDialog";
+import CreateEditMedicineForm from "./CreateEditMedicineForm";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +37,10 @@ export default function MedicineTable() {
   const [medicineToDelete, setMedicineToDelete] = useState<MedicineDto | null>(
     null,
   );
+
+  const { toast } = useToast();
+  const { mutateAsync: updateMedicine, isPending: isUpdating } =
+    useUpdateMedicine();
 
   const filters: GetMedicinesRequest = {
     page: Number(searchParams.get("page") ?? "1"),
@@ -143,6 +158,46 @@ export default function MedicineTable() {
           total={Medicines?.pagination.total}
         />
       }
+      <Dialog
+        open={!!editingMedicine}
+        onOpenChange={(open) => {
+          if (!open) setEditingMedicine(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>تعديل الصنف</DialogTitle>
+          </DialogHeader>
+          {editingMedicine && (
+            <CreateEditMedicineForm
+              onSubmit={async (data) => {
+                try {
+                  await updateMedicine({
+                    id: editingMedicine.medicineId,
+                    data,
+                  });
+                  toast({
+                    title: "تم تحديث الصنف",
+                    description: "تم تحديث الصنف بنجاح.",
+                    variant: "success",
+                  });
+                  setEditingMedicine(null);
+                } catch (error) {
+                  toast({
+                    variant: "destructive",
+                    title: "فشل تحديث الصنف",
+                    description:
+                      error instanceof Error
+                        ? error.message
+                        : "حدث خطأ غير متوقع.",
+                  });
+                }
+              }}
+              medicineToEdit={editingMedicine}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
       <DeleteMedicineDialog
         medicine={medicineToDelete}
         open={!!medicineToDelete}

@@ -1,5 +1,9 @@
 import { MedicineApi } from "@/api";
-import { CreateMedicineRequest, GetMedicinesRequest } from "@/types";
+import {
+  CreateMedicineRequest,
+  GetMedicinesRequest,
+  UpdateMedicineRequest,
+} from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useMedicineList(params: GetMedicinesRequest) {
@@ -17,6 +21,23 @@ export function useDeleteMedicine() {
 
   return useMutation({
     mutationFn: (id: number) => MedicineApi.deleteMedicine(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["medicines-list"] });
+    },
+  });
+}
+
+export function useUpdateMedicine() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: number;
+      data: UpdateMedicineRequest;
+    }) => MedicineApi.updateMedicine(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["medicines-list"] });
     },

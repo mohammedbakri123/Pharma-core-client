@@ -19,7 +19,6 @@ export interface MedicineDto {
   categoryId: number | null;
   categoryName?: string;
   unit: MedicineUnit | null;
-  isActive: boolean;
   createdAt: string;
 }
 
@@ -52,7 +51,7 @@ export interface GetMedicinesRequest {
   page?: number;
   limit?: number;
   unit?: MedicineUnit;
-  categoryId: number;
+  categoryId: number | null;
   search?: string;
 }
 ///TODO: this shouldn't be here any way

@@ -3,6 +3,7 @@ import { GetMedicinesRequest } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
 export function useMedicineList(params: GetMedicinesRequest) {
+  console.log(params);
   return useQuery({
     queryKey: ["users-list", params],
     queryFn: async () => {

@@ -1,18 +1,31 @@
 import { useToast } from "@/hooks/use-toast";
 import { GetMedicinesRequest, MedicineDto, MedicineUnit } from "@/types";
 import { useMedicineList } from "@features/inventory/hooks/useMedicine";
-import { GetUsersRequest, UserDto } from "@features/settings/types/user";
-import { Badge } from "@/ui/badge";
+
 import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Column } from "@/ui/data-table";
+import { Column, DataTable } from "@/ui/data-table";
 import MedicineUnitBadge from "./MedicineUnitBadge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
+import { Button } from "@/ui/button";
+import { Edit2, MoreHorizontal, Trash2 } from "lucide-react";
+import { CardContent } from "@/ui/card";
+import { Pagination } from "@/ui/pagination";
 
 export default function MedicineTable() {
   const [searchParams] = useSearchParams();
 
-  const [editingUser, setEditingUser] = useState<UserDto | null>(null);
-  const [userToDelete, setUserToDelete] = useState<UserDto | null>(null);
+  const [editingMedicine, setEditingMedicine] = useState<MedicineDto | null>(
+    null,
+  );
+  const [medicineToDelete, setMedicineToDelete] = useState<MedicineDto | null>(
+    null,
+  );
 
   const { toast } = useToast();
 
@@ -20,11 +33,14 @@ export default function MedicineTable() {
     page: Number(searchParams.get("page") ?? "1"),
     limit: Number(searchParams.get("limit") ?? "10"),
     search: searchParams.get("search") ?? undefined,
-    categoryId: Number(searchParams.get("categoryId") ?? undefined),
+    categoryId:
+      Number(searchParams.get("categoryId")) == 0
+        ? null
+        : Number(searchParams.get("categoryId")),
   };
 
   const {
-    data: users,
+    data: Medicines,
     isLoading,
     isError,
     error,
@@ -57,23 +73,23 @@ export default function MedicineTable() {
       render: (m) => <MedicineUnitBadge unit={m.unit} />,
     },
     {
-      key: "phoneNumber",
-      header: "الهاتف",
+      key: "barcode",
+      header: "الباركود",
       className: "text-muted-foreground font-mono text-xs",
-      render: (u) => u.phoneNumber || "-",
+      render: (m) => m.barcode || "-",
     },
     {
-      key: "address",
-      header: "العنوان",
+      key: "category",
+      header: "الفئة",
       className: "text-muted-foreground",
-      render: (u) => u.address || "-",
+      render: (m) => m.categoryName || "-",
     },
     {
       key: "actions",
       header: "الإجراءات",
       headerClassName: "text-center",
       className: "text-center",
-      render: (u) => (
+      render: (m) => (
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button
@@ -88,22 +104,15 @@ export default function MedicineTable() {
             <DropdownMenuItem
               onSelect={(e) => {
                 e.preventDefault();
-                setEditingUser(u);
+                setEditingMedicine(m);
               }}
             >
               <Edit2 />
-              تعديل المستخدم
+              تعديل الصنف
             </DropdownMenuItem>
-            <DropdownMenuItem
-              disabled={u.userId === currentUser?.userId}
-              onSelect={(e) => {
-                e.preventDefault();
-                setUserToDelete(u);
-              }}
-              className="text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer"
-            >
+            <DropdownMenuItem>
               <Trash2 className="w-4 h-4" />
-              حذف المستخدم
+              حذف الصنف
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -111,5 +120,69 @@ export default function MedicineTable() {
     },
   ];
 
-  return <div>Medicine</div>;
+  return (
+    <CardContent className="pt-6">
+      <DataTable<MedicineDto>
+        columns={columns}
+        data={Medicines?.medicines || []}
+        keyExtractor={(m) => m.medicineId}
+        isLoading={isLoading}
+        isError={isError}
+        onRetry={() => refetch()}
+        emptyMessage="لم يتم العثور على الاصناف. حاول إضافة أصناف جديدة."
+        emptySearchMessage="لا توجد نتائج مطابقة لبحثك"
+      />
+
+      {
+        <Pagination
+          limit={Medicines?.pagination.limit}
+          total={Medicines?.pagination.total}
+        />
+      }
+      {/* <Dialog
+        open={!!editingUser}
+        onOpenChange={(open) => {
+          if (!open) setEditingUser(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>تعديل المستخدم</DialogTitle>
+          </DialogHeader>
+          {editingUser && (
+            <CreateEditUserForm
+              onSubmit={async (data) => {
+                try {
+                  await updateUser({ id: editingUser.userId, data });
+                  toast({
+                    title: "تم تحديث المستخدم",
+                    description: "تم تحديث المستخدم بنجاح.",
+                    variant: "success",
+                  });
+                  setEditingUser(null);
+                } catch (error) {
+                  toast({
+                    variant: "destructive",
+                    title: "فشل تحديث المستخدم",
+                    description:
+                      error instanceof Error
+                        ? error.message
+                        : "حدث خطأ غير متوقع.",
+                  });
+                }
+              }}
+              userToEdit={editingUser}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+      <DeleteUserDialog
+        user={userToDelete}
+        open={!!userToDelete}
+        onOpenChange={(open) => {
+          if (!open) setUserToDelete(null);
+        }}
+      /> */}
+    </CardContent>
+  );
 }

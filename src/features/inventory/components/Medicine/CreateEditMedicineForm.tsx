@@ -18,25 +18,14 @@ import { useCategories } from "@features/inventory/hooks/useCategories";
 import { Loader2, Package, ScanLine, Type } from "lucide-react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
+import { unitLabels } from "./medicineUnitConfig";
+
 interface CreateEditMedicineFormProps {
   medicineToEdit?: MedicineDto;
   onSubmit: (
     data: CreateMedicineRequest | UpdateMedicineRequest,
   ) => Promise<void>;
 }
-
-const unitLabels: Record<MedicineUnit, string> = {
-  [MedicineUnit.Box]: "علبة",
-  [MedicineUnit.Ampoule]: "امبول",
-  [MedicineUnit.Bottle]: "قارورة",
-  [MedicineUnit.Inhaler]: "انهيلر",
-  [MedicineUnit.Patch]: "باتش",
-  [MedicineUnit.Pill]: "حبة",
-  [MedicineUnit.Sachet]: "ساتشت",
-  [MedicineUnit.Strip]: "ستريب",
-  [MedicineUnit.Tube]: "تيوب",
-  [MedicineUnit.Vial]: "فيال",
-};
 
 export default function CreateEditMedicineForm({
   medicineToEdit,
@@ -162,7 +151,7 @@ export default function CreateEditMedicineForm({
                         key={cat.categoryId}
                         value={cat.categoryId.toString()}
                       >
-                        {cat.arabicName}
+                        {cat.categoryArabicName}
                       </SelectItem>
                     ))
                   )}

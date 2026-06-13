@@ -11,18 +11,13 @@ import { Column, DataTable } from "@/ui/data-table";
 import MedicineUnitBadge from "./MedicineUnitBadge";
 import DeleteMedicineDialog from "./DeleteMedicineDialog";
 import CreateEditMedicineForm from "./CreateEditMedicineForm";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
+} from "@/ui/dropdown-menu";
 import { Button } from "@/ui/button";
 import { Edit2, MoreHorizontal, Trash2 } from "lucide-react";
 import { CardContent } from "@/ui/card";
@@ -120,8 +115,7 @@ export default function MedicineTable() {
                 setEditingMedicine(m);
               }}
             >
-              <Edit2 />
-              تعديل الصنف
+              <Edit2 /> تعديل الصنف
             </DropdownMenuItem>
             <DropdownMenuItem
               onSelect={(e) => {
@@ -130,8 +124,7 @@ export default function MedicineTable() {
               }}
               className="text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer"
             >
-              <Trash2 className="w-4 h-4" />
-              حذف الصنف
+              <Trash2 className="w-4 h-4" /> حذف الصنف
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

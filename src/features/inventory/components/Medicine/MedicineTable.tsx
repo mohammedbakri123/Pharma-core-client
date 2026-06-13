@@ -1,4 +1,3 @@
-import { useToast } from "@/hooks/use-toast";
 import { GetMedicinesRequest, MedicineDto, MedicineUnit } from "@/types";
 import { useMedicineList } from "@features/inventory/hooks/useMedicine";
 
@@ -6,6 +5,7 @@ import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Column, DataTable } from "@/ui/data-table";
 import MedicineUnitBadge from "./MedicineUnitBadge";
+import DeleteMedicineDialog from "./DeleteMedicineDialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,8 +26,6 @@ export default function MedicineTable() {
   const [medicineToDelete, setMedicineToDelete] = useState<MedicineDto | null>(
     null,
   );
-
-  const { toast } = useToast();
 
   const filters: GetMedicinesRequest = {
     page: Number(searchParams.get("page") ?? "1"),
@@ -145,50 +143,13 @@ export default function MedicineTable() {
           total={Medicines?.pagination.total}
         />
       }
-      {/* <Dialog
-        open={!!editingUser}
+      <DeleteMedicineDialog
+        medicine={medicineToDelete}
+        open={!!medicineToDelete}
         onOpenChange={(open) => {
-          if (!open) setEditingUser(null);
+          if (!open) setMedicineToDelete(null);
         }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>تعديل المستخدم</DialogTitle>
-          </DialogHeader>
-          {editingUser && (
-            <CreateEditUserForm
-              onSubmit={async (data) => {
-                try {
-                  await updateUser({ id: editingUser.userId, data });
-                  toast({
-                    title: "تم تحديث المستخدم",
-                    description: "تم تحديث المستخدم بنجاح.",
-                    variant: "success",
-                  });
-                  setEditingUser(null);
-                } catch (error) {
-                  toast({
-                    variant: "destructive",
-                    title: "فشل تحديث المستخدم",
-                    description:
-                      error instanceof Error
-                        ? error.message
-                        : "حدث خطأ غير متوقع.",
-                  });
-                }
-              }}
-              userToEdit={editingUser}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
-      <DeleteUserDialog
-        user={userToDelete}
-        open={!!userToDelete}
-        onOpenChange={(open) => {
-          if (!open) setUserToDelete(null);
-        }}
-      /> */}
+      />
     </CardContent>
   );
 }

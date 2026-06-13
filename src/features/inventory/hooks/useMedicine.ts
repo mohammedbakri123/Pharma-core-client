@@ -12,6 +12,17 @@ export function useMedicineList(params: GetMedicinesRequest) {
   });
 }
 
+export function useDeleteMedicine() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) => MedicineApi.deleteMedicine(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["medicines-list"] });
+    },
+  });
+}
+
 export function useCreateMedicine() {
   const queryClient = useQueryClient();
 

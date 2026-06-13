@@ -1,4 +1,4 @@
-import { MedicineUnit } from "./medicine";
+import { MedicineUnit } from "../../features/inventory/types/Medicine";
 
 export enum PurchaseStatus {
   Draft = 1,

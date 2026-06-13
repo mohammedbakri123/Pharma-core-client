@@ -19,13 +19,7 @@ import { Edit2, MoreHorizontal, Trash, Trash2 } from "lucide-react";
 import { CardContent } from "@/ui/card";
 import { Pagination } from "@/ui/pagination";
 import { useSearchParams } from "react-router-dom";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogHeader,
-  DialogDescription,
-} from "@/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogHeader } from "@/ui/dialog";
 import CreateEditUserForm from "./CreateEditUserForm";
 import { useState } from "react";
 import DeleteUserDialog from "./DeleteUserDialog";
@@ -40,7 +34,6 @@ export default function UserTable() {
   const [userToDelete, setUserToDelete] = useState<UserDto | null>(null);
 
   const { mutateAsync: updateUser } = useUpdateUser();
-  const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
   const filters: GetUsersRequest = {

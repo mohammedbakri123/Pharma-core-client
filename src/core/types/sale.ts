@@ -1,4 +1,4 @@
-import { MedicineUnit } from "./medicine";
+import { MedicineUnit } from "../../features/inventory/types/Medicine";
 import { PaymentMethod } from "./payment";
 
 export enum SaleStatus {

@@ -1,5 +1,5 @@
 export { api } from "./client";
-export * from "./medicines";
+export * from "../../features/inventory/api/medicines";
 export * from "./inventory";
 export * from "./customers";
 export * from "./suppliers";

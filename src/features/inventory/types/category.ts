@@ -1,5 +1,3 @@
-import { MedicineUnit } from "./Medicine";
-
 export interface CategoryDto {
   categoryId: number;
   categoryName: string;

@@ -6,7 +6,6 @@ export interface StockItemDto {
   categoryName: string | null;
   unit: number | null;
   totalQuantity: number;
-  minStockLevel: number;
   status: "متوفر" | "مخزون منخفض" | "حرج";
 }
 

@@ -6,7 +6,7 @@ import InventoryPage from "../pages/InventoryPage";
 
 export default function SettingsTabs() {
   return (
-    <Tabs defaultValue="general" className="w-full" dir="rtl">
+    <Tabs defaultValue="Inventory" className="w-full" dir="rtl">
       <TabsList className="grid w-full grid-cols-4 max-w-lg bg-muted/40 p-1.5 rounded-xl border border-border/40 mb-6 h-auto">
         <TabsTrigger
           value="Inventory"

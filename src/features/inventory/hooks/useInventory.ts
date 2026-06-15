@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import inventoryApi from "../api/inventory";
-import { GetStockAlertQuery } from "../types/inventory";
+import type { GetStockAlertQuery } from "../types/inventory";
 
 export function useLowStockAlerts(params: GetStockAlertQuery) {
   return useQuery({
@@ -9,5 +9,16 @@ export function useLowStockAlerts(params: GetStockAlertQuery) {
       const response = await inventoryApi.GetAlerts(params);
       return response.data;
     },
+  });
+}
+
+export function useGetStockByMedicine(id: number) {
+  return useQuery({
+    queryKey: ["stock-by-medicine", id],
+    queryFn: async () => {
+      const response = await inventoryApi.GetStockByMedicine(id);
+      return response.data;
+    },
+    enabled: !!id,
   });
 }

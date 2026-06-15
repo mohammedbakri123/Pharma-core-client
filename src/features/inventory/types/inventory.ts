@@ -30,6 +30,23 @@ export interface StockAlertResponse {
   };
 }
 
+export interface BatchStockDto {
+  BatchId: number;
+  BatchNumber: string | null;
+  QuantityEntered: number;
+  QuantityRemaining: number;
+  PurchasePrice: number;
+  SellPrice: number;
+  ExpireDate: string | null;
+}
+
+export interface StockWithBatchesDto {
+  MedicineId: number;
+  MedicineName: string;
+  TotalStock: number;
+  Batches: BatchStockDto[];
+}
+
 export interface AdjustmentRequest {
   medicineId: number;
   batchId: number;

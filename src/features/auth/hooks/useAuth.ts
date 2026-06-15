@@ -3,7 +3,7 @@ import type { AxiosResponse } from "axios";
 import { authApi } from "../api";
 import { useAuthStore } from "@features/auth/store/authStore";
 import { UserRole, type LoginRequest, type LoginResponse } from "../types";
-
+import { usersApi } from "../../settings/api/users";
 
 export function useAuth() {
   const { user, token, isAuthenticated, setAuth, logout, hasRole } =
@@ -20,7 +20,6 @@ export function useAuth() {
     isCashier: hasRole(UserRole.Cashier),
   };
 }
-
 
 export function useLogin() {
   const queryClient = useQueryClient();
@@ -61,8 +60,6 @@ export function useLogout() {
   });
 }
 
-import { usersApi } from "@/api";
-
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
@@ -70,7 +67,12 @@ export function useUpdateProfile() {
   const token = useAuthStore((state) => state.token);
 
   return useMutation({
-    mutationFn: async (data: { userName?: string; password?: string; phoneNumber?: string; address?: string }) => {
+    mutationFn: async (data: {
+      userName?: string;
+      password?: string;
+      phoneNumber?: string;
+      address?: string;
+    }) => {
       if (!user) throw new Error("User not authenticated");
       const response = await usersApi.update(user.userId, data);
       return response.data;
@@ -90,4 +92,3 @@ export function useUpdateProfile() {
     },
   });
 }
-

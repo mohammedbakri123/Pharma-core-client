@@ -1,7 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/ui/tabs";
 
 import { Warehouse, Pill, Wallet, WalletCards } from "lucide-react";
-import Medicine from "./Medicine/Medicine";
+import MedicinePage from "../pages/MedicinePage";
+import InventoryPage from "../pages/InventoryPage";
 
 export default function SettingsTabs() {
   return (
@@ -36,13 +37,15 @@ export default function SettingsTabs() {
       <TabsContent
         value="Inventory"
         className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300 outline-none"
-      ></TabsContent>
+      >
+        <InventoryPage />
+      </TabsContent>
 
       <TabsContent
         value="Medicines"
         className="animate-in fade-in slide-in-from-bottom-2 duration-300 outline-none"
       >
-        <Medicine />
+        <MedicinePage />
       </TabsContent>
 
       <TabsContent

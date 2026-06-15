@@ -1,16 +1,28 @@
-export interface StockItemDto {
+import { MedicineUnit } from "./Medicine";
+
+export interface GetStockAlertQuery {
+  LowStockThreshold: number | null;
+  ExpiringDays: number | null;
+  page?: number;
+  limit?: number;
+  search?: string | null;
+}
+
+export interface StockAlertDto {
   medicineId: number;
   name: string;
   arabicName: string | null;
   barcode: string | null;
   categoryName: string | null;
-  unit: number | null;
+  unit: MedicineUnit | null;
   totalQuantity: number;
   status: "متوفر" | "مخزون منخفض" | "حرج";
+  nearestExpireDate: string | null;
+  isExpiring: boolean;
 }
 
-export interface StockListResponse {
-  stock: StockItemDto[];
+export interface StockAlertResponse {
+  items: StockAlertDto[];
   pagination: {
     total: number;
     page: number;

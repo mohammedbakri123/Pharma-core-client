@@ -10,6 +10,7 @@ import {
   DollarSign,
   XCircle,
   PackageOpen,
+  SaudiRiyal,
 } from "lucide-react";
 import { formatCurrency } from "@/utils/formatters";
 import { StockItemHeader } from "../components/StockItemDetail/StockItemHeader";
@@ -82,7 +83,7 @@ export default function StockItemDetailPage() {
 
   return (
     <Card className="overflow-hidden">
-      <div className="h-1.5 bg-gradient-to-l from-primary via-primary/60 to-primary/20" />
+      <div className="h-1.5 bg-linear-to-l from-primary via-primary/60 to-primary/20" />
 
       <StockItemHeader
         medicineName={stock.medicineName}
@@ -102,7 +103,12 @@ export default function StockItemDetailPage() {
           <StatCard
             icon={DollarSign}
             label="إجمالي قيمة المخزون"
-            value={`${formatCurrency(totalValue)} ر.س`}
+            value={
+              <span className="flex items-center gap-1">
+                {formatCurrency(totalValue)}
+                <SaudiRiyal className="w-4 h-4" />
+              </span>
+            }
           />
         </div>
 

@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/ui/tabs";
 
-import { Warehouse, Pill, Wallet, WalletCards } from "lucide-react";
+import { Warehouse, Pill, Wallet, Coins } from "lucide-react";
 import MedicinePage from "../pages/MedicinePage";
 import InventoryPage from "../pages/InventoryPage";
 
@@ -24,13 +24,13 @@ export default function SettingsTabs() {
           value="Sales"
           className="rounded-lg py-2.5 text-sm font-bold flex items-center justify-center gap-1.5 transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm cursor-pointer"
         >
-          <Wallet className="w-4 h-4" /> المبيعات
+          <Coins className="w-4 h-4" /> المبيعات
         </TabsTrigger>
         <TabsTrigger
           value="Purchase"
           className="rounded-lg py-2.5 text-sm font-bold flex items-center justify-center gap-1.5 transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm cursor-pointer"
         >
-          <WalletCards className="w-4 h-4" /> المشتريات
+          <Wallet className="w-4 h-4" /> المشتريات
         </TabsTrigger>
       </TabsList>
 

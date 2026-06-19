@@ -14,7 +14,7 @@ const sidebarItems = [
   { icon: LayoutDashboard, label: "لوحة التحكم", to: "/" },
   { icon: ShoppingCart, label: "نقطة البيع", to: "/pos" },
   { icon: Package, label: "المخزون", to: "/inventory" },
-  { icon: Users, label: "العملاء", to: "/customers" },
+  { icon: Users, label: "العملاء والموردين", to: "/people" },
   { icon: FileText, label: "الفواتير", to: "/invoices" },
   { icon: Settings, label: "الإعدادات", to: "/settings" },
 ];

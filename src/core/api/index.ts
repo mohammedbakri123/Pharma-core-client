@@ -1,8 +1,8 @@
 export { api } from "./client";
 export * from "../../features/inventory/api/medicines";
 export * from "../../features/inventory/api/inventory";
-export * from "./customers";
-export * from "./suppliers";
+export * from "../../features/people/api/customers";
+export * from "../../features/people/api/suppliers";
 export * from "./pos";
 export * from "./sales";
 export * from "./purchases";

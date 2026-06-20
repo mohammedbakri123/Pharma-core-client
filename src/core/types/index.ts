@@ -5,8 +5,8 @@ export * from "../../features/inventory/types/inventory";
 
 export * from "../../features/inventory/types/category";
 
-export * from "./customer";
-export * from "./supplier";
+export * from "../../features/people/types/customer";
+export * from "../../features/people/types/supplier";
 export * from "./sale";
 export * from "./purchase";
 export * from "./payment";

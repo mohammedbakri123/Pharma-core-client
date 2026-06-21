@@ -1,7 +1,7 @@
-import Invoices from "@features/invoices/Invoices";
+import Finance from "@features/finance/Finance";
 
 function InvoicesPage() {
-  return <Invoices />;
+  return <Finance />;
 }
 
 export default InvoicesPage;

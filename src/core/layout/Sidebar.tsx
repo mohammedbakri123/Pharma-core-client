@@ -4,7 +4,7 @@ import {
   Package,
   Users,
   Settings,
-  FileText,
+  Landmark,
 } from "lucide-react";
 import logo from "@assets/generated_images/minimalist_pharmacy_logo_icon.png";
 import SidebarItem from "./SidebarItem";
@@ -15,7 +15,7 @@ const sidebarItems = [
   { icon: ShoppingCart, label: "نقطة البيع", to: "/pos" },
   { icon: Package, label: "المخزون", to: "/inventory" },
   { icon: Users, label: "العملاء والموردين", to: "/people" },
-  { icon: FileText, label: "الفواتير", to: "/invoices" },
+  { icon: Landmark, label: "المالية", to: "/finance" },
   { icon: Settings, label: "الإعدادات", to: "/settings" },
 ];
 

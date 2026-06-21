@@ -16,6 +16,15 @@ export interface ExpenseListResponse {
   };
 }
 
+export interface ExpenseDeletedListResponse {
+  expenses: ExpenseDto[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+  };
+}
+
 export interface CreateExpenseRequest {
   amount: number;
   description?: string;

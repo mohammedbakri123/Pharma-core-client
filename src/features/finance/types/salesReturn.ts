@@ -24,6 +24,16 @@ export interface SalesReturnDetailsDto extends SalesReturnDto {
   items: SalesReturnItemDto[];
 }
 
+export interface SaleReturnsListResponse {
+  saleId: number;
+  returns: SalesReturnDto[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+  };
+}
+
 export interface SalesReturnListResponse {
   salesReturns: SalesReturnDto[];
   pagination: {

@@ -95,3 +95,35 @@ export interface RefundPaymentRequest {
   method: number;
   description?: string;
 }
+
+export interface PurchaseReturnItemDto {
+  purchaseReturnItemId: number;
+  purchaseItemId: number;
+  batchId: number;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+}
+
+export interface PurchaseItemsResponse {
+  purchaseId: number;
+  items: PurchaseItemDto[];
+}
+
+export interface PurchaseReturnDto {
+  purchaseReturnId: number;
+  purchaseId: number | null;
+  supplierId: number | null;
+  userId: number | null;
+  totalAmount: number;
+  note: string | null;
+  createdAt: string;
+  items: PurchaseReturnItemDto[];
+  refundPaymentId: number | null;
+}
+
+export interface CreatePurchasePaymentRequest {
+  method: number;
+  amount: number;
+  description?: string;
+}

@@ -1,9 +1,15 @@
 import React, { useState } from "react";
-import { usePayCustomerDebt } from "../../../hooks/useCustomers";
+import { usePayCustomerDebt } from "../../hooks/useCustomers";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/ui/select";
 import { PaymentMethod } from "@/types";
 import { useToast } from "@/hooks/use-toast";
 import { Spinner } from "@/ui/spinner";
@@ -14,7 +20,11 @@ interface PayDebtFormProps {
   onSuccess?: () => void;
 }
 
-export default function PayDebtForm({ customerId, maxAmount, onSuccess }: PayDebtFormProps) {
+export default function PayDebtForm({
+  customerId,
+  maxAmount,
+  onSuccess,
+}: PayDebtFormProps) {
   const [amount, setAmount] = useState<string>("");
   const [method, setMethod] = useState<string>("1"); // Cash default
   const [description, setDescription] = useState<string>("");
@@ -57,11 +67,18 @@ export default function PayDebtForm({ customerId, maxAmount, onSuccess }: PayDeb
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 border rounded-xl p-4 bg-muted/20 border-border/40">
-      <h3 className="font-semibold text-foreground text-sm">تسديد الديون للعميل</h3>
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 border rounded-xl p-4 bg-muted/20 border-border/40"
+    >
+      <h3 className="font-semibold text-foreground text-sm">
+        تسديد الديون للعميل
+      </h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         <div className="space-y-1.5">
-          <Label htmlFor="amount" className="text-xs">المبلغ المسترد (ريال)</Label>
+          <Label htmlFor="amount" className="text-xs">
+            المبلغ المسترد (ريال)
+          </Label>
           <div className="relative">
             <Input
               id="amount"
@@ -85,7 +102,9 @@ export default function PayDebtForm({ customerId, maxAmount, onSuccess }: PayDeb
           </div>
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="method" className="text-xs">طريقة الدفع</Label>
+          <Label htmlFor="method" className="text-xs">
+            طريقة الدفع
+          </Label>
           <Select value={method} onValueChange={setMethod}>
             <SelectTrigger id="method" className="h-9 text-xs">
               <SelectValue placeholder="اختر طريقة الدفع" />
@@ -97,7 +116,9 @@ export default function PayDebtForm({ customerId, maxAmount, onSuccess }: PayDeb
           </Select>
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="description" className="text-xs">ملاحظات / وصف</Label>
+          <Label htmlFor="description" className="text-xs">
+            ملاحظات / وصف
+          </Label>
           <Input
             id="description"
             value={description}
@@ -108,7 +129,12 @@ export default function PayDebtForm({ customerId, maxAmount, onSuccess }: PayDeb
         </div>
       </div>
       <div className="flex justify-end">
-        <Button type="submit" disabled={isPending || maxAmount <= 0} size="sm" className="h-9 text-xs font-semibold px-6 cursor-pointer">
+        <Button
+          type="submit"
+          disabled={isPending || maxAmount <= 0}
+          size="sm"
+          className="h-9 text-xs font-semibold px-6 cursor-pointer"
+        >
           {isPending ? <Spinner size="sm" className="ml-1" /> : null}
           تسجيل الدفعة
         </Button>

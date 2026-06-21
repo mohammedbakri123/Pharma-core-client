@@ -2,9 +2,9 @@ import { MedicineUnit } from "../../inventory/types/Medicine";
 import { PaymentMethod } from "./payment";
 
 export enum SaleStatus {
-  Draft = 1,
-  Completed = 2,
-  Cancelled = 3,
+  Draft = "draft",
+  Completed = "completed",
+  Cancelled = "cancelled",
 }
 
 export interface SaleItemDto {
@@ -72,6 +72,16 @@ export interface AddSaleItemRequest {
 
 export interface UpdateSaleItemRequest {
   quantity: number;
+}
+
+export interface GetSalesRequest {
+  page?: number;
+  limit?: number;
+  customerId?: number;
+  userId?: number;
+  status?: number;
+  from?: string;
+  to?: string;
 }
 
 export interface SalePaymentRequest {

@@ -9,6 +9,7 @@ import DashboardPage from "@/pages/DashboardPage";
 import InventoryPage from "@/pages/InventoryPage";
 import StockItemDetailPage from "@pages/StockItemDetailPage";
 import CustomerDetailPage from "@pages/CustomerDetailPage";
+import SaleDetailPage from "@pages/SaleDetailPage";
 
 import NotFound from "@/pages/NotFoundPage";
 import LoginPage from "@/pages/LoginPage";
@@ -59,6 +60,7 @@ function App() {
             <Route path="people" element={<PeoplePage />} />
             <Route path="people/customer/:id" element={<CustomerDetailPage />} />
             <Route path="finance" element={<Finance />} />
+            <Route path="finance/sales/:id" element={<SaleDetailPage />} />
             <Route path="invoices" element={<Navigate to="/finance" replace />} />
             <Route path="settings" element={<SettingsPage />}>
               <Route path="profile" element={<ProfilePage />} />

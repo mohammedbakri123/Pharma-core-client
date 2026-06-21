@@ -1,43 +1,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/ui/tabs";
 import { Receipt, Coins, Wallet, ArrowLeftRight } from "lucide-react";
-import InvoicesHeader from "./components/InvoicesHeader";
-import InvoicesTable from "./components/InvoicesTable";
+import SalesPage from "./pages/SalesPage";
 import ExpensesPage from "./pages/ExpensesPage";
 import PurchasesPage from "./pages/PurchasesPage";
 import PaymentsPage from "./pages/PaymentsPage";
 
 export default function Finance() {
-  const invoices = [
-    {
-      id: "INV-2024-001",
-      patient: "علي محمد",
-      date: "2024-01-20",
-      amount: "150.00 ر.س",
-      status: "مدفوعة",
-    },
-    {
-      id: "INV-2024-002",
-      patient: "أحمد محمود",
-      date: "2024-01-21",
-      amount: "45.00 ر.س",
-      status: "مدفوعة",
-    },
-    {
-      id: "INV-2024-003",
-      patient: "سارة خالد",
-      date: "2024-01-21",
-      amount: "210.20 ر.س",
-      status: "مسودة",
-    },
-    {
-      id: "INV-2024-004",
-      patient: "محمد حسن",
-      date: "2024-01-22",
-      amount: "85.00 ر.س",
-      status: "مدفوعة",
-    },
-  ];
-
   return (
     <div className="space-y-6" dir="rtl">
       <Tabs defaultValue="Sales" className="w-full" dir="rtl">
@@ -70,18 +38,10 @@ export default function Finance() {
         </TabsList>
 
         <TabsContent
-          value="Expenses"
+          value="Sales"
           className="animate-in fade-in slide-in-from-bottom-2 duration-300 outline-none"
         >
-          <ExpensesPage />
-        </TabsContent>
-
-        <TabsContent
-          value="Sales"
-          className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300 outline-none"
-        >
-          <InvoicesHeader />
-          <InvoicesTable data={invoices} />
+          <SalesPage />
         </TabsContent>
 
         <TabsContent
@@ -89,6 +49,13 @@ export default function Finance() {
           className="animate-in fade-in slide-in-from-bottom-2 duration-300 outline-none"
         >
           <PurchasesPage />
+        </TabsContent>
+
+        <TabsContent
+          value="Expenses"
+          className="animate-in fade-in slide-in-from-bottom-2 duration-300 outline-none"
+        >
+          <ExpensesPage />
         </TabsContent>
 
         <TabsContent

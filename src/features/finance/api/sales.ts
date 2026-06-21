@@ -4,6 +4,7 @@ import type {
   SaleDetailsDto,
   SaleListResponse,
   SaleBalanceDto,
+  GetSalesRequest,
   CreateSaleRequest,
   AddSaleItemRequest,
   UpdateSaleItemRequest,
@@ -19,15 +20,8 @@ import type {
   UpdateSalesReturnItemRequest,
 } from "@/types";
 
-export const getSales = (params?: {
-  page?: number;
-  limit?: number;
-  customerId?: number;
-  userId?: number;
-  status?: number;
-  from?: string;
-  to?: string;
-}) => api.get<SaleListResponse>("/sales", { params });
+export const getSales = (params?: GetSalesRequest) =>
+  api.get<SaleListResponse>("/sales", { params });
 
 export const getSale = (id: number) => api.get<SaleDetailsDto>(`/sales/${id}`);
 

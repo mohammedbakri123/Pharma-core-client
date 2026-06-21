@@ -91,7 +91,7 @@ export function DataTable<T>({
   }
 
   return (
-    <div className={cn("overflow-x-auto", containerClassName)}>
+    <div className={cn("overflow-x-auto", containerClassName)} dir="rtl">
       <Table>
         <TableHeader>
           <TableRow>

@@ -8,6 +8,7 @@ import Invoices from "@features/invoices/Invoices";
 import DashboardPage from "@/pages/DashboardPage";
 import InventoryPage from "@/pages/InventoryPage";
 import StockItemDetailPage from "@pages/StockItemDetailPage";
+import CustomerDetailPage from "@pages/CustomerDetailPage";
 
 import NotFound from "@/pages/NotFoundPage";
 import LoginPage from "@/pages/LoginPage";
@@ -56,6 +57,7 @@ function App() {
             <Route path="inventory/stock/:id" element={<StockItemDetailPage />} />
             <Route path="pos" element={<POS />} />
             <Route path="people" element={<PeoplePage />} />
+            <Route path="people/customer/:id" element={<CustomerDetailPage />} />
             <Route path="invoices" element={<Invoices />} />
             <Route path="settings" element={<SettingsPage />}>
               <Route path="profile" element={<ProfilePage />} />

@@ -19,7 +19,11 @@ import type {
   PaymentMethod,
 } from "@/types";
 
-export function useCustomers(params?: { page?: number; limit?: number; search?: string }) {
+export function useCustomers(params?: {
+  page?: number;
+  limit?: number;
+  search?: string;
+}) {
   return useQuery({
     queryKey: ["customers", params],
     queryFn: async () => {
@@ -136,8 +140,11 @@ export function useCustomerStatement(id: number, from?: string, to?: string) {
 export function usePayCustomerDebt(id: number) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: { amount: number; method: PaymentMethod; description?: string }) =>
-      payCustomerDebt(id, data),
+    mutationFn: (data: {
+      amount: number;
+      method: PaymentMethod;
+      description?: string;
+    }) => payCustomerDebt(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
     },

@@ -4,9 +4,9 @@ import {
   useUpdateCustomer,
 } from "../../hooks/useCustomers";
 import { useToast } from "@/hooks/use-toast";
-
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { type Column, DataTable } from "@/ui/data-table";
 import DeleteCustomerDialog from "./DeleteCustomerDialog";
 import CreateEditCustomerForm from "./CreateEditCustomerForm";
@@ -18,12 +18,13 @@ import {
   DropdownMenuTrigger,
 } from "@/ui/dropdown-menu";
 import { Button } from "@/ui/button";
-import { Edit2, MoreHorizontal, Trash2 } from "lucide-react";
+import { Edit2, MoreHorizontal, Trash2, Eye } from "lucide-react";
 import { CardContent } from "@/ui/card";
 import { Pagination } from "@/ui/pagination";
 
 export default function CustomersTable() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const [editingCustomer, setEditingCustomer] = useState<CustomerDto | null>(null);
   const [customerToDelete, setCustomerToDelete] = useState<CustomerDto | null>(null);
@@ -89,6 +90,13 @@ export default function CustomersTable() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-40">
+            <DropdownMenuItem
+              onSelect={() => {
+                navigate(`/people/customer/${c.customerId}`);
+              }}
+            >
+              <Eye className="w-4 h-4" /> عرض التفاصيل
+            </DropdownMenuItem>
             <DropdownMenuItem
               onSelect={(e) => {
                 e.preventDefault();

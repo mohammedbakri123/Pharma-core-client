@@ -1,10 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getSale } from "../api/sales";
 import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { Spinner } from "@/ui/spinner";
-import { Ban, ArrowRight, Coins, ShoppingCart, CreditCard, RotateCcw } from "lucide-react";
+import { Ban } from "lucide-react";
+import { useGetSale, useGetSaleBalance } from "../hooks/useSales";
+import SaleDetailHeader from "../components/SaleDetail/SaleDetailHeader";
+import SaleSummaryCards from "../components/SaleDetail/SaleSummaryCards";
+import SaleActionsBar from "../components/SaleDetail/SaleActionsBar";
+import SaleDetailTabs from "../components/SaleDetail/SaleDetailTabs";
 
 export default function SaleDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -16,14 +19,9 @@ export default function SaleDetailPage() {
     isLoading,
     isError,
     refetch,
-  } = useQuery({
-    queryKey: ["sale", saleId],
-    queryFn: async () => {
-      const response = await getSale(saleId);
-      return response.data;
-    },
-    enabled: !!saleId,
-  });
+  } = useGetSale(saleId);
+
+  const { data: balance } = useGetSaleBalance(saleId);
 
   if (isLoading) {
     return (
@@ -64,85 +62,23 @@ export default function SaleDetailPage() {
   }
 
   return (
-    <Card className="overflow-hidden">
-      <div className="p-6 border-b border-border/40 bg-card">
-        <div className="flex items-center justify-between">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate("/finance")}
-            className="gap-1"
-          >
-            <ArrowRight className="w-4 h-4" />
-            العودة
-          </Button>
-          <h2 className="text-lg font-bold flex items-center gap-2">
-            <Coins className="w-5 h-5 text-primary" />
-            فاتورة مبيعات #{sale.saleId}
-          </h2>
-        </div>
+    <Card className="overflow-hidden dir-rtl">
+      <SaleDetailHeader
+        sale={sale}
+        onBack={() => navigate("/finance")}
+      />
+
+      <div className="p-6 space-y-4">
+        <SaleSummaryCards sale={sale} balance={balance} />
+
+        <SaleActionsBar
+          saleId={sale.saleId}
+          status={sale.status}
+          totalAmount={sale.totalAmount}
+        />
       </div>
 
-      <div className="p-6 space-y-6">
-        {/* Sale summary section — already implemented */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="p-4 rounded-lg bg-muted/30 border border-border/40">
-            <p className="text-sm text-muted-foreground">الإجمالي</p>
-            <p className="text-xl font-bold">{sale.totalAmount.toLocaleString()} ريال</p>
-          </div>
-          <div className="p-4 rounded-lg bg-muted/30 border border-border/40">
-            <p className="text-sm text-muted-foreground">الخصم</p>
-            <p className="text-xl font-bold">{sale.discount > 0 ? `${sale.discount.toLocaleString()} ريال` : "-"}</p>
-          </div>
-          <div className="p-4 rounded-lg bg-muted/30 border border-border/40">
-            <p className="text-sm text-muted-foreground">تاريخ الفاتورة</p>
-            <p className="text-xl font-bold">{new Date(sale.createdAt).toLocaleDateString("ar-SA")}</p>
-          </div>
-        </div>
-
-        {/* Placeholder action cards for future implementation */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="p-4 rounded-lg border border-dashed border-border/60 bg-muted/10">
-            <div className="flex items-center gap-2 mb-2">
-              <ShoppingCart className="w-4 h-4 text-muted-foreground" />
-              <h3 className="font-semibold text-sm">إدارة الأصناف</h3>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              إضافة وتعديل وحذف أصناف الفاتورة
-            </p>
-          </div>
-
-          <div className="p-4 rounded-lg border border-dashed border-border/60 bg-muted/10">
-            <div className="flex items-center gap-2 mb-2">
-              <CreditCard className="w-4 h-4 text-muted-foreground" />
-              <h3 className="font-semibold text-sm">إتمام الدفع</h3>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              إتمام الفاتورة وتسديد المدفوعات
-            </p>
-          </div>
-
-          <div className="p-4 rounded-lg border border-dashed border-border/60 bg-muted/10">
-            <div className="flex items-center gap-2 mb-2">
-              <RotateCcw className="w-4 h-4 text-muted-foreground" />
-              <h3 className="font-semibold text-sm">المرتجعات</h3>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              إدارة مرتجعات المبيعات
-            </p>
-          </div>
-        </div>
-
-        {/* Items table placeholder */}
-        <div className="rounded-lg border border-border/40 overflow-hidden">
-          <div className="p-3 bg-muted/20 border-b border-border/40">
-            <h3 className="font-semibold text-sm">أصناف الفاتورة</h3>
-          </div>
-          <div className="p-8 text-center text-muted-foreground text-sm">
-            قائمة الأصناف — سيتم تفعيلها لاحقًا
-          </div>
-        </div>
-      </div>
+      <SaleDetailTabs sale={sale} />
     </Card>
   );
 }

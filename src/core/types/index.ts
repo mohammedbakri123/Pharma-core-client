@@ -7,7 +7,7 @@ export * from "../../features/inventory/types/category";
 
 export * from "../../features/people/types/customer";
 export * from "../../features/people/types/supplier";
-export * from "./sale";
-export * from "./purchase";
-export * from "./payment";
-export * from "./expense";
+export * from "../../features/invoices/types/sale";
+export * from "../../features/invoices/types/purchase";
+export * from "../../features/invoices/types/payment";
+export * from "../../features/invoices/types/expense";

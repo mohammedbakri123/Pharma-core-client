@@ -5,6 +5,11 @@ import type {
   CreateCustomerRequest,
   UpdateCustomerRequest,
   SalesSummaryDto,
+  CustomerSalesResponse,
+  CustomerUnpaidSalesResponse,
+  SalesStatementDto,
+  PayCustomerDebtResult,
+  PaymentMethod,
 } from "@/types";
 
 export const getCustomers = (params?: {
@@ -16,6 +21,12 @@ export const getCustomers = (params?: {
 export const getCustomer = (id: number) =>
   api.get<CustomerDto>(`/customers/${id}`);
 
+export const getDeletedCustomers = (params?: {
+  page?: number;
+  limit?: number;
+  search?: string;
+}) => api.get<CustomerListResponse>("/customers/deleted", { params });
+
 export const createCustomer = (data: CreateCustomerRequest) =>
   api.post<CustomerDto>("/customers", data);
 
@@ -24,24 +35,33 @@ export const updateCustomer = (id: number, data: UpdateCustomerRequest) =>
 
 export const deleteCustomer = (id: number) => api.delete(`/customers/${id}`);
 
+export const hardDeleteCustomer = (id: number) =>
+  api.delete(`/customers/${id}/hard`);
+
 export const restoreCustomer = (id: number) =>
   api.post(`/customers/${id}/restore`);
 
 export const getCustomerSales = (
   id: number,
   params?: { page?: number; limit?: number; status?: number },
-) => api.get(`/customers/${id}/sales`, { params });
+) => api.get<CustomerSalesResponse>(`/customers/${id}/sales`, { params });
 
 export const getCustomerDebt = (id: number) =>
   api.get<SalesSummaryDto>(`/customers/${id}/debt`);
 
 export const getCustomerUnpaidSales = (id: number) =>
-  api.get(`/customers/${id}/unpaid-sales`);
+  api.get<CustomerUnpaidSalesResponse>(`/customers/${id}/unpaid-sales`);
 
-export const getCustomerStatement = (id: number, from?: string, to?: string) =>
-  api.get(`/customers/${id}/statement`, { params: { from, to } });
+export const getCustomerStatement = (
+  id: number,
+  from?: string,
+  to?: string,
+) =>
+  api.get<SalesStatementDto>(`/customers/${id}/statement`, {
+    params: { from, to },
+  });
 
 export const payCustomerDebt = (
   id: number,
-  data: { amount: number; method: number; description?: string },
-) => api.post(`/customers/${id}/pay`, data);
+  data: { amount: number; method: PaymentMethod; description?: string },
+) => api.post<PayCustomerDebtResult>(`/customers/${id}/pay`, data);

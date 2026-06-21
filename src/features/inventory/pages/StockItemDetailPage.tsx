@@ -1,21 +1,11 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetStockByMedicine } from "../hooks/useInventory";
-import { Card, CardContent } from "@/ui/card";
+import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { Spinner } from "@/ui/spinner";
-import { Separator } from "@/ui/separator";
-import {
-  Package,
-  Layers,
-  DollarSign,
-  XCircle,
-  PackageOpen,
-  SaudiRiyal,
-} from "lucide-react";
-import { formatCurrency } from "@/utils/formatters";
+import { Ban } from "lucide-react";
 import { StockItemHeader } from "../components/StockItemDetail/StockItemHeader";
-import { BatchesTable } from "../components/StockItemDetail/BatchesTable";
-import { StatCard } from "../components/StockItemDetail/StatCard";
+import StockItemDetailTabs from "../components/StockItemDetail/StockItemDetailTabs";
 
 export default function StockItemDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -32,59 +22,46 @@ export default function StockItemDetailPage() {
   if (isLoading) {
     return (
       <Card>
-        <CardContent className="flex items-center justify-center py-20">
+        <div className="flex items-center justify-center py-20">
           <div className="flex flex-col items-center gap-3">
             <Spinner size="lg" />
             <p className="text-muted-foreground text-sm">
               جاري تحميل بيانات المخزون...
             </p>
           </div>
-        </CardContent>
+        </div>
       </Card>
     );
   }
 
-  if (isError) {
+  if (isError || !stock) {
     return (
       <Card>
-        <CardContent className="flex flex-col items-center justify-center py-20 gap-4">
-          <XCircle className="w-12 h-12 text-destructive" />
-          <p className="text-destructive font-medium">
-            فشل تحميل بيانات المخزون
-          </p>
-          <Button variant="outline" onClick={() => refetch()}>
-            إعادة المحاولة
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (!stock) {
-    return (
-      <Card>
-        <CardContent className="flex flex-col items-center justify-center py-20 gap-4">
-          <PackageOpen className="w-12 h-12 text-muted-foreground" />
-          <p className="text-muted-foreground font-medium">لا توجد بيانات</p>
-          <Button variant="outline" onClick={() => navigate("/inventory")}>
-            العودة إلى المخزون
-          </Button>
-        </CardContent>
+        <div className="flex flex-col items-center justify-center py-20 gap-4">
+          <Ban className="w-12 h-12 text-destructive" />
+          <p className="text-destructive font-medium">فشل تحميل بيانات المخزون</p>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => refetch()}>
+              إعادة المحاولة
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => navigate("/inventory")}
+            >
+              العودة إلى المخزون
+            </Button>
+          </div>
+        </div>
       </Card>
     );
   }
 
   const batches = stock.batches || [];
   const totalQuantity = batches.reduce((s, b) => s + b.quantityRemaining, 0);
-  const totalValue = batches.reduce(
-    (s, b) => s + b.quantityRemaining * b.purchasePrice,
-    0,
-  );
 
   return (
-    <Card className="overflow-hidden">
-      <div className="h-1.5 bg-linear-to-l from-primary via-primary/60 to-primary/20" />
-
+    <Card className="overflow-hidden dir-rtl">
       <StockItemHeader
         medicineName={stock.medicineName}
         medicineId={medicineId}
@@ -92,30 +69,7 @@ export default function StockItemDetailPage() {
         onBack={() => navigate("/inventory")}
       />
 
-      <CardContent className="pt-6 space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <StatCard
-            icon={Package}
-            label="الكمية المتبقية"
-            value={new Intl.NumberFormat("ar-SA").format(totalQuantity)}
-          />
-          <StatCard icon={Layers} label="عدد الباتشات" value={batches.length} />
-          <StatCard
-            icon={DollarSign}
-            label="إجمالي قيمة المخزون"
-            value={
-              <span className="flex items-center gap-1">
-                {formatCurrency(totalValue)}
-                <SaudiRiyal className="w-4 h-4" />
-              </span>
-            }
-          />
-        </div>
-
-        <Separator />
-
-        <BatchesTable batches={batches} />
-      </CardContent>
+      <StockItemDetailTabs batches={batches} totalQuantity={totalQuantity} />
     </Card>
   );
 }

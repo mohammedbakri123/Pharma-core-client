@@ -29,3 +29,8 @@ export interface CreateExpenseRequest {
   amount: number;
   description?: string;
 }
+
+export interface UpdateExpenseRequest {
+  amount?: number;
+  description?: string;
+}

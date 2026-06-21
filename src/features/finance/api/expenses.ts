@@ -4,24 +4,28 @@ import type {
   ExpenseListResponse,
   ExpenseDeletedListResponse,
   CreateExpenseRequest,
+  UpdateExpenseRequest,
 } from "@/types";
 
-export const getExpenses = (params?: {
+const getExpenses = (params?: {
   page?: number;
   limit?: number;
   from?: string;
   to?: string;
 }) => api.get<ExpenseListResponse>("/expenses", { params });
 
-export const createExpense = (data: CreateExpenseRequest) =>
+const createExpense = (data: CreateExpenseRequest) =>
   api.post<ExpenseDto>("/expenses", data);
 
-export const deleteExpense = (id: number) => api.delete(`/expenses/${id}`);
+const updateExpense = (id: number, data: UpdateExpenseRequest) =>
+  api.put<ExpenseDto>(`/expenses/${id}`, data);
 
-export const restoreExpense = (id: number) =>
+const deleteExpense = (id: number) => api.delete(`/expenses/${id}`);
+
+const restoreExpense = (id: number) =>
   api.post(`/expenses/${id}/restore`);
 
-export const getDeletedExpenses = (params?: {
+const getDeletedExpenses = (params?: {
   page?: number;
   limit?: number;
   search?: string;
@@ -31,3 +35,12 @@ export const getDeletedExpenses = (params?: {
   "/expenses/deleted",
   { params },
 );
+
+export const ExpenseApi = {
+  getExpenses,
+  createExpense,
+  updateExpense,
+  deleteExpense,
+  restoreExpense,
+  getDeletedExpenses,
+};

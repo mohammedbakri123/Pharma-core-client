@@ -22,21 +22,18 @@ export default function SaleDetailTabs({ sale }: SaleDetailTabsProps) {
             value="items"
             className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-1 py-3 text-sm font-bold shadow-none cursor-pointer"
           >
-            <ShoppingCart className="w-4 h-4 ml-1.5" />
             الأصناف
           </TabsTrigger>
           <TabsTrigger
             value="payments"
             className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-1 py-3 text-sm font-bold shadow-none cursor-pointer"
           >
-            <CreditCard className="w-4 h-4 ml-1.5" />
             المدفوعات
           </TabsTrigger>
           <TabsTrigger
             value="returns"
             className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-1 py-3 text-sm font-bold shadow-none cursor-pointer"
           >
-            <RotateCcw className="w-4 h-4 ml-1.5" />
             المرتجعات
           </TabsTrigger>
         </TabsList>
@@ -47,16 +44,10 @@ export default function SaleDetailTabs({ sale }: SaleDetailTabsProps) {
           <SaleItemsTable sale={sale} />
         </TabsContent>
         <TabsContent value="payments" className="mt-0 outline-none">
-          <SalePaymentsSection
-            saleId={sale.saleId}
-            isCompleted={isCompleted}
-          />
+          <SalePaymentsSection saleId={sale.saleId} isCompleted={isCompleted} />
         </TabsContent>
         <TabsContent value="returns" className="mt-0 outline-none">
-          <SaleReturnsSection
-            saleId={sale.saleId}
-            isCompleted={isCompleted}
-          />
+          <SaleReturnsSection saleId={sale.saleId} isCompleted={isCompleted} />
         </TabsContent>
       </CardContent>
     </Tabs>

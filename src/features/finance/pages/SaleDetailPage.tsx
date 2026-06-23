@@ -14,12 +14,7 @@ export default function SaleDetailPage() {
   const navigate = useNavigate();
   const saleId = Number(id);
 
-  const {
-    data: sale,
-    isLoading,
-    isError,
-    refetch,
-  } = useGetSale(saleId);
+  const { data: sale, isLoading, isError, refetch } = useGetSale(saleId);
 
   const { data: balance } = useGetSaleBalance(saleId);
 
@@ -43,7 +38,9 @@ export default function SaleDetailPage() {
       <Card>
         <div className="flex flex-col items-center justify-center py-20 gap-4">
           <Ban className="w-12 h-12 text-destructive" />
-          <p className="text-destructive font-medium">فشل تحميل بيانات الفاتورة</p>
+          <p className="text-destructive font-medium">
+            فشل تحميل بيانات الفاتورة
+          </p>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => refetch()}>
               إعادة المحاولة
@@ -63,10 +60,7 @@ export default function SaleDetailPage() {
 
   return (
     <Card className="overflow-hidden dir-rtl">
-      <SaleDetailHeader
-        sale={sale}
-        onBack={() => navigate("/finance")}
-      />
+      <SaleDetailHeader sale={sale} onBack={() => navigate("/finance")} />
 
       <div className="p-6 space-y-4">
         <SaleSummaryCards sale={sale} balance={balance} />

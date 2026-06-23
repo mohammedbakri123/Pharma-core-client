@@ -21,6 +21,7 @@ export interface SaleDto {
   saleId: number;
   userId: number | null;
   customerId: number | null;
+  customerName: string | null;
   status: SaleStatus;
   totalAmount: number;
   discount: number;
@@ -30,7 +31,6 @@ export interface SaleDto {
 
 export interface SaleDetailsDto extends SaleDto {
   items: SaleItemDto[];
-  customerName?: string;
   userName?: string;
 }
 
@@ -46,8 +46,9 @@ export interface SaleListResponse {
 export interface SaleBalanceDto {
   saleId: number;
   totalAmount: number;
-  totalPaid: number;
-  balance: number;
+  paidAmount: number;
+  remainingAmount: number;
+  discount: number;
 }
 
 export interface CompleteSaleResultDto {

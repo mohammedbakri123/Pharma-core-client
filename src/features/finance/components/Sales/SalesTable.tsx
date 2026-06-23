@@ -13,12 +13,7 @@ import {
 import { Button } from "@/ui/button";
 import { CardContent } from "@/ui/card";
 import { Pagination } from "@/ui/pagination";
-import {
-  MoreHorizontal,
-  Eye,
-  XCircle,
-  Loader2,
-} from "lucide-react";
+import { MoreHorizontal, Eye, XCircle, Loader2 } from "lucide-react";
 import SaleStatusBadge from "./SaleStatusBadge";
 
 export default function SalesTable() {
@@ -35,17 +30,20 @@ export default function SalesTable() {
   const filters: GetSalesRequest = {
     page: Number(searchParams.get("page") ?? "1"),
     limit: Number(searchParams.get("limit") ?? "10"),
-    ...(statusParam && statusParam !== "all" ? { status: Number(statusParam) } : {}),
+    ...(statusParam && statusParam !== "all"
+      ? { status: Number(statusParam) }
+      : {}),
     ...(fromParam ? { from: fromParam } : {}),
     ...(toParam ? { to: toParam } : {}),
   };
 
   const { data: salesData, isLoading, isError, refetch } = useSales(filters);
+  console.log("Sales data:", salesData);
 
   const columns: Column<SaleDto>[] = [
     {
       key: "saleId",
-      header: "#",
+      header: "SalesTable#",
       render: (s) => (
         <span className="font-semibold text-foreground">#{s.saleId}</span>
       ),
@@ -55,7 +53,11 @@ export default function SalesTable() {
       header: "العميل",
       render: (s) => (
         <span className="text-muted-foreground">
-          {s.customerId ? `عميل #${s.customerId}` : "عام"}
+          {s.customerName
+            ? s.customerName
+            : s.customerId
+              ? `#${s.customerId}`
+              : "عميل نقدي"}
         </span>
       ),
     },

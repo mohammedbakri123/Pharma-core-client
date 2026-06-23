@@ -28,9 +28,11 @@ export default function SaleSummaryCards({
         icon={BadgePercent}
         label="الخصم"
         value={
-          sale.discount > 0
-            ? formatCurrency(sale.discount)
-            : <span className="text-muted-foreground/60">-</span>
+          sale.discount > 0 ? (
+            formatCurrency(sale.discount)
+          ) : (
+            <span className="text-muted-foreground/60">-</span>
+          )
         }
       />
       <StatCard
@@ -38,9 +40,7 @@ export default function SaleSummaryCards({
         label="المدفوع"
         value={
           <span className="flex items-center gap-1">
-            {balance
-              ? formatCurrency(balance.totalPaid)
-              : formatCurrency(0)}
+            {balance ? formatCurrency(balance.paidAmount) : formatCurrency(0)}
             <Banknote className="w-4 h-4 text-muted-foreground" />
           </span>
         }
@@ -51,7 +51,7 @@ export default function SaleSummaryCards({
         value={
           <span className="flex items-center gap-1">
             {balance
-              ? formatCurrency(balance.balance)
+              ? formatCurrency(balance.remainingAmount)
               : formatCurrency(sale.totalAmount)}
             <Banknote className="w-4 h-4 text-muted-foreground" />
           </span>

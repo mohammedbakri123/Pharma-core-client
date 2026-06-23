@@ -14,7 +14,7 @@ export default function SaleDetailHeader({
 }: SaleDetailHeaderProps) {
   return (
     <>
-      <div className="h-1.5 bg-linear-to-l from-primary via-primary/60 to-primary/20" />
+      {/* <div className="h-1.5 bg-linear-to-l from-primary via-primary/60 to-primary/20" /> */}
 
       <div className="p-6 bg-linear-to-br from-primary/10 via-primary/5 to-background border-b border-border/40">
         <Button

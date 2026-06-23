@@ -3,7 +3,7 @@ export * from "../../features/inventory/api/medicines";
 export * from "../../features/inventory/api/inventory";
 export * from "../../features/people/api/customers";
 export * from "../../features/people/api/suppliers";
-export * from "./pos";
+export * from "../../features/pos/api/pos";
 export * from "../../features/finance/api/sales";
 export * from "../../features/finance/api/purchases";
 export * from "../../features/finance/api/salesReturns";

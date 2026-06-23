@@ -9,3 +9,4 @@ export * from "../../features/finance/types/purchase";
 export * from "../../features/finance/types/payment";
 export * from "../../features/finance/types/expense";
 export * from "../../features/finance/types/salesReturn";
+export * from "../../features/pos/types/pos";

@@ -64,13 +64,11 @@ export interface CompleteSaleResultDto {
 export interface CreateSaleRequest {
   customerId?: number;
   note?: string;
-  discount?: number;
 }
 
 export interface AddSaleItemRequest {
   medicineId: number;
   quantity: number;
-  unitPrice?: number;
 }
 
 export interface UpdateSaleItemRequest {

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { DataTable } from "@/ui/data-table";
 import { Button } from "@/ui/button";
 import { ConfirmDialog } from "@/ui/confirm-dialog";
@@ -14,6 +13,7 @@ import type { SaleItemDto, SaleDetailsDto } from "@/types";
 import { SaleStatus } from "@/types";
 import AddItemDialog from "./AddItemDialog";
 import EditItemDialog from "./EditItemDialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface SaleItemsTableProps {
   sale: SaleDetailsDto;
@@ -21,14 +21,21 @@ interface SaleItemsTableProps {
 
 export default function SaleItemsTable({ sale }: SaleItemsTableProps) {
   const isDraft = sale.status === SaleStatus.Draft;
-  const queryClient = useQueryClient();
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<SaleItemDto | null>(null);
   const [deletingItemId, setDeletingItemId] = useState<number | null>(null);
 
-  const addMutation = useAddSaleItem(sale.saleId);
-  const updateMutation = useUpdateSaleItem(sale.saleId);
-  const deleteMutation = useDeleteSaleItem(sale.saleId);
+  const { toast } = useToast();
+
+  const { mutate: addMutation, isPending: isAdding } = useAddSaleItem(
+    sale.saleId,
+  );
+  const { mutate: updateMutation, isPending: isUpdating } = useUpdateSaleItem(
+    sale.saleId,
+  );
+  const { mutate: deleteMutation, isPending: isDeleting } = useDeleteSaleItem(
+    sale.saleId,
+  );
 
   const columns = [
     {
@@ -157,11 +164,25 @@ export default function SaleItemsTable({ sale }: SaleItemsTableProps) {
           open={addDialogOpen}
           onOpenChange={setAddDialogOpen}
           onAdd={(data) =>
-            addMutation.mutate(data, {
-              onSuccess: () => setAddDialogOpen(false),
+            addMutation(data, {
+              onSuccess: () => {
+                setAddDialogOpen(false);
+                toast({
+                  title: "تمت إضافة الصنف بنجاح",
+                  description: "تمت إضافة الصنف إلى الفاتورة بنجاح.",
+                  variant: "success",
+                });
+              },
+              onError: () => {
+                toast({
+                  title: "فشل إضافة الصنف",
+                  description: "حدث خطأ أثناء إضافة الصنف إلى الفاتورة.",
+                  variant: "destructive",
+                });
+              },
             })
           }
-          isPending={addMutation.isPending}
+          isPending={isAdding}
         />
       )}
 
@@ -173,12 +194,28 @@ export default function SaleItemsTable({ sale }: SaleItemsTableProps) {
           }}
           item={editingItem}
           onUpdate={(data) =>
-            updateMutation.mutate(
+            updateMutation(
               { itemId: editingItem.saleItemId, data },
-              { onSuccess: () => setEditingItem(null) },
+              {
+                onSuccess: () => {
+                  setEditingItem(null);
+                  toast({
+                    title: "تم تحديث الصنف بنجاح",
+                    description: "تم تحديث بيانات الصنف في الفاتورة بنجاح.",
+                    variant: "success",
+                  });
+                },
+                onError: () => {
+                  toast({
+                    title: "فشل تحديث الصنف",
+                    description: "حدث خطأ أثناء تحديث بيانات الصنف.",
+                    variant: "destructive",
+                  });
+                },
+              },
             )
           }
-          isPending={updateMutation.isPending}
+          isPending={isUpdating}
         />
       )}
 
@@ -194,12 +231,26 @@ export default function SaleItemsTable({ sale }: SaleItemsTableProps) {
         variant="destructive"
         onConfirm={() => {
           if (deletingItemId) {
-            deleteMutation.mutate(deletingItemId, {
-              onSuccess: () => setDeletingItemId(null),
+            deleteMutation(deletingItemId, {
+              onSuccess: () => {
+                setDeletingItemId(null);
+                toast({
+                  title: "تم حذف الصنف بنجاح",
+                  description: "تم حذف الصنف من الفاتورة بنجاح.",
+                  variant: "success",
+                });
+              },
+              onError: () => {
+                toast({
+                  title: "فشل حذف الصنف",
+                  description: "حدث خطأ أثناء حذف الصنف من الفاتورة.",
+                  variant: "destructive",
+                });
+              },
             });
           }
         }}
-        isPending={deleteMutation.isPending}
+        isPending={isDeleting}
       />
     </div>
   );

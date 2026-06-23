@@ -26,7 +26,6 @@ export default function AddItemDialog({
 }: AddItemDialogProps) {
   const [medicineId, setMedicineId] = useState("");
   const [quantity, setQuantity] = useState("1");
-  const [unitPrice, setUnitPrice] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +33,6 @@ export default function AddItemDialog({
       medicineId: Number(medicineId),
       quantity: Number(quantity),
     };
-    if (unitPrice) data.unitPrice = Number(unitPrice);
     onAdd(data);
   };
 
@@ -67,27 +65,8 @@ export default function AddItemDialog({
               required
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="unitPrice">سعر الوحدة (اختياري)</Label>
-            <Input
-              id="unitPrice"
-              type="number"
-              min="0"
-              step="0.01"
-              value={unitPrice}
-              onChange={(e) => setUnitPrice(e.target.value)}
-              placeholder="سيتم استخدام سعر البيع الافتراضي"
-            />
-          </div>
+
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isPending}
-            >
-              إلغاء
-            </Button>
             <Button type="submit" disabled={isPending}>
               {isPending ? "جاري الإضافة..." : "إضافة"}
             </Button>

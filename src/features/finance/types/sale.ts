@@ -11,7 +11,9 @@ export interface SaleItemDto {
   saleItemId: number;
   saleId: number;
   medicineId: number;
+  medicineName: string | null;
   batchId: number;
+  batchNumber: string | null;
   quantity: number;
   unitPrice: number;
   totalPrice: number;
@@ -27,11 +29,11 @@ export interface SaleDto {
   discount: number;
   createdAt: string;
   note: string | null;
+  userName?: string;
 }
 
 export interface SaleDetailsDto extends SaleDto {
   items: SaleItemDto[];
-  userName?: string;
 }
 
 export interface SaleListResponse {

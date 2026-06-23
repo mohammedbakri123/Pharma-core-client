@@ -5,7 +5,11 @@ import { Button } from "@/ui/button";
 import { ConfirmDialog } from "@/ui/confirm-dialog";
 import { Plus, Pencil, Trash2, ShoppingCart } from "lucide-react";
 import { formatCurrency } from "@/utils/formatters";
-import { useAddSaleItem, useUpdateSaleItem, useDeleteSaleItem } from "../../hooks/useSales";
+import {
+  useAddSaleItem,
+  useUpdateSaleItem,
+  useDeleteSaleItem,
+} from "../../hooks/useSales";
 import type { SaleItemDto, SaleDetailsDto } from "@/types";
 import { SaleStatus } from "@/types";
 import AddItemDialog from "./AddItemDialog";
@@ -41,10 +45,26 @@ export default function SaleItemsTable({ sale }: SaleItemsTableProps) {
       ),
     },
     {
+      key: "medicineName",
+      header: "اسم الصنف",
+      render: (item: SaleItemDto) => (
+        <span className="font-medium">{item.medicineName || "غير محدد"}</span>
+      ),
+    },
+    {
       key: "batchId",
       header: "الباتش",
       render: (item: SaleItemDto) => (
         <span className="text-muted-foreground">#{item.batchId}</span>
+      ),
+    },
+    {
+      key: "batchNumber",
+      header: "رقم الباتش",
+      render: (item: SaleItemDto) => (
+        <span className="text-muted-foreground">
+          {item.batchNumber || "غير محدد"}
+        </span>
       ),
     },
     {
@@ -73,7 +93,10 @@ export default function SaleItemsTable({ sale }: SaleItemsTableProps) {
             header: "",
             className: "w-20 text-left",
             render: (item: SaleItemDto) => (
-              <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+              <div
+                className="flex items-center gap-1"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <Button
                   variant="ghost"
                   size="icon"

@@ -38,7 +38,6 @@ export default function SalesTable() {
   };
 
   const { data: salesData, isLoading, isError, refetch } = useSales(filters);
-  console.log("Sales data:", salesData);
 
   const columns: Column<SaleDto>[] = [
     {
@@ -58,6 +57,19 @@ export default function SalesTable() {
             : s.customerId
               ? `#${s.customerId}`
               : "عميل نقدي"}
+        </span>
+      ),
+    },
+    {
+      key: "userId",
+      header: "المستخدم",
+      render: (s) => (
+        <span className="text-muted-foreground">
+          {s.userName
+            ? s.userName
+            : s.userId
+              ? `#${s.userId}`
+              : "مستخدم غير معروف"}
         </span>
       ),
     },

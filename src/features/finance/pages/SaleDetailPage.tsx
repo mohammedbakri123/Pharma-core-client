@@ -15,6 +15,7 @@ export default function SaleDetailPage() {
   const saleId = Number(id);
 
   const { data: sale, isLoading, isError, refetch } = useGetSale(saleId);
+  console.log("Sales data:", sale);
 
   const { data: balance } = useGetSaleBalance(saleId);
 

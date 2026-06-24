@@ -1,4 +1,5 @@
 import { StockAlertDto, GetStockAlertQuery } from "@/types";
+import StockStatusBadge from "./StockStatusBadge";
 import { useStockAlerts } from "@features/inventory/hooks/useInventory";
 
 import React from "react";
@@ -15,7 +16,6 @@ import { Button } from "@/ui/button";
 import { Eye, MoreHorizontal } from "lucide-react";
 import { CardContent } from "@/ui/card";
 import { Pagination } from "@/ui/pagination";
-import { Badge } from "@/ui/badge";
 
 export default function InventoryTable() {
   const [searchParams] = useSearchParams();
@@ -40,15 +40,6 @@ export default function InventoryTable() {
     refetch,
   } = useStockAlerts(filters);
   console.log("Stock Alert Data:", stockData, "Filters:", filters);
-
-  const statusBadge = (status: string) => {
-    const colors: Record<string, string> = {
-      متوفر: "bg-green-600 hover:bg-green-600/95 text-white",
-      "مخزون منخفض": "bg-amber-600 hover:bg-amber-600/95 text-white",
-      حرج: "bg-red-600 hover:bg-red-600/95 text-white",
-    };
-    return <Badge className={colors[status] || ""}>{status}</Badge>;
-  };
 
   const columns: Column<StockAlertDto>[] = [
     {
@@ -87,7 +78,10 @@ export default function InventoryTable() {
     {
       key: "status",
       header: "الحالة",
-      render: (item) => statusBadge(item.status),
+      render: (item) => {
+        console.log("Rendering status for item:", item);
+        return <StockStatusBadge status={item.status} />;
+      },
     },
     {
       key: "nearestExpireDate",

@@ -8,6 +8,12 @@ export interface GetStockAlertQuery {
   search?: string | null;
 }
 
+export enum StockStatus {
+  Available = "available",
+  LowStock = "lowStock",
+  Critical = "critical",
+}
+
 export interface StockAlertDto {
   medicineId: number;
   name: string;
@@ -16,7 +22,7 @@ export interface StockAlertDto {
   categoryName: string | null;
   unit: MedicineUnit | null;
   totalQuantity: number;
-  status: "متوفر" | "مخزون منخفض" | "حرج";
+  status: StockStatus;
   nearestExpireDate: string | null;
   isExpiring: boolean;
 }

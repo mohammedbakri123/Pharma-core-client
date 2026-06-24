@@ -11,7 +11,7 @@ import {
 } from "../../hooks/useSales";
 import type { SaleItemDto, SaleDetailsDto } from "@/types";
 import { SaleStatus } from "@/types";
-import AddItemDialog from "./AddItemDialog";
+import AddItemDialog from "./AddItem/AddItemDialog";
 import EditItemDialog from "./EditItemDialog";
 import { useToast } from "@/hooks/use-toast";
 

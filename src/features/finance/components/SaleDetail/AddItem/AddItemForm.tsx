@@ -1,17 +1,17 @@
 import { useState, useRef, useEffect } from "react";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
-import { Badge } from "@/ui/badge";
 import {
   useStockAlerts,
   useGetStockByMedicine,
 } from "@features/inventory/hooks/useInventory";
-import { type StockAlertDto } from "@features/inventory/types/inventory";
-import { stockStatusVariant } from "@features/inventory/components/Inventory/stockStatusConfig";
+import type { StockAlertDto } from "@features/inventory/types/inventory";
 import type { AddSaleItemRequest } from "@/types";
 import { useDebounce } from "@/hooks/use-debounce";
 import { Button } from "@/ui/button";
 import { DialogFooter } from "@/ui/dialog";
+import MedicineSearchDropdown from "./MedicineSearchDropdown";
+import SelectedMedicineCard from "./SelectedMedicineCard";
 
 interface AddItemFormProps {
   onAdd: (data: AddSaleItemRequest) => void;
@@ -103,76 +103,20 @@ export default function AddItemForm({
         />
 
         {showDropdown && debouncedSearch.length >= 1 && (
-          <div
-            ref={dropdownRef}
-            className="absolute z-50 w-full rounded-md border bg-popover shadow-md"
-          >
-            {searchLoading ? (
-              <div className="p-2 text-sm text-muted-foreground">
-                جاري البحث...
-              </div>
-            ) : searchResults.length ? (
-              <div className="max-h-48 overflow-y-auto">
-                {searchResults.map((medicine) => (
-                  <button
-                    key={medicine.medicineId}
-                    type="button"
-                    className="w-full flex items-center justify-between gap-2 px-3 py-2 text-right hover:bg-accent"
-                    onClick={() => handleSelect(medicine)}
-                  >
-                    <div className="min-w-0">
-                      <div className="truncate font-medium">
-                        {medicine.name}
-                      </div>
-                      {medicine.arabicName && (
-                        <div className="truncate text-xs text-muted-foreground">
-                          {medicine.arabicName}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex shrink-0 items-center gap-2">
-                      <Badge variant={stockStatusVariant[medicine.status]}>
-                        {medicine.totalQuantity}
-                      </Badge>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <div className="p-2 text-sm text-muted-foreground">
-                لا توجد نتائج
-              </div>
-            )}
-          </div>
+          <MedicineSearchDropdown
+            loading={searchLoading}
+            results={searchResults}
+            onSelect={handleSelect}
+            containerRef={dropdownRef}
+          />
         )}
       </div>
 
       {selectedMedicine && stockDetail && (
-        <div className="rounded-md border p-3">
-          <div className="mb-1 flex items-center justify-between">
-            <span className="font-medium">{stockDetail.medicineName}</span>
-            <Badge>{stockDetail.batches[0]?.sellPrice ?? "---"} ج.م</Badge>
-          </div>
-          {selectedMedicine.arabicName && (
-            <div className="mb-1 text-sm text-muted-foreground">
-              {selectedMedicine.arabicName}
-            </div>
-          )}
-          <div className="text-sm text-muted-foreground">
-            المخزون: {stockDetail.totalStock} | الوحدة:{" "}
-            {selectedMedicine.unit ?? "---"}
-            {stockDetail.totalStock === 0 && (
-              <Badge variant="destructive" className="mr-2">
-                نفذ
-              </Badge>
-            )}
-          </div>
-          {stockDetail.batches.length > 1 && (
-            <div className="mt-2 text-xs text-muted-foreground">
-              {stockDetail.batches.length} batches available
-            </div>
-          )}
-        </div>
+        <SelectedMedicineCard
+          medicine={selectedMedicine}
+          stockDetail={stockDetail}
+        />
       )}
 
       <div className="space-y-2">

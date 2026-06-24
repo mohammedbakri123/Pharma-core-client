@@ -1,41 +1,10 @@
 import { CardDescription, CardHeader, CardTitle } from "@/ui/card";
 import { Input } from "@/ui/input";
 import { Pill, Search } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useDebouncedSearchParams } from "@/hooks/use-debounced-search-params";
 
 export default function MedicineHeader() {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const search = searchParams.get("search") ?? "";
-
-  const [searchInput, setSearchInput] = useState(search);
-
-  // Sync input when URL changes (back/forward navigation)
-  useEffect(() => {
-    setSearchInput(search);
-  }, [search]);
-
-  // Debounce URL updates
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const params = new URLSearchParams(searchParams);
-
-      if (searchInput.trim()) {
-        params.set("search", searchInput);
-        params.set("page", "1");
-      } else {
-        params.delete("search");
-      }
-
-      // Avoid unnecessary URL updates
-      if (params.toString() !== searchParams.toString()) {
-        setSearchParams(params);
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [searchInput, searchParams, setSearchParams]);
+  const { searchInput, setSearchInput } = useDebouncedSearchParams();
 
   return (
     <CardHeader className="text-right border-b border-border/40 bg-card">

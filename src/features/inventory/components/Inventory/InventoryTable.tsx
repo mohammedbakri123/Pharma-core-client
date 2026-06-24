@@ -1,5 +1,5 @@
 import { StockAlertDto, GetStockAlertQuery } from "@/types";
-import { useLowStockAlerts } from "@features/inventory/hooks/useInventory";
+import { useStockAlerts } from "@features/inventory/hooks/useInventory";
 
 import React from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
@@ -38,7 +38,7 @@ export default function InventoryTable() {
     isLoading,
     isError,
     refetch,
-  } = useLowStockAlerts(filters);
+  } = useStockAlerts(filters);
   console.log("Stock Alert Data:", stockData, "Filters:", filters);
 
   const statusBadge = (status: string) => {

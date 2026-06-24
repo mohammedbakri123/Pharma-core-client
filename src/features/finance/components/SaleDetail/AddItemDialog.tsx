@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -12,21 +12,12 @@ import { Label } from "@/ui/label";
 import { Badge } from "@/ui/badge";
 import { ScrollArea } from "@/ui/scroll-area";
 import {
-  useSearchMedicines,
-  useScanBarcode,
-  useQuickStock,
-} from "@features/pos/hooks/usePos";
-import type { PosMedicine } from "@features/pos/types/pos";
+  useStockAlerts,
+  useGetStockByMedicine,
+} from "@features/inventory/hooks/useInventory";
+import type { StockAlertDto } from "@features/inventory/types/inventory";
 import type { AddSaleItemRequest } from "@/types";
-
-function useDebounce(value: string, delay: number) {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedValue(value), delay);
-    return () => clearTimeout(timer);
-  }, [value, delay]);
-  return debouncedValue;
-}
+import { useDebounce } from "@/hooks/use-debounce";
 
 interface AddItemDialogProps {
   open: boolean;
@@ -42,38 +33,29 @@ export default function AddItemDialog({
   isPending,
 }: AddItemDialogProps) {
   const [search, setSearch] = useState("");
-  const [barcode, setBarcode] = useState("");
   const [quantity, setQuantity] = useState("1");
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const debouncedSearch = useDebounce(search, 300);
-  const { data: searchResults, isLoading: searchLoading } =
-    useSearchMedicines(debouncedSearch);
-  const { data: scannedMedicine } = useScanBarcode(barcode);
-  const { data: quickStock } = useQuickStock(selectedId ?? undefined);
-
-  const resetForm = useCallback(() => {
-    setSearch("");
-    setBarcode("");
-    setQuantity("1");
-    setSelectedId(null);
-    setShowDropdown(false);
-  }, []);
+  const { data: alertData, isLoading: searchLoading } = useStockAlerts({
+    search: debouncedSearch.length >= 2 ? debouncedSearch : null,
+    LowStockThreshold: null,
+    ExpiringDays: null,
+  });
+  const { data: stockDetail } = useGetStockByMedicine(selectedId ?? 0);
 
   useEffect(() => {
-    if (open) resetForm();
-  }, [open, resetForm]);
-
-  useEffect(() => {
-    if (scannedMedicine) {
-      setSelectedId(scannedMedicine.medicineId);
-      setSearch(scannedMedicine.name);
-      setBarcode("");
+    if (open) {
+      setSearch("");
+      setQuantity("1");
+      setSelectedId(null);
+      setShowDropdown(false);
     }
-  }, [scannedMedicine]);
+  }, [open]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -90,24 +72,15 @@ export default function AddItemDialog({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const selectedMedicine = searchResults?.find(
-    (m) => m.medicineId === selectedId
+  const searchResults = alertData?.items ?? [];
+  const selectedMedicine = searchResults.find(
+    (m) => m.medicineId === selectedId,
   );
 
-  const handleSelect = (medicine: PosMedicine) => {
+  const handleSelect = (medicine: StockAlertDto) => {
     setSelectedId(medicine.medicineId);
     setSearch(medicine.name);
     setShowDropdown(false);
-  };
-
-  const handleBarcodeKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const value = (e.target as HTMLInputElement).value.trim();
-      if (value) {
-        setBarcode(value);
-      }
-    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -128,7 +101,7 @@ export default function AddItemDialog({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative space-y-2">
-            <Label htmlFor="search">بحث عن صنف</Label>
+            <Label htmlFor="search">بحث باسم الصنف أو الباركود</Label>
             <Input
               ref={inputRef}
               id="search"
@@ -136,12 +109,10 @@ export default function AddItemDialog({
               onChange={(e) => {
                 setSearch(e.target.value);
                 setShowDropdown(true);
-                if (e.target.value !== (selectedMedicine?.name ?? "")) {
-                  setSelectedId(null);
-                }
+                setSelectedId(null);
               }}
               onFocus={() => setShowDropdown(true)}
-              placeholder="ابحث باسم الصنف..."
+              placeholder="اسم الصنف أو الباركود..."
               autoComplete="off"
             />
 
@@ -154,13 +125,13 @@ export default function AddItemDialog({
                   <div className="p-2 text-sm text-muted-foreground">
                     جاري البحث...
                   </div>
-                ) : searchResults?.length ? (
+                ) : searchResults.length ? (
                   <ScrollArea className="max-h-48">
                     {searchResults.map((medicine) => (
                       <button
                         key={medicine.medicineId}
                         type="button"
-                        className="w-full flex items-center justify-between px-3 py-2 text-right hover:bg-accent"
+                        className="w-full flex items-center justify-between gap-2 px-3 py-2 text-right hover:bg-accent"
                         onClick={() => handleSelect(medicine)}
                       >
                         <div className="min-w-0">
@@ -174,12 +145,17 @@ export default function AddItemDialog({
                           )}
                         </div>
                         <div className="flex shrink-0 items-center gap-2">
-                          <Badge variant="outline">
-                            {medicine.sellPrice} ج.م
+                          <Badge
+                            variant={
+                              medicine.status === "حرج"
+                                ? "destructive"
+                                : medicine.status === "مخزون منخفض"
+                                  ? "outline"
+                                  : "secondary"
+                            }
+                          >
+                            {medicine.totalQuantity}
                           </Badge>
-                          <span className="text-xs text-muted-foreground">
-                            {medicine.currentStock}
-                          </span>
                         </div>
                       </button>
                     ))}
@@ -193,38 +169,31 @@ export default function AddItemDialog({
             )}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="barcode">باركود</Label>
-            <Input
-              id="barcode"
-              value={barcode}
-              onChange={(e) => setBarcode(e.target.value)}
-              onKeyDown={handleBarcodeKeyDown}
-              placeholder="امسح الباركود أو أدخله واضغط Enter"
-            />
-          </div>
-
-          {selectedMedicine && (
+          {selectedMedicine && stockDetail && (
             <div className="rounded-md border p-3">
               <div className="mb-1 flex items-center justify-between">
-                <span className="font-medium">{selectedMedicine.name}</span>
-                <Badge>{selectedMedicine.sellPrice} ج.م</Badge>
+                <span className="font-medium">{stockDetail.medicineName}</span>
+                <Badge>{stockDetail.batches[0]?.sellPrice ?? "---"} ج.م</Badge>
               </div>
               {selectedMedicine.arabicName && (
                 <div className="mb-1 text-sm text-muted-foreground">
                   {selectedMedicine.arabicName}
                 </div>
               )}
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span>
-                  المخزون: {quickStock?.totalStock ?? selectedMedicine.currentStock}
-                </span>
-                <span>|</span>
-                <span>الوحدة: {selectedMedicine.unit ?? "---"}</span>
-                {quickStock?.totalStock === 0 && (
-                  <Badge variant="destructive">نفذ</Badge>
+              <div className="text-sm text-muted-foreground">
+                المخزون: {stockDetail.totalStock} | الوحدة:{" "}
+                {selectedMedicine.unit ?? "---"}
+                {stockDetail.totalStock === 0 && (
+                  <Badge variant="destructive" className="mr-2">
+                    نفذ
+                  </Badge>
                 )}
               </div>
+              {stockDetail.batches.length > 1 && (
+                <div className="mt-2 text-xs text-muted-foreground">
+                  {stockDetail.batches.length} batches available
+                </div>
+              )}
             </div>
           )}
 

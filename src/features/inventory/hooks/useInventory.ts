@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import inventoryApi from "../api/inventory";
 import type { GetStockAlertQuery } from "../types/inventory";
 
-export function useLowStockAlerts(params: GetStockAlertQuery) {
+export function useStockAlerts(params: GetStockAlertQuery) {
   return useQuery({
     queryKey: ["low-stock-alerts", params],
     queryFn: async () => {

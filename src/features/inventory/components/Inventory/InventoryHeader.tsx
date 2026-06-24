@@ -1,39 +1,12 @@
 import { Input } from "@/ui/input";
 import { Pill, Search } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import React from "react";
 import { CardDescription, CardHeader, CardTitle } from "@/ui/card";
 import FilterSelect from "@/ui/filter-select";
+import { useDebouncedSearchParams } from "@/hooks/use-debounced-search-params";
 
 export default function InventoryHeader() {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const search = searchParams.get("search") ?? "";
-
-  const [searchInput, setSearchInput] = useState(search);
-
-  useEffect(() => {
-    setSearchInput(search);
-  }, [search]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const params = new URLSearchParams(searchParams);
-
-      if (searchInput.trim()) {
-        params.set("search", searchInput);
-        params.set("page", "1");
-      } else {
-        params.delete("search");
-      }
-
-      if (params.toString() !== searchParams.toString()) {
-        setSearchParams(params);
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [searchInput, searchParams, setSearchParams]);
+  const { searchInput, setSearchInput } = useDebouncedSearchParams();
 
   return (
     <CardHeader className="text-right border-b border-border/40 bg-card">

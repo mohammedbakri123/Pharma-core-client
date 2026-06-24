@@ -59,14 +59,6 @@ export default function EditItemDialog({
             سعر الوحدة: {item.unitPrice.toLocaleString()} ريال
           </div>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isPending}
-            >
-              إلغاء
-            </Button>
             <Button type="submit" disabled={isPending}>
               {isPending ? "جاري الحفظ..." : "حفظ"}
             </Button>

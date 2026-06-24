@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { DataTable } from "@/ui/data-table";
 import { Button } from "@/ui/button";
-import { ConfirmDialog } from "@/ui/confirm-dialog";
 import { Plus, Pencil, Trash2, ShoppingCart } from "lucide-react";
 import { formatCurrency } from "@/utils/formatters";
 import {
@@ -13,7 +12,7 @@ import type { SaleItemDto, SaleDetailsDto } from "@/types";
 import { SaleStatus } from "@/types";
 import AddItemDialog from "./AddItem/AddItemDialog";
 import EditItemDialog from "./EditItemDialog";
-import { useToast } from "@/hooks/use-toast";
+import DeleteItemConfirmDialog from "./DeleteItemConfirmDialog";
 
 interface SaleItemsTableProps {
   sale: SaleDetailsDto;
@@ -24,8 +23,6 @@ export default function SaleItemsTable({ sale }: SaleItemsTableProps) {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<SaleItemDto | null>(null);
   const [deletingItemId, setDeletingItemId] = useState<number | null>(null);
-
-  const { toast } = useToast();
 
   const { mutate: addMutation, isPending: isAdding } = useAddSaleItem(
     sale.saleId,
@@ -163,25 +160,7 @@ export default function SaleItemsTable({ sale }: SaleItemsTableProps) {
         <AddItemDialog
           open={addDialogOpen}
           onOpenChange={setAddDialogOpen}
-          onAdd={(data) =>
-            addMutation(data, {
-              onSuccess: () => {
-                setAddDialogOpen(false);
-                toast({
-                  title: "تمت إضافة الصنف بنجاح",
-                  description: "تمت إضافة الصنف إلى الفاتورة بنجاح.",
-                  variant: "success",
-                });
-              },
-              onError: () => {
-                toast({
-                  title: "فشل إضافة الصنف",
-                  description: "حدث خطأ أثناء إضافة الصنف إلى الفاتورة.",
-                  variant: "destructive",
-                });
-              },
-            })
-          }
+          onAdd={(data, options) => addMutation(data, options)}
           isPending={isAdding}
         />
       )}
@@ -193,63 +172,18 @@ export default function SaleItemsTable({ sale }: SaleItemsTableProps) {
             if (!open) setEditingItem(null);
           }}
           item={editingItem}
-          onUpdate={(data) =>
-            updateMutation(
-              { itemId: editingItem.saleItemId, data },
-              {
-                onSuccess: () => {
-                  setEditingItem(null);
-                  toast({
-                    title: "تم تحديث الصنف بنجاح",
-                    description: "تم تحديث بيانات الصنف في الفاتورة بنجاح.",
-                    variant: "success",
-                  });
-                },
-                onError: () => {
-                  toast({
-                    title: "فشل تحديث الصنف",
-                    description: "حدث خطأ أثناء تحديث بيانات الصنف.",
-                    variant: "destructive",
-                  });
-                },
-              },
-            )
-          }
+          onUpdate={(args, options) => updateMutation(args, options)}
           isPending={isUpdating}
         />
       )}
 
-      <ConfirmDialog
+      <DeleteItemConfirmDialog
         open={!!deletingItemId}
         onOpenChange={(open) => {
           if (!open) setDeletingItemId(null);
         }}
-        title="حذف الصنف"
-        description="هل أنت متأكد من حذف هذا الصنف من الفاتورة؟"
-        confirmLabel="حذف"
-        cancelLabel="إلغاء"
-        variant="destructive"
-        onConfirm={() => {
-          if (deletingItemId) {
-            deleteMutation(deletingItemId, {
-              onSuccess: () => {
-                setDeletingItemId(null);
-                toast({
-                  title: "تم حذف الصنف بنجاح",
-                  description: "تم حذف الصنف من الفاتورة بنجاح.",
-                  variant: "success",
-                });
-              },
-              onError: () => {
-                toast({
-                  title: "فشل حذف الصنف",
-                  description: "حدث خطأ أثناء حذف الصنف من الفاتورة.",
-                  variant: "destructive",
-                });
-              },
-            });
-          }
-        }}
+        itemId={deletingItemId}
+        onDelete={(id, options) => deleteMutation(id, options)}
         isPending={isDeleting}
       />
     </div>

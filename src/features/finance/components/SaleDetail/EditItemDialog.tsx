@@ -10,12 +10,19 @@ import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import type { SaleItemDto, UpdateSaleItemRequest } from "@/types";
+import { useToast } from "@/hooks/use-toast";
 
 interface EditItemDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   item: SaleItemDto;
-  onUpdate: (data: UpdateSaleItemRequest) => void;
+  onUpdate: (
+    args: { itemId: number; data: UpdateSaleItemRequest },
+    options?: {
+      onSuccess?: () => void;
+      onError?: () => void;
+    },
+  ) => void;
   isPending: boolean;
 }
 
@@ -27,6 +34,7 @@ export default function EditItemDialog({
   isPending,
 }: EditItemDialogProps) {
   const [quantity, setQuantity] = useState(String(item.quantity));
+  const { toast } = useToast();
 
   useEffect(() => {
     setQuantity(String(item.quantity));
@@ -34,7 +42,26 @@ export default function EditItemDialog({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onUpdate({ quantity: Number(quantity) });
+    onUpdate(
+      { itemId: item.saleItemId, data: { quantity: Number(quantity) } },
+      {
+        onSuccess: () => {
+          onOpenChange(false);
+          toast({
+            title: "تم تحديث الصنف بنجاح",
+            description: "تم تحديث بيانات الصنف في الفاتورة بنجاح.",
+            variant: "success",
+          });
+        },
+        onError: () => {
+          toast({
+            title: "فشل تحديث الصنف",
+            description: "حدث خطأ أثناء تحديث بيانات الصنف.",
+            variant: "destructive",
+          });
+        },
+      },
+    );
   };
 
   return (

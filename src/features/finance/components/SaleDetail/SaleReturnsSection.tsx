@@ -56,7 +56,7 @@ export default function SaleReturnsSection({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-row-reverse items-center justify-between mb-4">
         <h3 className="text-sm font-medium text-muted-foreground">
           إجمالي {returns.length} مرتجع
         </h3>

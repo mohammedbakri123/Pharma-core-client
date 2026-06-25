@@ -14,11 +14,16 @@ interface TabNavProps {
   children?: ReactNode;
 }
 
-export default function TabNav({ tabs, variant = "pill", children }: TabNavProps) {
+export default function TabNav({
+  tabs,
+  variant = "pill",
+  children,
+}: TabNavProps) {
   return (
     <>
       {variant === "pill" ? (
-        <div className="grid w-full max-w-lg bg-muted/40 p-1.5 rounded-xl border border-border/40 mb-6 h-auto gap-1"
+        <div
+          className="grid w-full max-w-lg bg-muted/40 p-1.5 rounded-xl border border-border/40 mb-6 h-auto gap-1 "
           style={{ gridTemplateColumns: `repeat(${tabs.length}, 1fr)` }}
         >
           {tabs.map((tab) => (
@@ -30,7 +35,7 @@ export default function TabNav({ tabs, variant = "pill", children }: TabNavProps
                   "rounded-lg py-2.5 text-sm font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer",
                   isActive
                     ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:bg-muted"
+                    : "text-muted-foreground hover:bg-muted",
                 )
               }
               end={tab.to.split("/").length <= 2}
@@ -42,7 +47,7 @@ export default function TabNav({ tabs, variant = "pill", children }: TabNavProps
         </div>
       ) : (
         <div className="px-6 border-b border-border/40 bg-muted/5">
-          <div className="bg-transparent border-b border-transparent w-full flex justify-end gap-6 p-0 h-12 rounded-none">
+          <div className="bg-transparent border-b border-transparent w-full flex justify-start gap-6 p-0 h-12 rounded-none">
             {tabs.map((tab) => (
               <NavLink
                 key={tab.to}
@@ -52,7 +57,7 @@ export default function TabNav({ tabs, variant = "pill", children }: TabNavProps
                     "rounded-none border-b-2 border-transparent px-1 py-3 text-sm font-bold shadow-none cursor-pointer transition-colors",
                     isActive
                       ? "border-primary text-foreground"
-                      : "text-muted-foreground hover:text-foreground"
+                      : "text-muted-foreground hover:text-foreground",
                   )
                 }
                 end

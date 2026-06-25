@@ -1,16 +1,13 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Outlet } from "react-router-dom";
 import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { Spinner } from "@/ui/spinner";
 import { Ban } from "lucide-react";
-import {
-  useGetPurchase,
-  useGetPurchaseBalance,
-} from "../hooks/usePurchases";
+import { useGetPurchase, useGetPurchaseBalance } from "../hooks/usePurchases";
 import PurchaseDetailHeader from "../components/PurchaseDetail/PurchaseDetailHeader";
 import PurchaseSummaryCards from "../components/PurchaseDetail/PurchaseSummaryCards";
 import PurchaseActionsBar from "../components/PurchaseDetail/PurchaseActionsBar";
-import PurchaseDetailTabs from "../components/PurchaseDetail/PurchaseDetailTabs";
+import TabNav from "@/ui/TabNav";
 
 export default function PurchaseDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -65,23 +62,32 @@ export default function PurchaseDetailPage() {
     );
   }
 
+  const tabs = [
+    { to: `/finance/purchases/${id}/items`, label: "الأصناف" },
+    { to: `/finance/purchases/${id}/payments`, label: "المدفوعات" },
+    { to: `/finance/purchases/${id}/returns`, label: "المرتجعات" },
+  ];
+
   return (
     <Card className="overflow-hidden dir-rtl">
       <PurchaseDetailHeader
         purchase={purchase}
-        onBack={() => navigate("/finance")}
+        onBack={() => navigate("/finance/purchases")}
       />
 
       <div className="p-6 space-y-4">
         <PurchaseSummaryCards purchase={purchase} balance={balance} />
-
         <PurchaseActionsBar
           purchaseId={purchase.purchaseId}
           status={purchase.status}
         />
       </div>
 
-      <PurchaseDetailTabs purchase={purchase} />
+      <TabNav tabs={tabs} variant="underline">
+        <div className="p-6">
+          <Outlet />
+        </div>
+      </TabNav>
     </Card>
   );
 }

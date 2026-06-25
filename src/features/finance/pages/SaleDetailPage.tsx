@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Outlet } from "react-router-dom";
 import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { Spinner } from "@/ui/spinner";
@@ -7,7 +7,7 @@ import { useGetSale, useGetSaleBalance } from "../hooks/useSales";
 import SaleDetailHeader from "../components/SaleDetail/SaleDetailHeader";
 import SaleSummaryCards from "../components/SaleDetail/SaleSummaryCards";
 import SaleActionsBar from "../components/SaleDetail/SaleActionsBar";
-import SaleDetailTabs from "../components/SaleDetail/SaleDetailTabs";
+import TabNav from "@/ui/TabNav";
 
 export default function SaleDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -15,7 +15,6 @@ export default function SaleDetailPage() {
   const saleId = Number(id);
 
   const { data: sale, isLoading, isError, refetch } = useGetSale(saleId);
-
   const { data: balance } = useGetSaleBalance(saleId);
 
   if (isLoading) {
@@ -58,20 +57,26 @@ export default function SaleDetailPage() {
     );
   }
 
+  const tabs = [
+    { to: `/finance/sales/${id}/items`, label: "الأصناف" },
+    { to: `/finance/sales/${id}/payments`, label: "المدفوعات" },
+    { to: `/finance/sales/${id}/returns`, label: "المرتجعات" },
+  ];
+
   return (
     <Card className="overflow-hidden dir-rtl">
-      <SaleDetailHeader sale={sale} onBack={() => navigate("/finance")} />
+      <SaleDetailHeader sale={sale} onBack={() => navigate("/finance/sales")} />
 
       <div className="p-6 space-y-4">
         <SaleSummaryCards sale={sale} balance={balance} />
-
-        <SaleActionsBar
-          saleId={sale.saleId}
-          status={sale.status}
-        />
+        <SaleActionsBar saleId={sale.saleId} status={sale.status} />
       </div>
 
-      <SaleDetailTabs sale={sale} />
+      <TabNav tabs={tabs} variant="underline">
+        <div className="p-6">
+          <Outlet />
+        </div>
+      </TabNav>
     </Card>
   );
 }

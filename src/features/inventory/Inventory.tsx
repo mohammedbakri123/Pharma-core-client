@@ -1,11 +1,21 @@
+import { Outlet } from "react-router-dom";
 import InventoryHeader from "./components/InventoryHeader";
-import InventoryTabs from "./components/InventoryTabs";
+import TabNav from "@/ui/TabNav";
+import { Warehouse, Pill, Scale } from "lucide-react";
+
+const tabs = [
+  { to: "/inventory/stock", label: "المخزن", icon: <Warehouse className="w-4 h-4" /> },
+  { to: "/inventory/medicines", label: "الاصناف", icon: <Pill className="w-4 h-4" /> },
+  { to: "/inventory/adjustments", label: "التسويات", icon: <Scale className="w-4 h-4" /> },
+];
 
 export default function Inventory() {
   return (
     <div className="space-y-6" dir="rtl">
       <InventoryHeader />
-      <InventoryTabs />
+      <TabNav tabs={tabs} variant="pill">
+        <Outlet />
+      </TabNav>
     </div>
   );
 }

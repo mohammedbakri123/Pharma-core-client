@@ -1,11 +1,11 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Outlet } from "react-router-dom";
 import { Card, CardContent } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { useGetCustomer } from "../hooks/useCustomers";
 import { Ban } from "lucide-react";
 import { Spinner } from "@/ui/spinner";
 import CustomerDetailHeader from "../components/CustomerDetails/CustomerDetailHeader";
-import CustomerDetailTabs from "../components/CustomerDetails/CustomerDetailTabs";
+import TabNav from "@/ui/TabNav";
 
 export default function CustomerDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -57,6 +57,12 @@ export default function CustomerDetailPage() {
     );
   }
 
+  const tabs = [
+    { to: `/people/customer/${id}/overview`, label: "نظرة عامة والمالية" },
+    { to: `/people/customer/${id}/sales`, label: "سجل الفواتير" },
+    { to: `/people/customer/${id}/statement`, label: "كشف الحساب (الدفتر)" },
+  ];
+
   return (
     <Card className="overflow-hidden dir-rtl">
       <CustomerDetailHeader
@@ -64,7 +70,11 @@ export default function CustomerDetailPage() {
         onBack={() => navigate("/people")}
       />
 
-      <CustomerDetailTabs customerId={customerId} />
+      <TabNav tabs={tabs} variant="underline">
+        <CardContent className="p-6">
+          <Outlet />
+        </CardContent>
+      </TabNav>
     </Card>
   );
 }

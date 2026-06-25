@@ -1,11 +1,11 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Outlet } from "react-router-dom";
 import { useGetStockByMedicine } from "../hooks/useInventory";
 import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { Spinner } from "@/ui/spinner";
 import { Ban } from "lucide-react";
 import { StockItemHeader } from "../components/StockItemDetail/StockItemHeader";
-import StockItemDetailTabs from "../components/StockItemDetail/StockItemDetailTabs";
+import TabNav from "@/ui/TabNav";
 
 export default function StockItemDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -60,6 +60,11 @@ export default function StockItemDetailPage() {
   const batches = stock.batches || [];
   const totalQuantity = batches.reduce((s, b) => s + b.quantityRemaining, 0);
 
+  const tabs = [
+    { to: `/inventory/stock/${id}/overview`, label: "نظرة عامة" },
+    { to: `/inventory/stock/${id}/batches`, label: `الباتشات (${batches.length})` },
+  ];
+
   return (
     <Card className="overflow-hidden dir-rtl">
       <StockItemHeader
@@ -69,7 +74,11 @@ export default function StockItemDetailPage() {
         onBack={() => navigate("/inventory")}
       />
 
-      <StockItemDetailTabs batches={batches} totalQuantity={totalQuantity} />
+      <TabNav tabs={tabs} variant="underline">
+        <div className="p-6">
+          <Outlet />
+        </div>
+      </TabNav>
     </Card>
   );
 }

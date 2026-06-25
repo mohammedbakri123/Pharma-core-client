@@ -140,7 +140,7 @@ export function useCompleteSale(saleId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CompleteSaleRequest) => completeSale(saleId, data),
+    mutationFn: () => completeSale(saleId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sale", saleId] });
       queryClient.invalidateQueries({ queryKey: ["sale", saleId, "balance"] });

@@ -15,7 +15,6 @@ export default function SaleDetailPage() {
   const saleId = Number(id);
 
   const { data: sale, isLoading, isError, refetch } = useGetSale(saleId);
-  console.log("Sales data:", sale);
 
   const { data: balance } = useGetSaleBalance(saleId);
 
@@ -69,7 +68,6 @@ export default function SaleDetailPage() {
         <SaleActionsBar
           saleId={sale.saleId}
           status={sale.status}
-          totalAmount={sale.totalAmount}
         />
       </div>
 

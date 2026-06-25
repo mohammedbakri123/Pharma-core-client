@@ -39,7 +39,6 @@ export interface PaymentListResponse {
 }
 
 export interface CreatePaymentRequest {
-  type: PaymentType;
   referenceType: PaymentReferenceType;
   referenceId: number;
   method?: PaymentMethod;

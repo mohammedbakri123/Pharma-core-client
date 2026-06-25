@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/ui/button";
 import { ConfirmDialog } from "@/ui/confirm-dialog";
-import { CheckCircle, Ban, Banknote } from "lucide-react";
+import { CheckCircle, Ban } from "lucide-react";
 import { SaleStatus } from "@/types";
 import { useCancelSale } from "../../hooks/useSales";
 import CompleteSaleDialog from "./CompleteSaleDialog";
@@ -10,13 +10,11 @@ import CompleteSaleDialog from "./CompleteSaleDialog";
 interface SaleActionsBarProps {
   saleId: number;
   status: SaleStatus;
-  totalAmount: number;
 }
 
 export default function SaleActionsBar({
   saleId,
   status,
-  totalAmount,
 }: SaleActionsBarProps) {
   const navigate = useNavigate();
   const [completeDialogOpen, setCompleteDialogOpen] = useState(false);
@@ -68,7 +66,6 @@ export default function SaleActionsBar({
         open={completeDialogOpen}
         onOpenChange={setCompleteDialogOpen}
         saleId={saleId}
-        totalAmount={totalAmount}
       />
     </>
   );

@@ -3,7 +3,11 @@ import { DataTable } from "@/ui/data-table";
 import { Button } from "@/ui/button";
 import { CreditCard, Plus } from "lucide-react";
 import { formatCurrency, formatDate } from "@/utils/formatters";
-import { useSalePayments, useAddSalePayment } from "../../hooks/useSales";
+import {
+  useSalePayments,
+  useAddSalePayment,
+  useGetSaleBalance,
+} from "../../hooks/useSales";
 import type { PaymentDto } from "@/types";
 import { PaymentMethod } from "@/types";
 import AddPaymentDialog from "./AddPaymentDialog";
@@ -24,6 +28,7 @@ export default function SalePaymentsSection({
 }: SalePaymentsSectionProps) {
   const { data: paymentsData, isLoading } = useSalePayments(saleId);
   const addPaymentMutation = useAddSalePayment(saleId);
+  const { data: balance } = useGetSaleBalance(saleId);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
 
   const payments = paymentsData?.payments || [];
@@ -107,6 +112,7 @@ export default function SalePaymentsSection({
         }
         isPending={addPaymentMutation.isPending}
         saleId={saleId}
+        remainingAmount={balance?.remainingAmount}
       />
     </div>
   );

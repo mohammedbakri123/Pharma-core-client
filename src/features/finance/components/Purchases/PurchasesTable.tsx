@@ -2,7 +2,7 @@ import { PurchaseDto, PurchaseStatus } from "@/types";
 import { useCancelPurchase, usePurchases } from "../../hooks/usePurchases";
 import { useToast } from "@/hooks/use-toast";
 
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Column, DataTable } from "@/ui/data-table";
 import {
   DropdownMenu,
@@ -14,6 +14,7 @@ import { Button } from "@/ui/button";
 import { CardContent } from "@/ui/card";
 import { Pagination } from "@/ui/pagination";
 import {
+  Eye,
   FileText,
   Loader2,
   MoreHorizontal,
@@ -24,6 +25,7 @@ import PurchaseStatusBadge from "./PurchaseStatusBadge";
 
 export default function PurchasesTable() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   const { mutate: cancelPurchase, isPending: isCancelling } =
@@ -147,6 +149,14 @@ export default function PurchasesTable() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-40">
+            <DropdownMenuItem
+              onSelect={(ev) => {
+                ev.preventDefault();
+                navigate(`/finance/purchases/${p.purchaseId}`);
+              }}
+            >
+              <Eye /> عرض التفاصيل
+            </DropdownMenuItem>
             {p.status === PurchaseStatus.Draft && (
               <DropdownMenuItem
                 onSelect={(ev) => {
@@ -183,7 +193,7 @@ export default function PurchasesTable() {
               </DropdownMenuItem>
             )}
             {p.status !== PurchaseStatus.Draft && (
-              <DropdownMenuItem disabled>لا توجد إجراءات</DropdownMenuItem>
+              <DropdownMenuItem disabled>لا توجد إجراءات أخرى</DropdownMenuItem>
             )}
           </DropdownMenuContent>
         </DropdownMenu>

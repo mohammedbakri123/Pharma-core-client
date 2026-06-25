@@ -1,5 +1,3 @@
-import { MedicineUnit } from "../../inventory/types/Medicine";
-
 export enum PurchaseStatus {
   Draft = 1,
   Completed = 2,
@@ -8,15 +6,28 @@ export enum PurchaseStatus {
 
 export interface PurchaseItemDto {
   purchaseItemId: number;
-  purchaseId: number;
   medicineId: number;
-  batchId: number;
+  medicineName?: string;
+  batchId: number | null;
+  batchNumber?: string;
   quantity: number;
   purchasePrice: number;
   sellPrice: number;
-  expireDate: string | null;
   totalPrice: number;
+  expireDate: string | null;
+}
+
+export interface PurchaseItemDetailsDto {
+  purchaseItemId: number;
+  medicineId: number;
   medicineName?: string;
+  batchId: number | null;
+  batchNumber?: string;
+  quantity: number;
+  purchasePrice: number;
+  sellPrice: number;
+  totalPrice: number;
+  expireDate: string | null;
 }
 
 export interface PurchaseDto {
@@ -30,8 +41,16 @@ export interface PurchaseDto {
   note: string | null;
 }
 
-export interface PurchaseDetailsDto extends PurchaseDto {
-  items: PurchaseItemDto[];
+export interface PurchaseDetailsDto {
+  purchaseId: number;
+  supplierId: number | null;
+  supplierName?: string;
+  invoiceNumber: string | null;
+  totalAmount: number;
+  status: PurchaseStatus;
+  createdAt: string;
+  note: string | null;
+  items: PurchaseItemDetailsDto[];
 }
 
 export interface PurchaseListResponse {
@@ -50,6 +69,15 @@ export interface PurchaseBalanceDto {
   remainingAmount: number;
 }
 
+export interface CompletePurchaseResultDto {
+  purchaseId: number;
+  status: PurchaseStatus;
+  totalAmount: number;
+  completedAt: string;
+  stockMovementsCreated: number;
+  paymentId: number;
+}
+
 export interface CreatePurchaseRequest {
   supplierId?: number;
   invoiceNumber?: string;
@@ -64,6 +92,7 @@ export interface UpdatePurchaseRequest {
 
 export interface AddPurchaseItemRequest {
   medicineId: number;
+  batchNumber: string;
   quantity: number;
   purchasePrice: number;
   sellPrice: number;
@@ -75,6 +104,11 @@ export interface UpdatePurchaseItemRequest {
   purchasePrice?: number;
   sellPrice?: number;
   expireDate?: string;
+}
+
+export interface PurchaseItemsResponse {
+  purchaseId: number;
+  items: PurchaseItemDto[];
 }
 
 export interface CreatePurchaseReturnRequest {
@@ -103,11 +137,6 @@ export interface PurchaseReturnItemDto {
   quantity: number;
   unitPrice: number;
   totalPrice: number;
-}
-
-export interface PurchaseItemsResponse {
-  purchaseId: number;
-  items: PurchaseItemDto[];
 }
 
 export interface PurchaseReturnDto {

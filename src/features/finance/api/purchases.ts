@@ -4,6 +4,7 @@ import type {
   PurchaseDetailsDto,
   PurchaseListResponse,
   PurchaseBalanceDto,
+  CompletePurchaseResultDto,
   CreatePurchaseRequest,
   UpdatePurchaseRequest,
   AddPurchaseItemRequest,
@@ -48,7 +49,7 @@ export const deletePurchaseItem = (id: number, itemId: number) =>
   api.delete(`/purchases/${id}/items/${itemId}`);
 
 export const completePurchase = (id: number) =>
-  api.post<PurchaseDto>(`/purchases/${id}/complete`);
+  api.post<CompletePurchaseResultDto>(`/purchases/${id}/complete`);
 
 export const cancelPurchase = (id: number) =>
   api.post(`/purchases/${id}/cancel`);

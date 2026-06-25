@@ -16,7 +16,7 @@ import {
   payPurchase,
   createPurchaseReturn,
 } from "../api/purchases";
-import { getPurchasePayments, createPayment } from "../api/payments";
+import { getPurchasePayments } from "../api/payments";
 import type {
   CreatePurchaseRequest,
   UpdatePurchaseRequest,
@@ -24,7 +24,6 @@ import type {
   UpdatePurchaseItemRequest,
   CreatePurchasePaymentRequest,
   CreatePurchaseReturnRequest,
-  PurchaseListResponse,
 } from "@/types";
 
 export function usePurchases(params?: {

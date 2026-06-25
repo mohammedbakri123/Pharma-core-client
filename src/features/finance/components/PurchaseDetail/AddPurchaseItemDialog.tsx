@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,8 +9,11 @@ import {
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
-import type { AddPurchaseItemRequest } from "@/types";
+import type { AddPurchaseItemRequest, MedicineDto } from "@/types";
 import { useToast } from "@/hooks/use-toast";
+import { useDebounce } from "@/hooks/use-debounce";
+import { useMedicineList } from "@features/inventory/hooks/useMedicine";
+import SelectedPurchaseMedicineCard from "./SelectedPurchaseMedicineCard";
 
 interface AddPurchaseItemDialogProps {
   open: boolean;
@@ -32,18 +35,59 @@ export default function AddPurchaseItemDialog({
   isPending,
 }: AddPurchaseItemDialogProps) {
   const { toast } = useToast();
-  const [medicineId, setMedicineId] = useState("");
+  const [medicineSearch, setMedicineSearch] = useState("");
+  const [selectedMedicine, setSelectedMedicine] = useState<MedicineDto | null>(
+    null,
+  );
+  const [showMedicineDropdown, setShowMedicineDropdown] = useState(false);
   const [batchNumber, setBatchNumber] = useState("");
   const [quantity, setQuantity] = useState("1");
   const [purchasePrice, setPurchasePrice] = useState("");
   const [sellPrice, setSellPrice] = useState("");
   const [expireDate, setExpireDate] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const debouncedSearch = useDebounce(medicineSearch, 300);
+  const { data: medicinesData, isLoading: isSearchingMedicines } =
+    useMedicineList({
+      page: 1,
+      limit: 10,
+      categoryId: null,
+      search: debouncedSearch.length >= 1 ? debouncedSearch : undefined,
+    });
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node) &&
+        inputRef.current &&
+        !inputRef.current.contains(e.target as Node)
+      ) {
+        setShowMedicineDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const medicines = medicinesData?.medicines ?? [];
+
+  const handleMedicineSelect = (medicine: MedicineDto) => {
+    setSelectedMedicine(medicine);
+    setMedicineSearch(medicine.name);
+    setShowMedicineDropdown(false);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!selectedMedicine) return;
+
     onAdd(
       {
-        medicineId: Number(medicineId),
+        medicineId: selectedMedicine.medicineId,
         batchNumber,
         quantity: Number(quantity),
         purchasePrice: Number(purchasePrice),
@@ -79,17 +123,70 @@ export default function AddPurchaseItemDialog({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="medicineId">معرف الصنف</Label>
+            <div className="relative space-y-2 sm:col-span-2">
+              <Label htmlFor="medicineSearch">الصنف</Label>
               <Input
-                id="medicineId"
-                type="number"
-                min="1"
-                value={medicineId}
-                onChange={(e) => setMedicineId(e.target.value)}
+                ref={inputRef}
+                id="medicineSearch"
+                value={medicineSearch}
+                onChange={(e) => {
+                  setMedicineSearch(e.target.value);
+                  setSelectedMedicine(null);
+                  setShowMedicineDropdown(true);
+                }}
+                onFocus={() => setShowMedicineDropdown(true)}
+                placeholder="ابحث باسم الصنف أو الباركود..."
+                autoComplete="off"
                 required
               />
+
+              {showMedicineDropdown && debouncedSearch.length >= 1 && (
+                <div
+                  ref={dropdownRef}
+                  className="absolute z-50 w-full rounded-md border bg-popover shadow-md"
+                >
+                  {isSearchingMedicines ? (
+                    <div className="p-2 text-sm text-muted-foreground">
+                      جاري البحث...
+                    </div>
+                  ) : medicines.length ? (
+                    <div className="max-h-48 overflow-y-auto">
+                      {medicines.map((medicine) => (
+                        <button
+                          key={medicine.medicineId}
+                          type="button"
+                          className="w-full flex items-center justify-between gap-2 px-3 py-2 text-right hover:bg-accent"
+                          onClick={() => handleMedicineSelect(medicine)}
+                        >
+                          <div className="min-w-0">
+                            <div className="truncate font-medium">
+                              {medicine.name}
+                            </div>
+                            {medicine.arabicName && (
+                              <div className="truncate text-xs text-muted-foreground">
+                                {medicine.arabicName}
+                              </div>
+                            )}
+                          </div>
+                          <span className="shrink-0 text-xs text-muted-foreground">
+                            #{medicine.medicineId}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-2 text-sm text-muted-foreground">
+                      لا توجد نتائج
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
+
+            {selectedMedicine && (
+              <SelectedPurchaseMedicineCard medicine={selectedMedicine} />
+            )}
+
             <div className="space-y-2">
               <Label htmlFor="batchNumber">رقم الباتش</Label>
               <Input
@@ -146,7 +243,7 @@ export default function AddPurchaseItemDialog({
           </div>
 
           <DialogFooter>
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" disabled={isPending || !selectedMedicine}>
               {isPending ? "جاري الإضافة..." : "إضافة"}
             </Button>
           </DialogFooter>

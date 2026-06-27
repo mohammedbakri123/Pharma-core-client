@@ -9,7 +9,6 @@ import {
   deleteSaleItem,
   completeSale,
   getSaleBalance,
-  getSaleReturns,
 } from "../api/sales";
 import { getSalePayments, createPayment } from "../api/payments";
 import type {
@@ -58,17 +57,6 @@ export function useSalePayments(saleId: number) {
     queryKey: ["sale", saleId, "payments"],
     queryFn: async () => {
       const response = await getSalePayments(saleId);
-      return response.data;
-    },
-    enabled: !!saleId,
-  });
-}
-
-export function useSaleReturns(saleId: number) {
-  return useQuery({
-    queryKey: ["sale", saleId, "returns"],
-    queryFn: async () => {
-      const response = await getSaleReturns(saleId);
       return response.data;
     },
     enabled: !!saleId,

@@ -63,3 +63,24 @@ export interface UpdateSalesReturnItemRequest {
 export interface UpdateSalesReturnRequest {
   note?: string;
 }
+
+export enum SalesReturnStatus {
+  Draft = 1,
+  Completed = 2,
+  Cancelled = 3,
+}
+
+export interface SalesReturnBalanceDto {
+  salesReturnId: number;
+  totalAmount: number;
+  paidAmount: number;
+  remainingAmount: number;
+}
+
+export interface CompleteSalesReturnResultDto {
+  salesReturnId: number;
+  status: SalesReturnStatus;
+  totalAmount: number;
+  completedAt: string;
+  stockMovementsCreated: number;
+}

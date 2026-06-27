@@ -9,8 +9,7 @@ import {
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createSaleReturn } from "../../api/sales";
+import { useCreateSaleReturn } from "../../hooks/useSalesReturns";
 
 interface CreateReturnDialogProps {
   open: boolean;
@@ -24,16 +23,7 @@ export default function CreateReturnDialog({
   saleId,
 }: CreateReturnDialogProps) {
   const [note, setNote] = useState("");
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation({
-    mutationFn: () => createSaleReturn(saleId, { note: note || undefined }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["sale", saleId, "returns"] });
-      onOpenChange(false);
-      setNote("");
-    },
-  });
+  const createReturn = useCreateSaleReturn(saleId);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -60,15 +50,25 @@ export default function CreateReturnDialog({
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
-            disabled={mutation.isPending}
+            disabled={createReturn.isPending}
           >
             إلغاء
           </Button>
           <Button
-            onClick={() => mutation.mutate()}
-            disabled={mutation.isPending}
+            onClick={() =>
+              createReturn.mutate(
+                { note: note || undefined },
+                {
+                  onSuccess: () => {
+                    onOpenChange(false);
+                    setNote("");
+                  },
+                },
+              )
+            }
+            disabled={createReturn.isPending}
           >
-            {mutation.isPending ? "جاري الإنشاء..." : "إنشاء المرتجع"}
+            {createReturn.isPending ? "جاري الإنشاء..." : "إنشاء المرتجع"}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -112,7 +112,7 @@ function App() {
 
             {/* Finance */}
             <Route path="finance" element={<FinanceLayout />}>
-              <Route index element={<Navigate to="sales" replace />} />
+              <Route index element={<Navigate to="payments" replace />} />
               <Route path="payments" element={<FinancePaymentsPage />} />
               <Route path="sales" element={<FinanceSalesPage />} />
               <Route path="purchases" element={<FinancePurchasesPage />} />

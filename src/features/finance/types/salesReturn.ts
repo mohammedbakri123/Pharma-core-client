@@ -6,6 +6,8 @@ export interface SalesReturnItemDto {
   quantity: number;
   unitPrice: number;
   totalPrice: number;
+  medicineName?: string;
+  batchNumber?: string;
 }
 
 export interface SalesReturnDto {
@@ -18,6 +20,7 @@ export interface SalesReturnDto {
   totalAmount: number;
   note: string | null;
   createdAt: string;
+  status?: SalesReturnStatus;
 }
 
 export interface SalesReturnDetailsDto extends SalesReturnDto {

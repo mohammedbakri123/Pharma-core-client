@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getSaleReturns,
+  getSaleReturnById,
   createSaleReturn,
   deleteSaleReturn,
   addSaleReturnItem,
@@ -21,6 +22,14 @@ export function useSaleReturns(saleId: number) {
     queryKey: ["sale", saleId, "returns"],
     queryFn: async () => { const response = await getSaleReturns(saleId); return response.data; },
     enabled: !!saleId,
+  });
+}
+
+export function useSaleReturnById(saleId: number, returnId: number) {
+  return useQuery({
+    queryKey: ["sale", saleId, "returns", returnId],
+    queryFn: async () => { const response = await getSaleReturnById(saleId, returnId); return response.data; },
+    enabled: !!saleId && !!returnId,
   });
 }
 

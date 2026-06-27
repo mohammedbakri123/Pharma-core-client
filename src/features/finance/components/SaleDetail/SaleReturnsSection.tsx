@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { DataTable } from "@/ui/data-table";
 import { Button } from "@/ui/button";
-import { RotateCcw, Plus } from "lucide-react";
+import { RotateCcw, Plus, Eye } from "lucide-react";
 import { formatCurrency, formatDate } from "@/utils/formatters";
 import { useSaleReturns } from "../../hooks/useSalesReturns";
 import type { SalesReturnDto } from "@/types";
@@ -16,6 +17,7 @@ export default function SaleReturnsSection({
   saleId,
   isCompleted,
 }: SaleReturnsSectionProps) {
+  const navigate = useNavigate();
   const { data: returnsData, isLoading } = useSaleReturns(saleId);
   const [returnDialogOpen, setReturnDialogOpen] = useState(false);
 
@@ -32,7 +34,13 @@ export default function SaleReturnsSection({
       key: "salesReturnId",
       header: "رقم المرتجع",
       render: (item: SalesReturnDto) => (
-        <span className="font-medium">#{item.salesReturnId}</span>
+        <Button
+          variant="link"
+          className="h-auto p-0 font-medium text-primary cursor-pointer"
+          onClick={() => navigate(`/finance/sales/${saleId}/returns/${item.salesReturnId}`)}
+        >
+          #{item.salesReturnId}
+        </Button>
       ),
     },
     {
@@ -51,6 +59,21 @@ export default function SaleReturnsSection({
       header: "ملاحظات",
       render: (item: SalesReturnDto) =>
         item.note || <span className="text-muted-foreground/60">-</span>,
+    },
+    {
+      key: "actions",
+      header: "",
+      className: "w-16 text-left",
+      render: (item: SalesReturnDto) => (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 cursor-pointer"
+          onClick={() => navigate(`/finance/sales/${saleId}/returns/${item.salesReturnId}`)}
+        >
+          <Eye className="w-4 h-4" />
+        </Button>
+      ),
     },
   ];
 

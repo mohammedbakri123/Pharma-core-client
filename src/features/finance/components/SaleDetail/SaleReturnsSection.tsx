@@ -5,8 +5,10 @@ import { Button } from "@/ui/button";
 import { RotateCcw, Plus, Eye } from "lucide-react";
 import { formatCurrency, formatDate } from "@/utils/formatters";
 import { useSaleReturns } from "../../hooks/useSalesReturns";
+import { SalesReturnStatus } from "@/types";
 import type { SalesReturnDto } from "@/types";
 import CreateReturnDialog from "./CreateReturnDialog";
+import SalesReturnStatusBadge from "./SalesReturnDetail/SalesReturnStatusBadge";
 
 interface SaleReturnsSectionProps {
   saleId: number;
@@ -37,7 +39,9 @@ export default function SaleReturnsSection({
         <Button
           variant="link"
           className="h-auto p-0 font-medium text-primary cursor-pointer"
-          onClick={() => navigate(`/finance/sales/${saleId}/returns/${item.salesReturnId}`)}
+          onClick={() =>
+            navigate(`/finance/sales/${saleId}/returns/${item.salesReturnId}`)
+          }
         >
           #{item.salesReturnId}
         </Button>
@@ -48,6 +52,19 @@ export default function SaleReturnsSection({
       header: "الإجمالي",
       className: "font-mono font-semibold",
       render: (item: SalesReturnDto) => formatCurrency(item.totalAmount),
+    },
+    {
+      key: "userName",
+      header: "أنشئ بواسطة",
+      render: (item: SalesReturnDto) =>
+        item.userName || <span className="text-muted-foreground/60">-</span>,
+    },
+    {
+      key: "status",
+      header: "الحالة",
+      render: (item: SalesReturnDto) => (
+        <SalesReturnStatusBadge status={item.status ?? SalesReturnStatus.Draft} />
+      ),
     },
     {
       key: "createdAt",
@@ -69,7 +86,9 @@ export default function SaleReturnsSection({
           variant="ghost"
           size="icon"
           className="h-8 w-8 cursor-pointer"
-          onClick={() => navigate(`/finance/sales/${saleId}/returns/${item.salesReturnId}`)}
+          onClick={() =>
+            navigate(`/finance/sales/${saleId}/returns/${item.salesReturnId}`)
+          }
         >
           <Eye className="w-4 h-4" />
         </Button>

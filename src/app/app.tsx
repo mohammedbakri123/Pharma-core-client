@@ -35,7 +35,7 @@ import SaleDetailPage from "@features/finance/pages/SaleDetailPage";
 import SaleItemsTab from "@features/finance/components/SaleDetail/SaleItemsTab";
 import SalePaymentsTab from "@features/finance/components/SaleDetail/SalePaymentsTab";
 import SaleReturnsTab from "@features/finance/components/SaleDetail/SaleReturnsTab";
-import SaleReturnDetailPage from "@features/finance/components/SaleDetail/SaleReturnDetailPage";
+import SaleReturnDetailPage from "@features/finance/pages/SaleReturnDetailPage";
 import PurchaseDetailPage from "@features/finance/pages/PurchaseDetailPage";
 import PurchaseItemsTab from "@features/finance/components/PurchaseDetail/PurchaseItemsTab";
 import PurchasePaymentsTab from "@features/finance/components/PurchaseDetail/PurchasePaymentsTab";
@@ -129,6 +129,7 @@ function App() {
               path="finance/sales/:id/returns/:returnId"
               element={<SaleReturnDetailPage />}
             />
+
             <Route
               path="finance/purchases/:id"
               element={<PurchaseDetailPage />}

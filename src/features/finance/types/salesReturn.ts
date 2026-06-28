@@ -68,9 +68,9 @@ export interface UpdateSalesReturnRequest {
 }
 
 export enum SalesReturnStatus {
-  Draft = 1,
-  Completed = 2,
-  Cancelled = 3,
+  Draft = "draft",
+  Completed = "completed",
+  Cancelled = "cancelled",
 }
 
 export interface SalesReturnBalanceDto {

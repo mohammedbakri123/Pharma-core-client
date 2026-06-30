@@ -4,7 +4,7 @@ import { DataTable } from "@/ui/data-table";
 import { Button } from "@/ui/button";
 import { RotateCcw, Plus, Eye } from "lucide-react";
 import { formatCurrency, formatDate } from "@/utils/formatters";
-import { useSaleReturns } from "../../hooks/useSalesReturns";
+import { useSaleReturns } from "../../../../hooks/useSalesReturns";
 import { SalesReturnStatus } from "@/types";
 import type { SalesReturnDto } from "@/types";
 import CreateReturnDialog from "./CreateReturnDialog";
@@ -63,7 +63,9 @@ export default function SaleReturnsSection({
       key: "status",
       header: "الحالة",
       render: (item: SalesReturnDto) => (
-        <SalesReturnStatusBadge status={item.status ?? SalesReturnStatus.Draft} />
+        <SalesReturnStatusBadge
+          status={item.status ?? SalesReturnStatus.Draft}
+        />
       ),
     },
     {

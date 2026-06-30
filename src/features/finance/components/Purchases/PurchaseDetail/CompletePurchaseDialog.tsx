@@ -1,49 +1,48 @@
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/ui/dialog";
 import { Button } from "@/ui/button";
 import {
   Banknote,
-  User,
-  ShoppingCart,
-  BadgePercent,
-  FileText,
   Calendar,
+  FileText,
+  ShoppingCart,
+  Truck,
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/utils/formatters";
-import { useCompleteSale, useGetSale } from "../../hooks/useSales";
+import {
+  useCompletePurchase,
+  useGetPurchase,
+} from "../../../hooks/usePurchases";
 import { useToast } from "@/hooks/use-toast";
 
-interface CompleteSaleDialogProps {
+interface CompletePurchaseDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  saleId: number;
-  onSuccess?: () => void;
+  purchaseId: number;
 }
 
-export default function CompleteSaleDialog({
+export default function CompletePurchaseDialog({
   open,
   onOpenChange,
-  saleId,
-  onSuccess,
-}: CompleteSaleDialogProps) {
+  purchaseId,
+}: CompletePurchaseDialogProps) {
   const { toast } = useToast();
-  const { data: sale } = useGetSale(saleId);
-
-  const { mutate: completeMutation, isPending } = useCompleteSale(saleId);
+  const { data: purchase } = useGetPurchase(purchaseId);
+  const { mutate: completePurchase, isPending } =
+    useCompletePurchase(purchaseId);
 
   const handleSubmit = () => {
-    completeMutation(undefined, {
+    completePurchase(undefined, {
       onSuccess: () => {
         onOpenChange(false);
-        onSuccess?.();
         toast({
           title: "تم إتمام الفاتورة بنجاح",
-          description: "تم إتمام الفاتورة بنجاح.",
+          description: "تم إتمام فاتورة المشتريات بنجاح.",
           variant: "success",
         });
       },
@@ -57,7 +56,7 @@ export default function CompleteSaleDialog({
     });
   };
 
-  if (!sale) return null;
+  if (!purchase) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -65,19 +64,19 @@ export default function CompleteSaleDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Banknote className="w-5 h-5 text-primary" />
-            إتمام الفاتورة
+            إتمام فاتورة المشتريات
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-3">
-          {sale.customerName && (
+          {purchase.supplierName && (
             <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/40">
               <span className="flex items-center gap-2 text-sm text-muted-foreground">
-                <User className="w-4 h-4" />
-                العميل
+                <Truck className="w-4 h-4" />
+                المورد
               </span>
               <span className="text-sm font-medium">
-                {sale.customerName}
+                {purchase.supplierName}
               </span>
             </div>
           )}
@@ -88,29 +87,17 @@ export default function CompleteSaleDialog({
               عدد الأصناف
             </span>
             <span className="text-sm font-medium">
-              {sale.items?.length ?? 0}
+              {purchase.items?.length ?? 0}
             </span>
           </div>
 
-          {sale.discount > 0 && (
-            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/40">
-              <span className="flex items-center gap-2 text-sm text-muted-foreground">
-                <BadgePercent className="w-4 h-4" />
-                الخصم
-              </span>
-              <span className="text-sm font-medium">
-                {formatCurrency(sale.discount)} ريال
-              </span>
-            </div>
-          )}
-
-          {sale.note && (
+          {purchase.note && (
             <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/40">
               <span className="flex items-center gap-2 text-sm text-muted-foreground">
                 <FileText className="w-4 h-4" />
                 ملاحظة
               </span>
-              <span className="text-sm font-medium">{sale.note}</span>
+              <span className="text-sm font-medium">{purchase.note}</span>
             </div>
           )}
 
@@ -120,16 +107,14 @@ export default function CompleteSaleDialog({
               تاريخ الإنشاء
             </span>
             <span className="text-sm font-medium">
-              {formatDate(sale.createdAt)}
+              {formatDate(purchase.createdAt)}
             </span>
           </div>
 
           <div className="flex items-center justify-between p-3 rounded-lg bg-primary/10 border border-primary/20">
-            <span className="text-sm font-medium text-primary">
-              الإجمالي
-            </span>
+            <span className="text-sm font-medium text-primary">الإجمالي</span>
             <span className="text-lg font-bold text-primary">
-              {formatCurrency(sale.totalAmount)} ريال
+              {formatCurrency(purchase.totalAmount)} ريال
             </span>
           </div>
         </div>

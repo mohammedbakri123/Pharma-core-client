@@ -1,7 +1,7 @@
 import type { SaleDetailsDto } from "@/types";
 import { ArrowRight, Coins } from "lucide-react";
 import { Button } from "@/ui/button";
-import SaleStatusBadge from "../Sales/SaleStatusBadge";
+import SaleStatusBadge from "../SaleStatusBadge";
 
 interface SaleDetailHeaderProps {
   sale: SaleDetailsDto;

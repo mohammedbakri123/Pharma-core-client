@@ -3,7 +3,7 @@ import { Button } from "@/ui/button";
 import { DataTable } from "@/ui/data-table";
 import { Plus, RotateCcw } from "lucide-react";
 import { formatCurrency, formatDate } from "@/utils/formatters";
-import { usePurchaseReturns } from "../../hooks/usePurchases";
+import { usePurchaseReturns } from "../../../hooks/usePurchases";
 import type { PurchaseReturnDto } from "@/types";
 import CreatePurchaseReturnDialog from "./CreatePurchaseReturnDialog";
 

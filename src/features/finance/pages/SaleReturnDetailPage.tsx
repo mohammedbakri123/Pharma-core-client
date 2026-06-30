@@ -22,13 +22,13 @@ import {
 } from "../hooks/useSalesReturns";
 import { useGetSale } from "../hooks/useSales";
 
-import AddReturnItemDialog from "../components/SaleDetail/SalesReturnDetail/AddReturnItemDialog";
-import EditReturnItemDialog from "../components/SaleDetail/SalesReturnDetail/EditReturnItemDialog";
-import SalesReturnHeader from "../components/SaleDetail/SalesReturnDetail/SalesReturnHeader";
-import SalesReturnNote from "../components/SaleDetail/SalesReturnDetail/SalesReturnNote";
-import SalesReturnSummaryCards from "../components/SaleDetail/SalesReturnDetail/SalesReturnSummaryCards";
-import SalesReturnItemSectionHeader from "../components/SaleDetail/SalesReturnDetail/SalesReturnItemSectionHeader";
-import SalesReturnTable from "../components/SaleDetail/SalesReturnDetail/SalesReturnTable";
+import AddReturnItemDialog from "../components/Sales/SaleDetail/returns/SalesReturnDetail/AddReturnItemDialog";
+import EditReturnItemDialog from "../components/Sales/SaleDetail/returns/SalesReturnDetail/EditReturnItemDialog";
+import SalesReturnHeader from "../components/Sales/SaleDetail/returns/SalesReturnDetail/SalesReturnHeader";
+import SalesReturnNote from "../components/Sales/SaleDetail/returns/SalesReturnDetail/SalesReturnNote";
+import SalesReturnSummaryCards from "../components/Sales/SaleDetail/returns/SalesReturnDetail/SalesReturnSummaryCards";
+import SalesReturnItemSectionHeader from "../components/Sales/SaleDetail/returns/SalesReturnDetail/SalesReturnItemSectionHeader";
+import SalesReturnTable from "../components/Sales/SaleDetail/returns/SalesReturnDetail/SalesReturnTable";
 
 //TODO: this file need a shit refactoring
 export default function SaleReturnDetailPage() {

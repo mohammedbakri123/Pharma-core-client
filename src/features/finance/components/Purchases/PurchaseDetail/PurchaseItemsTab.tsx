@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useGetPurchase } from "../../hooks/usePurchases";
+import { useGetPurchase } from "../../../hooks/usePurchases";
 import PurchaseItemsTable from "./PurchaseItemsTable";
 import { Spinner } from "@/ui/spinner";
 

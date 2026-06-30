@@ -1,18 +1,19 @@
 import { useState } from "react";
-import { Button } from "@/ui/button";
 import { DataTable } from "@/ui/data-table";
+import { Button } from "@/ui/button";
 import { CreditCard, Plus } from "lucide-react";
 import { formatCurrency, formatDate } from "@/utils/formatters";
 import {
-  usePayPurchase,
-  usePurchasePayments,
-} from "../../hooks/usePurchases";
+  useSalePayments,
+  useAddSalePayment,
+  useGetSaleBalance,
+} from "../../../../hooks/useSales";
 import type { PaymentDto } from "@/types";
 import { PaymentMethod } from "@/types";
-import AddPurchasePaymentDialog from "./AddPurchasePaymentDialog";
+import AddPaymentDialog from "./AddPaymentDialog";
 
-interface PurchasePaymentsSectionProps {
-  purchaseId: number;
+interface SalePaymentsSectionProps {
+  saleId: number;
   isCompleted: boolean;
 }
 
@@ -21,12 +22,13 @@ const methodLabels: Record<PaymentMethod, string> = {
   [PaymentMethod.Card]: "بطاقة",
 };
 
-export default function PurchasePaymentsSection({
-  purchaseId,
+export default function SalePaymentsSection({
+  saleId,
   isCompleted,
-}: PurchasePaymentsSectionProps) {
-  const { data: paymentsData, isLoading } = usePurchasePayments(purchaseId);
-  const payPurchaseMutation = usePayPurchase(purchaseId);
+}: SalePaymentsSectionProps) {
+  const { data: paymentsData, isLoading } = useSalePayments(saleId);
+  const addPaymentMutation = useAddSalePayment(saleId);
+  const { data: balance } = useGetSaleBalance(saleId);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
 
   const payments = paymentsData?.payments || [];
@@ -36,7 +38,7 @@ export default function PurchasePaymentsSection({
       key: "index",
       header: "#",
       className: "text-muted-foreground w-12",
-      render: (_item: PaymentDto, index: number) => index + 1,
+      render: (_: PaymentDto, index: number) => index + 1,
     },
     {
       key: "amount",
@@ -69,7 +71,7 @@ export default function PurchasePaymentsSection({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-row-reverse items-center justify-between mb-4">
         <h3 className="text-sm font-medium text-muted-foreground">
           إجمالي {payments.length} دفعة
         </h3>
@@ -100,15 +102,17 @@ export default function PurchasePaymentsSection({
         emptyMessage="لا توجد مدفوعات لهذه الفاتورة"
       />
 
-      <AddPurchasePaymentDialog
+      <AddPaymentDialog
         open={addDialogOpen}
         onOpenChange={setAddDialogOpen}
         onAdd={(data) =>
-          payPurchaseMutation.mutate(data, {
+          addPaymentMutation.mutate(data, {
             onSuccess: () => setAddDialogOpen(false),
           })
         }
-        isPending={payPurchaseMutation.isPending}
+        isPending={addPaymentMutation.isPending}
+        saleId={saleId}
+        remainingAmount={balance?.remainingAmount}
       />
     </div>
   );

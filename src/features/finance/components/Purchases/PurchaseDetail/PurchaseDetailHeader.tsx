@@ -1,7 +1,7 @@
 import type { PurchaseDetailsDto } from "@/types";
 import { ArrowRight, Wallet } from "lucide-react";
 import { Button } from "@/ui/button";
-import PurchaseStatusBadge from "../Purchases/PurchaseStatusBadge";
+import PurchaseStatusBadge from "../../Purchases/PurchaseStatusBadge";
 
 interface PurchaseDetailHeaderProps {
   purchase: PurchaseDetailsDto;

@@ -1,71 +1,64 @@
 import { useState } from "react";
-import { DataTable } from "@/ui/data-table";
 import { Button } from "@/ui/button";
-import { Plus, Pencil, Trash2, ShoppingCart } from "lucide-react";
-import { formatCurrency } from "@/utils/formatters";
+import { Column, DataTable } from "@/ui/data-table";
+import { Pencil, Plus, ShoppingCart, Trash2 } from "lucide-react";
+import { formatCurrency, formatDate } from "@/utils/formatters";
 import {
-  useAddSaleItem,
-  useUpdateSaleItem,
-  useDeleteSaleItem,
-} from "../../hooks/useSales";
-import type { SaleItemDto, SaleDetailsDto } from "@/types";
-import { SaleStatus } from "@/types";
-import AddItemDialog from "./AddItem/AddItemDialog";
-import EditItemDialog from "./EditItemDialog";
-import DeleteItemConfirmDialog from "./DeleteItemConfirmDialog";
+  useAddPurchaseItem,
+  useDeletePurchaseItem,
+  useUpdatePurchaseItem,
+} from "../../../hooks/usePurchases";
+import type { PurchaseDetailsDto, PurchaseItemDetailsDto } from "@/types";
+import { PurchaseStatus } from "@/types";
+import AddPurchaseItemDialog from "./AddPurchaseItemDialog";
+import EditPurchaseItemDialog from "./EditPurchaseItemDialog";
+import DeletePurchaseItemConfirmDialog from "./DeletePurchaseItemConfirmDialog";
 
-interface SaleItemsTableProps {
-  sale: SaleDetailsDto;
+interface PurchaseItemsTableProps {
+  purchase: PurchaseDetailsDto;
 }
 
-export default function SaleItemsTable({ sale }: SaleItemsTableProps) {
-  const isDraft = sale.status === SaleStatus.Draft;
+export default function PurchaseItemsTable({
+  purchase,
+}: PurchaseItemsTableProps) {
+  const isDraft = purchase.status === PurchaseStatus.Draft;
   const [addDialogOpen, setAddDialogOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<SaleItemDto | null>(null);
+  const [editingItem, setEditingItem] = useState<PurchaseItemDetailsDto | null>(
+    null,
+  );
   const [deletingItemId, setDeletingItemId] = useState<number | null>(null);
 
-  const { mutate: addMutation, isPending: isAdding } = useAddSaleItem(
-    sale.saleId,
+  const { mutate: addMutation, isPending: isAdding } = useAddPurchaseItem(
+    purchase.purchaseId,
   );
-  const { mutate: updateMutation, isPending: isUpdating } = useUpdateSaleItem(
-    sale.saleId,
-  );
-  const { mutate: deleteMutation, isPending: isDeleting } = useDeleteSaleItem(
-    sale.saleId,
-  );
+  const { mutate: updateMutation, isPending: isUpdating } =
+    useUpdatePurchaseItem(purchase.purchaseId);
+  const { mutate: deleteMutation, isPending: isDeleting } =
+    useDeletePurchaseItem(purchase.purchaseId);
 
-  const columns = [
+  const columns: Column<PurchaseItemDetailsDto>[] = [
     {
       key: "index",
       header: "#",
       className: "text-muted-foreground w-12",
-      render: (_: SaleItemDto, index: number) => index + 1,
+      render: (_item, index) => index + 1,
     },
     {
       key: "medicineId",
       header: "معرف الصنف",
-      render: (item: SaleItemDto) => (
-        <span className="font-medium">#{item.medicineId}</span>
-      ),
+      render: (item) => <span className="font-medium">#{item.medicineId}</span>,
     },
     {
       key: "medicineName",
       header: "اسم الصنف",
-      render: (item: SaleItemDto) => (
+      render: (item) => (
         <span className="font-medium">{item.medicineName || "غير محدد"}</span>
-      ),
-    },
-    {
-      key: "batchId",
-      header: "الباتش",
-      render: (item: SaleItemDto) => (
-        <span className="text-muted-foreground">#{item.batchId}</span>
       ),
     },
     {
       key: "batchNumber",
       header: "رقم الباتش",
-      render: (item: SaleItemDto) => (
+      render: (item) => (
         <span className="text-muted-foreground">
           {item.batchNumber || "غير محدد"}
         </span>
@@ -74,21 +67,30 @@ export default function SaleItemsTable({ sale }: SaleItemsTableProps) {
     {
       key: "quantity",
       header: "الكمية",
-      render: (item: SaleItemDto) => (
-        <span className="font-semibold">{item.quantity}</span>
-      ),
+      render: (item) => <span className="font-semibold">{item.quantity}</span>,
     },
     {
-      key: "unitPrice",
-      header: "سعر الوحدة",
+      key: "purchasePrice",
+      header: "سعر الشراء",
       className: "font-mono",
-      render: (item: SaleItemDto) => formatCurrency(item.unitPrice),
+      render: (item) => formatCurrency(item.purchasePrice),
+    },
+    {
+      key: "sellPrice",
+      header: "سعر البيع",
+      className: "font-mono",
+      render: (item) => formatCurrency(item.sellPrice),
     },
     {
       key: "totalPrice",
       header: "الإجمالي",
       className: "font-mono font-semibold text-primary",
-      render: (item: SaleItemDto) => formatCurrency(item.totalPrice),
+      render: (item) => formatCurrency(item.totalPrice),
+    },
+    {
+      key: "expireDate",
+      header: "تاريخ الانتهاء",
+      render: (item) => formatDate(item.expireDate),
     },
     ...(isDraft
       ? [
@@ -96,7 +98,7 @@ export default function SaleItemsTable({ sale }: SaleItemsTableProps) {
             key: "actions",
             header: "",
             className: "w-20 text-left",
-            render: (item: SaleItemDto) => (
+            render: (item: PurchaseItemDetailsDto) => (
               <div
                 className="flex items-center gap-1"
                 onClick={(e) => e.stopPropagation()}
@@ -113,7 +115,7 @@ export default function SaleItemsTable({ sale }: SaleItemsTableProps) {
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 text-destructive hover:text-destructive cursor-pointer"
-                  onClick={() => setDeletingItemId(item.saleItemId)}
+                  onClick={() => setDeletingItemId(item.purchaseItemId)}
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </Button>
@@ -126,9 +128,9 @@ export default function SaleItemsTable({ sale }: SaleItemsTableProps) {
 
   return (
     <div>
-      <div className="flex flex-row-reverse items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-medium text-muted-foreground">
-          إجمالي {sale.items.length} صنف
+          إجمالي {purchase.items.length} صنف
         </h3>
         <div className="flex items-center gap-2">
           {isDraft && (
@@ -151,13 +153,13 @@ export default function SaleItemsTable({ sale }: SaleItemsTableProps) {
 
       <DataTable
         columns={columns}
-        data={sale.items}
-        keyExtractor={(item) => item.saleItemId}
+        data={purchase.items}
+        keyExtractor={(item) => item.purchaseItemId}
         emptyMessage="لا توجد أصناف في هذه الفاتورة"
       />
 
       {addDialogOpen && (
-        <AddItemDialog
+        <AddPurchaseItemDialog
           open={addDialogOpen}
           onOpenChange={setAddDialogOpen}
           onAdd={(data, options) => addMutation(data, options)}
@@ -166,7 +168,7 @@ export default function SaleItemsTable({ sale }: SaleItemsTableProps) {
       )}
 
       {editingItem && (
-        <EditItemDialog
+        <EditPurchaseItemDialog
           open={!!editingItem}
           onOpenChange={(open) => {
             if (!open) setEditingItem(null);
@@ -177,7 +179,7 @@ export default function SaleItemsTable({ sale }: SaleItemsTableProps) {
         />
       )}
 
-      <DeleteItemConfirmDialog
+      <DeletePurchaseItemConfirmDialog
         open={!!deletingItemId}
         onOpenChange={(open) => {
           if (!open) setDeletingItemId(null);

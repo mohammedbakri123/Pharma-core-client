@@ -4,9 +4,9 @@ import { Button } from "@/ui/button";
 import { Spinner } from "@/ui/spinner";
 import { Ban } from "lucide-react";
 import { useGetSale, useGetSaleBalance } from "../hooks/useSales";
-import SaleDetailHeader from "../components/SaleDetail/SaleDetailHeader";
-import SaleSummaryCards from "../components/SaleDetail/SaleSummaryCards";
-import SaleActionsBar from "../components/SaleDetail/SaleActionsBar";
+import SaleDetailHeader from "../components/Sales/SaleDetail/SaleDetailHeader";
+import SaleSummaryCards from "../components/Sales/SaleDetail/SaleSummaryCards";
+import SaleActionsBar from "../components/Sales/SaleDetail/SaleActionsBar";
 import TabNav from "@/ui/TabNav";
 
 export default function SaleDetailPage() {

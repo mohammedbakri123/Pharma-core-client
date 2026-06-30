@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useGetPurchase } from "../../hooks/usePurchases";
+import { useGetPurchase } from "../../../hooks/usePurchases";
 import { PurchaseStatus } from "@/types";
 import PurchasePaymentsSection from "./PurchasePaymentsSection";
 import { Spinner } from "@/ui/spinner";

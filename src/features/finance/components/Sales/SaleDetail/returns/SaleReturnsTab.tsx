@@ -1,9 +1,10 @@
 import { useParams } from "react-router-dom";
-import { useGetSale } from "../../hooks/useSales";
-import SaleItemsTable from "./SaleItemsTable";
+import { useGetSale } from "../../../../hooks/useSales";
+import { SaleStatus } from "@/types";
+import SaleReturnsSection from "./SaleReturnsSection";
 import { Spinner } from "@/ui/spinner";
 
-export default function SaleItemsTab() {
+export default function SaleReturnsTab() {
   const { id } = useParams<{ id: string }>();
   const saleId = Number(id);
   const { data: sale, isLoading } = useGetSale(saleId);
@@ -16,5 +17,6 @@ export default function SaleItemsTab() {
     );
   }
 
-  return <SaleItemsTable sale={sale} />;
+  const isCompleted = sale.status === SaleStatus.Completed;
+  return <SaleReturnsSection saleId={sale.saleId} isCompleted={isCompleted} />;
 }

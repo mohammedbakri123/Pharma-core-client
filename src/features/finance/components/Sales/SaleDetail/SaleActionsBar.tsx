@@ -2,26 +2,26 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/ui/button";
 import { ConfirmDialog } from "@/ui/confirm-dialog";
-import { Ban, CheckCircle } from "lucide-react";
-import { PurchaseStatus } from "@/types";
-import { useCancelPurchase } from "../../hooks/usePurchases";
-import CompletePurchaseDialog from "./CompletePurchaseDialog";
+import { CheckCircle, Ban } from "lucide-react";
+import { SaleStatus } from "@/types";
+import { useCancelSale } from "../../../hooks/useSales";
+import CompleteSaleDialog from "./CompleteSaleDialog";
 
-interface PurchaseActionsBarProps {
-  purchaseId: number;
-  status: PurchaseStatus;
+interface SaleActionsBarProps {
+  saleId: number;
+  status: SaleStatus;
 }
 
-export default function PurchaseActionsBar({
-  purchaseId,
+export default function SaleActionsBar({
+  saleId,
   status,
-}: PurchaseActionsBarProps) {
+}: SaleActionsBarProps) {
   const navigate = useNavigate();
   const [completeDialogOpen, setCompleteDialogOpen] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
-  const cancelMutation = useCancelPurchase();
+  const cancelMutation = useCancelSale();
 
-  if (status !== PurchaseStatus.Draft) return null;
+  if (status !== SaleStatus.Draft) return null;
 
   return (
     <>
@@ -55,17 +55,17 @@ export default function PurchaseActionsBar({
         cancelLabel="تراجع"
         variant="destructive"
         onConfirm={() =>
-          cancelMutation.mutate(purchaseId, {
+          cancelMutation.mutate(saleId, {
             onSuccess: () => navigate("/finance"),
           })
         }
         isPending={cancelMutation.isPending}
       />
 
-      <CompletePurchaseDialog
+      <CompleteSaleDialog
         open={completeDialogOpen}
         onOpenChange={setCompleteDialogOpen}
-        purchaseId={purchaseId}
+        saleId={saleId}
       />
     </>
   );

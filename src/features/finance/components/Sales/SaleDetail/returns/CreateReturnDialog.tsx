@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +9,7 @@ import {
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
-import { useCreateSaleReturn } from "../../hooks/useSalesReturns";
+import { useCreateSaleReturn } from "../../../../hooks/useSalesReturns";
 
 interface CreateReturnDialogProps {
   open: boolean;
@@ -25,7 +24,6 @@ export default function CreateReturnDialog({
 }: CreateReturnDialogProps) {
   const [note, setNote] = useState("");
   const createReturn = useCreateSaleReturn(saleId);
-  const navigate = useNavigate();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -50,18 +48,20 @@ export default function CreateReturnDialog({
         </div>
         <DialogFooter>
           <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={createReturn.isPending}
+          >
+            إلغاء
+          </Button>
+          <Button
             onClick={() =>
               createReturn.mutate(
                 { note: note || undefined },
                 {
-                  onSuccess: (response) => {
+                  onSuccess: () => {
                     onOpenChange(false);
                     setNote("");
-                    if (response?.data?.salesReturnId) {
-                      navigate(
-                        `/finance/sales/${saleId}/returns/${response.data.salesReturnId}`
-                      );
-                    }
                   },
                 },
               )

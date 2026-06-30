@@ -1,19 +1,19 @@
 export enum PaymentType {
-  Incoming = 1,
-  Outgoing = 2,
+  Incoming = "incoming",
+  Outgoing = "outgoing",
 }
 
 export enum PaymentMethod {
-  Cash = 1,
-  Card = 2,
+  Cash = "cash",
+  Card = "card",
 }
 
 export enum PaymentReferenceType {
-  Sale = 1,
-  Purchase = 2,
-  Expense = 3,
-  SalesReturn = 4,
-  PurchaseReturn = 5,
+  Sale = "sale",
+  Purchase = "purchase",
+  Expense = "expense",
+  SalesReturn = "salesReturn",
+  PurchaseReturn = "purchaseReturn",
 }
 
 export interface PaymentDto {

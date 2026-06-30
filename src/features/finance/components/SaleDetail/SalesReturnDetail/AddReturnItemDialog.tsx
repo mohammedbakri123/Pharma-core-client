@@ -25,7 +25,7 @@ interface AddReturnItemDialogProps {
     options?: {
       onSuccess?: () => void;
       onError?: () => void;
-    }
+    },
   ) => void;
   isPending: boolean;
 }
@@ -44,7 +44,7 @@ export default function AddReturnItemDialog({
 
   // Filter out items already added to the return
   const returnableItems = sale.items.filter(
-    (item) => !existingSaleItemIds.includes(item.saleItemId)
+    (item) => !existingSaleItemIds.includes(item.saleItemId),
   );
 
   // Reset state when opening
@@ -57,7 +57,7 @@ export default function AddReturnItemDialog({
 
   // Find the selected sale item
   const selectedSaleItem = sale.items.find(
-    (item) => item.saleItemId.toString() === selectedItemId
+    (item) => item.saleItemId.toString() === selectedItemId,
   );
 
   // Reset quantity when selected item changes
@@ -113,7 +113,7 @@ export default function AddReturnItemDialog({
             variant: "destructive",
           });
         },
-      }
+      },
     );
   };
 
@@ -166,20 +166,23 @@ export default function AddReturnItemDialog({
               <Label className="text-sm font-medium text-muted-foreground">
                 اختر صنفاً من قائمة المبيعات
               </Label>
-              
+
               {/* Visual items list selector */}
-              <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1 border rounded-lg p-2 bg-muted/10 border-border/40">
+              <div className="space-y-2 max-h-55 overflow-y-auto pr-1 border rounded-lg p-2 bg-muted/10 border-border/40">
                 {returnableItems.map((item) => {
-                  const isSelected = selectedItemId === item.saleItemId.toString();
+                  const isSelected =
+                    selectedItemId === item.saleItemId.toString();
                   return (
                     <div
                       key={item.saleItemId}
-                      onClick={() => setSelectedItemId(item.saleItemId.toString())}
+                      onClick={() =>
+                        setSelectedItemId(item.saleItemId.toString())
+                      }
                       className={cn(
                         "p-3 rounded-lg border text-right cursor-pointer transition-all flex flex-row-reverse justify-between items-center select-none",
                         isSelected
                           ? "border-primary bg-primary/10 shadow-xs scale-[0.99]"
-                          : "border-border/50 bg-background hover:bg-muted/40 hover:border-border"
+                          : "border-border/50 bg-background hover:bg-muted/40 hover:border-border",
                       )}
                     >
                       <div className="flex items-center gap-3 flex-row-reverse">
@@ -188,10 +191,12 @@ export default function AddReturnItemDialog({
                             "h-5 w-5 rounded-full border flex items-center justify-center shrink-0",
                             isSelected
                               ? "border-primary bg-primary text-primary-foreground"
-                              : "border-muted-foreground/30 bg-background"
+                              : "border-muted-foreground/30 bg-background",
                           )}
                         >
-                          {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                          {isSelected && (
+                            <Check className="w-3.5 h-3.5 stroke-3" />
+                          )}
                         </div>
                         <div>
                           <p className="font-semibold text-sm text-foreground">
@@ -220,7 +225,10 @@ export default function AddReturnItemDialog({
               <div className="space-y-4 animate-in fade-in duration-200">
                 {/* Quantity Adjuster with Plus/Minus buttons */}
                 <div className="space-y-2">
-                  <Label htmlFor="returnedQuantity" className="text-sm font-medium">
+                  <Label
+                    htmlFor="returnedQuantity"
+                    className="text-sm font-medium"
+                  >
                     الكمية المرتجعة
                   </Label>
                   <div className="flex items-center justify-center gap-3 dir-ltr bg-muted/20 border border-border/40 p-4 rounded-xl">
@@ -264,7 +272,9 @@ export default function AddReturnItemDialog({
                       إجمالي القيمة المستردة
                     </span>
                     <span className="text-lg font-mono font-extrabold text-emerald-600">
-                      {formatCurrency(selectedSaleItem.unitPrice * Number(quantity || 0))}
+                      {formatCurrency(
+                        selectedSaleItem.unitPrice * Number(quantity || 0),
+                      )}
                     </span>
                   </div>
                   <div>
@@ -272,7 +282,9 @@ export default function AddReturnItemDialog({
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => setQuantity(selectedSaleItem.quantity.toString())}
+                      onClick={() =>
+                        setQuantity(selectedSaleItem.quantity.toString())
+                      }
                       className="text-xs h-8 border-emerald-500/20 text-emerald-700 hover:bg-emerald-500/10 cursor-pointer"
                     >
                       إرجاع الكل ({selectedSaleItem.quantity})

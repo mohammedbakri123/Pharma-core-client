@@ -61,7 +61,7 @@ export default function SalesHeader() {
                   type="date"
                   value={from}
                   onChange={(e) => handleFromChange(e.target.value)}
-                  className="w-40 text-right bg-background [&::-webkit-calendar-picker-indicator]:mr-0 [&::-webkit-calendar-picker-indicator]:mr-auto"
+                  className="w-40 text-right bg-background [&::-webkit-calendar-picker-indicator]:mr-0"
                 />
                 <Calendar className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
               </div>
@@ -76,7 +76,7 @@ export default function SalesHeader() {
                   type="date"
                   value={to}
                   onChange={(e) => handleToChange(e.target.value)}
-                  className="w-40 text-right bg-background [&::-webkit-calendar-picker-indicator]:mr-0 [&::-webkit-calendar-picker-indicator]:mr-auto"
+                  className="w-40 text-right bg-background [&::-webkit-calendar-picker-indicator]:mr-0"
                 />
                 <Calendar className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
               </div>

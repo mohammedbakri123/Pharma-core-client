@@ -80,7 +80,7 @@ export default function AddPaymentDialog({
     onAdd({
       referenceType: PaymentReferenceType.Sale,
       referenceId: saleId,
-      method: Number(method) as PaymentMethod,
+      method: method as PaymentMethod,
       amount: numAmount,
       description: description || undefined,
     });

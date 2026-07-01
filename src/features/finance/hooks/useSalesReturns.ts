@@ -20,7 +20,10 @@ import type {
 export function useSaleReturns(saleId: number) {
   return useQuery({
     queryKey: ["sale", saleId, "returns"],
-    queryFn: async () => { const response = await getSaleReturns(saleId); return response.data; },
+    queryFn: async () => {
+      const response = await getSaleReturns(saleId);
+      return response.data;
+    },
     enabled: !!saleId,
   });
 }
@@ -28,7 +31,10 @@ export function useSaleReturns(saleId: number) {
 export function useSaleReturnById(saleId: number, returnId: number) {
   return useQuery({
     queryKey: ["sale", saleId, "returns", returnId],
-    queryFn: async () => { const response = await getSaleReturnById(saleId, returnId); return response.data; },
+    queryFn: async () => {
+      const response = await getSaleReturnById(saleId, returnId);
+      return response.data;
+    },
     enabled: !!saleId && !!returnId,
   });
 }
@@ -36,7 +42,8 @@ export function useSaleReturnById(saleId: number, returnId: number) {
 export function useCreateSaleReturn(saleId: number) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: CreateSalesReturnRequest) => createSaleReturn(saleId, data),
+    mutationFn: (data: CreateSalesReturnRequest) =>
+      createSaleReturn(saleId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sale", saleId, "returns"] });
     },
@@ -56,7 +63,8 @@ export function useDeleteSaleReturn(saleId: number) {
 export function useAddSaleReturnItem(saleId: number, returnId: number) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: AddSalesReturnItemRequest) => addSaleReturnItem(saleId, returnId, data),
+    mutationFn: (data: AddSalesReturnItemRequest) =>
+      addSaleReturnItem(saleId, returnId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sale", saleId, "returns"] });
     },
@@ -66,8 +74,13 @@ export function useAddSaleReturnItem(saleId: number, returnId: number) {
 export function useUpdateSaleReturnItem(saleId: number, returnId: number) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ itemId, data }: { itemId: number; data: UpdateSalesReturnItemRequest }) =>
-      updateSaleReturnItem(saleId, returnId, itemId, data),
+    mutationFn: ({
+      itemId,
+      data,
+    }: {
+      itemId: number;
+      data: UpdateSalesReturnItemRequest;
+    }) => updateSaleReturnItem(saleId, returnId, itemId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sale", saleId, "returns"] });
     },
@@ -97,7 +110,10 @@ export function useCancelSaleReturn(saleId: number) {
 export function useGetSaleReturnBalance(saleId: number, returnId: number) {
   return useQuery({
     queryKey: ["sale", saleId, "returns", returnId, "balance"],
-    queryFn: async () => { const response = await getSaleReturnBalance(saleId, returnId); return response.data; },
+    queryFn: async () => {
+      const response = await getSaleReturnBalance(saleId, returnId);
+      return response.data;
+    },
     enabled: !!saleId && !!returnId,
   });
 }
@@ -105,7 +121,8 @@ export function useGetSaleReturnBalance(saleId: number, returnId: number) {
 export function useDeleteSaleReturnItem(saleId: number, returnId: number) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (itemId: number) => deleteSaleReturnItem(saleId, returnId, itemId),
+    mutationFn: (itemId: number) =>
+      deleteSaleReturnItem(saleId, returnId, itemId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sale", saleId, "returns"] });
     },

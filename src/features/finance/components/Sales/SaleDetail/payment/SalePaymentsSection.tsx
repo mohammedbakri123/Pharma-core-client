@@ -12,6 +12,8 @@ import type { PaymentDto } from "@/types";
 import { PaymentMethod } from "@/types";
 import AddPaymentDialog from "./AddPaymentDialog";
 
+import { toast } from "@/hooks/use-toast";
+
 interface SalePaymentsSectionProps {
   saleId: number;
   isCompleted: boolean;
@@ -107,7 +109,22 @@ export default function SalePaymentsSection({
         onOpenChange={setAddDialogOpen}
         onAdd={(data) =>
           addPaymentMutation.mutate(data, {
-            onSuccess: () => setAddDialogOpen(false),
+            onSuccess: () => {
+              setAddDialogOpen(false);
+              toast({
+                title: "تمت الدفع",
+                description: "تمت عملية الدفع بنجاح",
+                variant: "success",
+              });
+            },
+            onError: () => {
+              toast({
+                title: "فشل الدفع",
+                description: "فشلت عملية الدفع حاول مجددا",
+
+                variant: "destructive",
+              });
+            },
           })
         }
         isPending={addPaymentMutation.isPending}

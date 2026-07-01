@@ -12,7 +12,7 @@ export interface SalesReturnItemDto {
 
 export interface SalesReturnDto {
   salesReturnId: number;
-  saleId: number | null;
+  saleId: number;
   customerId: number | null;
   customerName?: string;
   userId: number | null;

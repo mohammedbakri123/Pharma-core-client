@@ -16,18 +16,19 @@ import type {
   UpdateSalesReturnItemRequest,
 } from "@/types";
 import { useToast } from "@/hooks/use-toast";
+import { useGetSale } from "../../../../../../hooks/useSales";
 
 interface EditReturnItemDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   item: SalesReturnItemDto | null;
-  sale: SaleDetailsDto;
+  saleId: number;
   onUpdate: (
     args: { itemId: number; data: UpdateSalesReturnItemRequest },
     options?: {
       onSuccess?: () => void;
       onError?: () => void;
-    }
+    },
   ) => void;
   isPending: boolean;
 }
@@ -36,16 +37,18 @@ export default function EditReturnItemDialog({
   open,
   onOpenChange,
   item,
-  sale,
+  saleId,
   onUpdate,
   isPending,
 }: EditReturnItemDialogProps) {
   const { toast } = useToast();
   const [quantity, setQuantity] = useState<string>("1");
 
+  const { data: sale } = useGetSale(saleId);
+
   // Find the original sold item to get the maximum allowed quantity
   const originalSaleItem = item
-    ? sale.items.find((si) => si.saleItemId === item.saleItemId)
+    ? sale?.items.find((si) => si.saleItemId === item.saleItemId)
     : null;
 
   useEffect(() => {
@@ -98,7 +101,7 @@ export default function EditReturnItemDialog({
             variant: "destructive",
           });
         },
-      }
+      },
     );
   };
 
@@ -108,7 +111,9 @@ export default function EditReturnItemDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md dir-rtl">
         <DialogHeader>
-          <DialogTitle className="text-right">تعديل كمية الصنف المرتجع</DialogTitle>
+          <DialogTitle className="text-right">
+            تعديل كمية الصنف المرتجع
+          </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleUpdate} className="space-y-4 text-right">
@@ -118,7 +123,9 @@ export default function EditReturnItemDialog({
               <span className="font-semibold">{item.medicineName}</span>
             </div>
             <div className="flex justify-between flex-row-reverse">
-              <span className="text-muted-foreground">الكمية المباعة أصلاً:</span>
+              <span className="text-muted-foreground">
+                الكمية المباعة أصلاً:
+              </span>
               <span className="font-semibold">{originalSaleItem.quantity}</span>
             </div>
             <div className="flex justify-between flex-row-reverse">

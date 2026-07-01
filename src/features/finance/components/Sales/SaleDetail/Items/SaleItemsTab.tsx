@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
-import { useGetSale } from "../../hooks/useSales";
-import SaleItemsTable from "./Items/SaleItemsTable";
+import { useGetSale } from "../../../../hooks/useSales";
+import SaleItemsTable from "./SaleItemsTable";
 import { Spinner } from "@/ui/spinner";
 
 export default function SaleItemsTab() {

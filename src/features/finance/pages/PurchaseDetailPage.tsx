@@ -4,9 +4,9 @@ import { Button } from "@/ui/button";
 import { Spinner } from "@/ui/spinner";
 import { Ban } from "lucide-react";
 import { useGetPurchase, useGetPurchaseBalance } from "../hooks/usePurchases";
-import PurchaseDetailHeader from "../components/PurchaseDetail/PurchaseDetailHeader";
-import PurchaseSummaryCards from "../components/PurchaseDetail/PurchaseSummaryCards";
-import PurchaseActionsBar from "../components/PurchaseDetail/PurchaseActionsBar";
+import PurchaseDetailHeader from "../components/Purchases/PurchaseDetail/PurchaseDetailHeader";
+import PurchaseSummaryCards from "../components/Purchases/PurchaseDetail/PurchaseSummaryCards";
+import PurchaseActionsBar from "../components/Purchases/PurchaseDetail/PurchaseActionsBar";
 import TabNav from "@/ui/TabNav";
 
 export default function PurchaseDetailPage() {

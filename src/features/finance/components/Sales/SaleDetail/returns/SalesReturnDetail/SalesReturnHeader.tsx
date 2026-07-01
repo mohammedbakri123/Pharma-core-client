@@ -1,39 +1,85 @@
 import { ArrowRight } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 
 import { Button } from "@/ui/button";
 import { RotateCcw, CheckCircle, XCircle } from "lucide-react";
 import { formatDate } from "@/utils/formatters";
 import SalesReturnStatusBadge from "./SalesReturnStatusBadge";
-import { SalesReturnStatus } from "@/types";
+import { SalesReturnDetailsDto, SalesReturnStatus } from "@/types";
+import { useToast } from "@/hooks/use-toast";
+import {
+  useCancelSaleReturn,
+  useCompleteSaleReturn,
+} from "@features/finance/hooks/useSalesReturns";
+import { useNavigate } from "react-router-dom";
+import { ConfirmDialog } from "@/ui/confirm-dialog";
 
 interface SalesReturnHeaderProps {
-  saleId: number;
-  salesReturn: {
-    salesReturnId: number;
-    status?: SalesReturnStatus;
-    createdAt?: string;
-    userName?: string;
-    items: any[];
-  };
-  isDraft: boolean;
-  isCompleting: boolean;
-  isCancelling: boolean;
-  setCompleteDialogOpen: (open: boolean) => void;
-  setCancelDialogOpen: (open: boolean) => void;
+  salesReturn: SalesReturnDetailsDto;
+
   onBack: () => void;
 }
 
 export default function SalesReturnHeader({
-  saleId,
   salesReturn,
-  isDraft,
-  isCompleting,
-  isCancelling,
-  setCompleteDialogOpen,
-  setCancelDialogOpen,
   onBack,
 }: SalesReturnHeaderProps) {
+  const [completeDialogOpen, setCompleteDialogOpen] = useState(false);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+
+  const { mutate: completeReturn, isPending: isCompleting } =
+    useCompleteSaleReturn(salesReturn.saleId);
+  const { mutate: cancelReturn, isPending: isCancelling } = useCancelSaleReturn(
+    salesReturn.saleId,
+  );
+
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  // Complete return handler
+  const handleCompleteReturn = () => {
+    completeReturn(salesReturn.salesReturnId, {
+      onSuccess: () => {
+        setCompleteDialogOpen(false);
+
+        toast({
+          title: "تم إكمال المرتجع",
+          description: "تم إكمال المرتجع وتحديث المخزون بنجاح.",
+          variant: "success",
+        });
+      },
+      onError: () => {
+        toast({
+          title: "فشل إكمال المرتجع",
+          description: "حدث خطأ أثناء إكمال المرتجع. يرجى المحاولة مرة أخرى.",
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
+  // Cancel return handler
+  const handleCancelReturn = () => {
+    cancelReturn(salesReturn.salesReturnId, {
+      onSuccess: () => {
+        setCancelDialogOpen(false);
+        toast({
+          title: "تم إلغاء المرتجع",
+          description: "تم إلغاء المرتجع بنجاح.",
+          variant: "success",
+        });
+        navigate(`/finance/sales/${salesReturn.saleId}/returns`);
+      },
+      onError: () => {
+        toast({
+          title: "فشل إلغاء المرتجع",
+          description: "حدث خطأ أثناء إلغاء المرتجع.",
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
   return (
     <div className="p-6 bg-linear-to-br from-primary/10 via-primary/5 to-background border-b border-border/40">
       <Button
@@ -61,7 +107,7 @@ export default function SalesReturnHeader({
               />
             </div>
             <p className="text-xs text-muted-foreground">
-              المرتجع تابع للفاتورة الأصليّة #{saleId}
+              المرتجع تابع للفاتورة الأصليّة #{salesReturn.saleId}
               {salesReturn.createdAt &&
                 ` | تاريخ المرتجع: ${formatDate(salesReturn.createdAt)}`}
               {salesReturn.userName && ` | بواسطة: ${salesReturn.userName}`}
@@ -69,7 +115,7 @@ export default function SalesReturnHeader({
           </div>
         </div>
 
-        {isDraft && (
+        {salesReturn.status === SalesReturnStatus.Draft && (
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
@@ -94,6 +140,32 @@ export default function SalesReturnHeader({
           </div>
         )}
       </div>
+
+      {/* Complete Return Confirm Dialog */}
+      <ConfirmDialog
+        open={completeDialogOpen}
+        onOpenChange={setCompleteDialogOpen}
+        title="تأكيد إكمال المرتجع"
+        description="هل أنت متأكد من إكمال هذا المرتجع؟ سيتم ترحيل المرتجع وتعديل كميات المخزون نهائياً ولا يمكن التراجع أو التعديل بعد ذلك."
+        confirmLabel="إكمال المرتجع"
+        cancelLabel="إلغاء"
+        onConfirm={handleCompleteReturn}
+        isPending={isCompleting}
+        variant="default"
+      />
+
+      {/* Cancel Return Confirm Dialog */}
+      <ConfirmDialog
+        open={cancelDialogOpen}
+        onOpenChange={setCancelDialogOpen}
+        title="تأكيد إلغاء المرتجع"
+        description="هل أنت متأكد من إلغاء هذا المرتجع؟ سيتم حذف مسودة المرتجع ولن يتم إجراء أي تعديل على المخزون."
+        confirmLabel="إلغاء المرتجع"
+        cancelLabel="تراجع"
+        onConfirm={handleCancelReturn}
+        isPending={isCancelling}
+        variant="destructive"
+      />
     </div>
   );
 }

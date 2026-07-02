@@ -10,6 +10,7 @@ import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { useCreateSaleReturn } from "../../../../hooks/useSalesReturns";
+import { useToast } from "@/hooks/use-toast";
 
 interface CreateReturnDialogProps {
   open: boolean;
@@ -24,7 +25,7 @@ export default function CreateReturnDialog({
 }: CreateReturnDialogProps) {
   const [note, setNote] = useState("");
   const createReturn = useCreateSaleReturn(saleId);
-
+  const { toast } = useToast(); // Assuming you have a toast hook for notifications
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -48,20 +49,24 @@ export default function CreateReturnDialog({
         </div>
         <DialogFooter>
           <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={createReturn.isPending}
-          >
-            إلغاء
-          </Button>
-          <Button
             onClick={() =>
               createReturn.mutate(
                 { note: note || undefined },
                 {
                   onSuccess: () => {
+                    toast({
+                      title: "تم إنشاء المرتجع",
+                      description: "تم إنشاء المرتجع بنجاح.",
+                    });
                     onOpenChange(false);
                     setNote("");
+                  },
+                  onError: (error) => {
+                    toast({
+                      title: "خطأ",
+                      description: "حدث خطأ أثناء إنشاء المرتجع.",
+                      variant: "destructive",
+                    });
                   },
                 },
               )

@@ -16,7 +16,6 @@ import type {
   GetSalesRequest,
   AddSaleItemRequest,
   UpdateSaleItemRequest,
-  CompleteSaleRequest,
   CreatePaymentRequest,
 } from "@/types";
 

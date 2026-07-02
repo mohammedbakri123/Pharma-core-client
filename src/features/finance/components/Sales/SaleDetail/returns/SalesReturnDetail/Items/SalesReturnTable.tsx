@@ -15,6 +15,7 @@ import {
   useUpdateSaleReturnItem,
 } from "@features/finance/hooks/useSalesReturns";
 import { useToast } from "@/hooks/use-toast";
+import SalesReturnTableHeader from "./SalesReturnTableHeader";
 
 interface props {
   SaleReturn: SalesReturnDetailsDto;
@@ -29,6 +30,7 @@ export default function SalesReturnTable({ SaleReturn }: props) {
   );
   const isDraft = SaleReturn.status === SalesReturnStatus.Draft;
 
+  //Mutations
   const { mutate: updateReturnItem, isPending: isUpdating } =
     useUpdateSaleReturnItem(SaleReturn.saleId, SaleReturn.salesReturnId);
   const { mutate: deleteReturnItem, isPending: isDeleting } =
@@ -134,6 +136,7 @@ export default function SalesReturnTable({ SaleReturn }: props) {
   return (
     <>
       <div>
+        <SalesReturnTableHeader salesReturn={SaleReturn} />
         {/* Items Table */}
         <DataTable
           columns={columns}

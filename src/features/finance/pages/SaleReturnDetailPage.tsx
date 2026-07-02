@@ -13,7 +13,6 @@ import { useGetSale } from "../hooks/useSales";
 import SalesReturnHeader from "../components/Sales/SaleDetail/returns/SalesReturnDetail/SalesReturnHeader";
 import SalesReturnNote from "../components/Sales/SaleDetail/returns/SalesReturnDetail/SalesReturnNote";
 import SalesReturnSummaryCards from "../components/Sales/SaleDetail/returns/SalesReturnDetail/SalesReturnSummaryCards";
-import SalesReturnItemSectionHeader from "../components/Sales/SaleDetail/returns/SalesReturnDetail/Items/SalesReturnItemSectionHeader";
 import TabNav from "@/ui/TabNav";
 
 //TODO: this file need a shit refactoring
@@ -102,8 +101,6 @@ export default function SaleReturnDetailPage() {
         {salesReturn.note && <SalesReturnNote note={salesReturn.note} />}
         {/* Summary Cards */}
         <SalesReturnSummaryCards balance={balance} salesReturn={salesReturn} />
-        {/* Items Section Header */}
-        <SalesReturnItemSectionHeader />
       </div>
       <TabNav tabs={tabs} variant="underline">
         <div className="p-6">

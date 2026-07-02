@@ -8,6 +8,11 @@ export enum PaymentMethod {
   Card = "card",
 }
 
+export const methodLabels: Record<PaymentMethod, string> = {
+  [PaymentMethod.Cash]: "نقداً",
+  [PaymentMethod.Card]: "بطاقة",
+};
+
 export enum PaymentReferenceType {
   Sale = "sale",
   Purchase = "purchase",

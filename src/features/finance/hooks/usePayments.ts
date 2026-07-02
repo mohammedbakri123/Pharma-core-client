@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getPayments } from "@/api";
+import { getPayments } from "../api/payments";
 
 export function usePayments(params?: {
   page?: number;

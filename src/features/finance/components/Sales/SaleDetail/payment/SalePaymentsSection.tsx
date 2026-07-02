@@ -10,6 +10,7 @@ import {
 } from "../../../../hooks/useSales";
 import type { PaymentDto } from "@/types";
 import { PaymentMethod } from "@/types";
+import { methodLabels } from "@/types";
 import AddPaymentDialog from "./AddPaymentDialog";
 
 import { toast } from "@/hooks/use-toast";
@@ -18,11 +19,6 @@ interface SalePaymentsSectionProps {
   saleId: number;
   isCompleted: boolean;
 }
-
-const methodLabels: Record<PaymentMethod, string> = {
-  [PaymentMethod.Cash]: "نقداً",
-  [PaymentMethod.Card]: "بطاقة",
-};
 
 export default function SalePaymentsSection({
   saleId,

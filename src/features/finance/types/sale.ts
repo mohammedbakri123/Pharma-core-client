@@ -90,7 +90,3 @@ export interface SalePaymentRequest {
   method: PaymentMethod;
   description?: string;
 }
-
-export interface CompleteSaleRequest {
-  payments: SalePaymentRequest[];
-}

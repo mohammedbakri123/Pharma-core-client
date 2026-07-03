@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
-import { useGetSale } from "../../../../hooks/useSales";
+import { useGetSale } from "@features/finance/hooks/useSales";
+import { useGetReturnSale } from "@features/finance/hooks/useReturns";
 import { SaleStatus } from "@/types";
-import SalePaymentsSection from "./SalesReturnPaymentSection";
 import { Spinner } from "@/ui/spinner";
 import SalesReturnPaymentSection from "./SalesReturnPaymentSection";
 

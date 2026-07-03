@@ -16,7 +16,7 @@ import {
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
-import { PaymentMethod, PaymentType, PaymentReferenceType } from "@/types";
+import { PaymentMethod, PaymentReferenceType } from "@/types";
 import type { CreatePaymentRequest } from "@/types";
 import { formatCurrency } from "@/utils/formatters";
 

@@ -8,8 +8,6 @@ import type {
   CreateSaleRequest,
   AddSaleItemRequest,
   UpdateSaleItemRequest,
-  SalePaymentRequest,
-  CompleteSaleRequest,
   CompleteSaleResultDto,
 } from "@/types";
 
@@ -41,5 +39,3 @@ export const cancelSale = (saleId: number) =>
 
 export const getSaleBalance = (saleId: number) =>
   api.get<SaleBalanceDto>(`/sales/${saleId}/balance`);
-
-

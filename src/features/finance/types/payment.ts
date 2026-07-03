@@ -50,6 +50,10 @@ export interface CreatePaymentRequest {
   amount: number;
   description?: string;
 }
+export type CreateSalePaymentRequest = Omit<
+  CreatePaymentRequest,
+  "referenceType" | "referenceId"
+>;
 
 export interface ReferencePaymentsResponse {
   saleId?: number;

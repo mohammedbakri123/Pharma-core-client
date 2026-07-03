@@ -49,6 +49,7 @@ export interface SaleBalanceDto {
   saleId: number;
   totalAmount: number;
   paidAmount: number;
+  returnedAmount: number;
   remainingAmount: number;
   discount: number;
 }

@@ -10,13 +10,11 @@ import {
   completeSale,
   getSaleBalance,
 } from "../api/sales";
-import { getSalePayments, createPayment } from "../api/payments";
 import type {
   CreateSaleRequest,
   GetSalesRequest,
   AddSaleItemRequest,
   UpdateSaleItemRequest,
-  CreatePaymentRequest,
 } from "@/types";
 
 export function useSales(params?: GetSalesRequest) {
@@ -48,17 +46,6 @@ export function useGetSaleBalance(id: number) {
       return response.data;
     },
     enabled: !!id,
-  });
-}
-
-export function useSalePayments(saleId: number) {
-  return useQuery({
-    queryKey: ["sale", saleId, "payments"],
-    queryFn: async () => {
-      const response = await getSalePayments(saleId);
-      return response.data;
-    },
-    enabled: !!saleId,
   });
 }
 
@@ -134,21 +121,6 @@ export function useCompleteSale(saleId: number) {
       queryClient.invalidateQueries({
         queryKey: ["sale", saleId, "payments"],
       });
-      queryClient.invalidateQueries({ queryKey: ["sales"] });
-    },
-  });
-}
-
-export function useAddSalePayment(saleId: number) {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (data: CreatePaymentRequest) => createPayment(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["sale", saleId, "payments"],
-      });
-      queryClient.invalidateQueries({ queryKey: ["sale", saleId, "balance"] });
       queryClient.invalidateQueries({ queryKey: ["sales"] });
     },
   });

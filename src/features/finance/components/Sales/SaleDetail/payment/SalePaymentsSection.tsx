@@ -3,11 +3,11 @@ import { DataTable } from "@/ui/data-table";
 import { Button } from "@/ui/button";
 import { CreditCard, Plus } from "lucide-react";
 import { formatCurrency, formatDate } from "@/utils/formatters";
+import { useGetSaleBalance } from "../../../../hooks/useSales";
 import {
   useSalePayments,
   useAddSalePayment,
-  useGetSaleBalance,
-} from "../../../../hooks/useSales";
+} from "@features/finance/hooks/usePayments";
 import type { PaymentDto } from "@/types";
 import { PaymentMethod } from "@/types";
 import { methodLabels } from "@/types";

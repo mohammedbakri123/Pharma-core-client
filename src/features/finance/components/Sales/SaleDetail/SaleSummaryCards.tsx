@@ -1,4 +1,11 @@
-import { Coins, BadgePercent, Wallet, Banknote } from "lucide-react";
+import {
+  Coins,
+  BadgePercent,
+  Wallet,
+  Banknote,
+  Rotate3D,
+  RotateCcw,
+} from "lucide-react";
 import { formatCurrency } from "@/utils/formatters";
 import { StatCard } from "@/ui/stat-card";
 import type { SaleDetailsDto, SaleBalanceDto } from "@/types";
@@ -13,7 +20,7 @@ export default function SaleSummaryCards({
   balance,
 }: SaleSummaryCardsProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
       <StatCard
         icon={Coins}
         label="الإجمالي"
@@ -33,6 +40,18 @@ export default function SaleSummaryCards({
           ) : (
             <span className="text-muted-foreground/60">-</span>
           )
+        }
+      />
+      <StatCard
+        icon={Rotate3D}
+        label="المرجوع"
+        value={
+          <span className="flex items-center gap-1">
+            {balance
+              ? formatCurrency(balance.returnedAmount)
+              : formatCurrency(0)}
+            <Banknote className="w-4 h-4 text-muted-foreground" />
+          </span>
         }
       />
       <StatCard

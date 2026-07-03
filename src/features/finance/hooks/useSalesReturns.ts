@@ -56,6 +56,9 @@ export function useDeleteSaleReturn(saleId: number) {
     mutationFn: (returnId: number) => deleteSaleReturn(saleId, returnId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sale", saleId, "returns"] });
+      queryClient.invalidateQueries({
+        queryKey: ["sale", saleId, "balance"],
+      });
     },
   });
 }
@@ -67,6 +70,9 @@ export function useAddSaleReturnItem(saleId: number, returnId: number) {
       addSaleReturnItem(saleId, returnId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sale", saleId, "returns"] });
+      queryClient.invalidateQueries({
+        queryKey: ["sale", saleId, "balance"],
+      });
     },
   });
 }
@@ -83,6 +89,9 @@ export function useUpdateSaleReturnItem(saleId: number, returnId: number) {
     }) => updateSaleReturnItem(saleId, returnId, itemId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sale", saleId, "returns"] });
+      queryClient.invalidateQueries({
+        queryKey: ["sale", saleId, "balance"],
+      });
     },
   });
 }
@@ -93,6 +102,9 @@ export function useCompleteSaleReturn(saleId: number) {
     mutationFn: (returnId: number) => completeSaleReturn(saleId, returnId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sale", saleId, "returns"] });
+      queryClient.invalidateQueries({
+        queryKey: ["sale", saleId, "balance"],
+      });
     },
   });
 }
@@ -125,6 +137,9 @@ export function useDeleteSaleReturnItem(saleId: number, returnId: number) {
       deleteSaleReturnItem(saleId, returnId, itemId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sale", saleId, "returns"] });
+      queryClient.invalidateQueries({
+        queryKey: ["sale", saleId, "balance"],
+      });
     },
   });
 }

@@ -1,16 +1,19 @@
 import { useParams } from "react-router-dom";
-import { useGetSale } from "@features/finance/hooks/useSales";
-import { useGetReturnSale } from "@features/finance/hooks/useReturns";
-import { SaleStatus } from "@/types";
+import { useSaleReturnById } from "@features/finance/hooks/useSalesReturns";
+import { SalesReturnStatus } from "@/types";
 import { Spinner } from "@/ui/spinner";
 import SalesReturnPaymentSection from "./SalesReturnPaymentSection";
 
 export default function SalesReturnPaymentsTab() {
-  const { id } = useParams<{ id: string }>();
+  const { id, returnId } = useParams<{ id: string; returnId: string }>();
   const saleId = Number(id);
-  const { data: sale, isLoading } = useGetSale(saleId);
+  const returnIdNum = Number(returnId);
+  const { data: returnData, isLoading } = useSaleReturnById(
+    saleId,
+    returnIdNum,
+  );
 
-  if (isLoading || !sale) {
+  if (isLoading || !returnData) {
     return (
       <div className="flex justify-center py-10">
         <Spinner size="lg" />
@@ -18,8 +21,12 @@ export default function SalesReturnPaymentsTab() {
     );
   }
 
-  const isCompleted = sale.status === SaleStatus.Completed;
+  const isCompleted = returnData.status === SalesReturnStatus.Completed;
   return (
-    <SalesReturnPaymentSection saleId={sale.saleId} isCompleted={isCompleted} />
+    <SalesReturnPaymentSection
+      saleId={saleId}
+      returnId={returnIdNum}
+      isCompleted={isCompleted}
+    />
   );
 }

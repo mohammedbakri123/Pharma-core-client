@@ -36,3 +36,11 @@ export const getPurchasePayments = (
   api.get<ReferencePaymentsResponse>(`/payments/purchase/${purchaseId}`, {
     params,
   });
+
+export const getSaleReturnPayments = (
+  returnId: number,
+  params?: PaymentsQueryParams,
+) =>
+  api.get<ReferencePaymentsResponse>(`/payments/sales-return/${returnId}`, {
+    params,
+  });

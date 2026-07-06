@@ -1,5 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createPayment, getPayments, getSalePayments } from "../api/payments";
+import {
+  createPayment,
+  getPayments,
+  getSalePayments,
+  getSaleReturnPayments,
+} from "../api/payments";
 import {
   CreatePaymentRequest,
   CreateSalePaymentRequest,
@@ -58,6 +63,45 @@ export function useAddSalePayment(saleId: number) {
       });
       queryClient.invalidateQueries({
         queryKey: ["sales"],
+      });
+    },
+  });
+}
+
+export function useSaleReturnPayments(
+  returnId: number,
+  params?: PaymentsQueryParams,
+) {
+  return useQuery({
+    queryKey: ["sale", "return", returnId, "payments", params],
+    queryFn: async () => {
+      const response = await getSaleReturnPayments(returnId, params);
+      return response.data;
+    },
+    enabled: !!returnId,
+  });
+}
+
+export function useAddSaleReturnPayment(saleId: number, returnId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreateSalePaymentRequest) =>
+      createPayment({
+        ...data,
+        referenceType: PaymentReferenceType.SalesReturn,
+        referenceId: returnId,
+      }),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["sale", "return", returnId, "payments"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["sale", saleId, "returns", returnId, "balance"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["sale", saleId, "balance"],
       });
     },
   });

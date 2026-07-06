@@ -8,10 +8,12 @@ import { formatCurrency, formatDate } from "@/utils/formatters";
 import {
   usePayPurchase,
   usePurchasePayments,
+  useGetPurchaseBalance,
 } from "../../../hooks/usePurchases";
-import type { PaymentDto, CreatePurchasePaymentRequest } from "@/types";
+import type { PaymentDto } from "@/types";
 import { PaymentMethod } from "@/types";
 import AddPaymentDialog from "@features/finance/components/shared/AddPaymentDialog";
+import { toast } from "@/hooks/use-toast";
 
 interface PurchasePaymentsSectionProps {
   purchaseId: number;
@@ -36,6 +38,7 @@ export default function PurchasePaymentsSection({
     limit,
   });
   const payPurchaseMutation = usePayPurchase(purchaseId);
+  const { data: balance } = useGetPurchaseBalance(purchaseId);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
 
   const payments = paymentsData?.payments || [];
@@ -117,13 +120,32 @@ export default function PurchasePaymentsSection({
         onOpenChange={setAddDialogOpen}
         onAdd={(data) =>
           payPurchaseMutation.mutate(
-            data as unknown as CreatePurchasePaymentRequest,
             {
-              onSuccess: () => setAddDialogOpen(false),
+              method: Number(data.method),
+              amount: data.amount,
+              description: data.description,
+            },
+            {
+              onSuccess: () => {
+                setAddDialogOpen(false);
+                toast({
+                  title: "تمت الدفع",
+                  description: "تمت عملية الدفع بنجاح",
+                  variant: "success",
+                });
+              },
+              onError: () => {
+                toast({
+                  title: "فشل الدفع",
+                  description: "فشلت عملية الدفع حاول مجددا",
+                  variant: "destructive",
+                });
+              },
             },
           )
         }
         isPending={payPurchaseMutation.isPending}
+        remainingAmount={balance?.remainingAmount}
       />
     </div>
   );

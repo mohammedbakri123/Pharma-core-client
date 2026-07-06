@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/ui/select";
-import { useCreatePurchaseReturn } from "../../../../hooks/usePurchases";
+import { useCreatePurchaseReturn } from "../../../../hooks/usePurchaseReturns";
 
 interface CreatePurchaseReturnDialogProps {
   open: boolean;

@@ -12,9 +12,7 @@ import {
   completePurchase,
   getPurchaseBalance,
   getPurchaseItems,
-  getPurchaseReturns,
   payPurchase,
-  createPurchaseReturn,
 } from "../api/purchases";
 import { getPurchasePayments } from "../api/payments";
 import type {
@@ -23,7 +21,6 @@ import type {
   AddPurchaseItemRequest,
   UpdatePurchaseItemRequest,
   CreatePurchasePaymentRequest,
-  CreatePurchaseReturnRequest,
   PaymentsQueryParams,
 } from "@/types";
 
@@ -85,17 +82,6 @@ export function usePurchasePayments(
     queryKey: ["purchase", purchaseId, "payments", params],
     queryFn: async () => {
       const response = await getPurchasePayments(purchaseId, params);
-      return response.data;
-    },
-    enabled: !!purchaseId,
-  });
-}
-
-export function usePurchaseReturns(purchaseId: number) {
-  return useQuery({
-    queryKey: ["purchase", purchaseId, "returns"],
-    queryFn: async () => {
-      const response = await getPurchaseReturns(purchaseId);
       return response.data;
     },
     enabled: !!purchaseId,
@@ -224,17 +210,4 @@ export function usePayPurchase(purchaseId: number) {
   });
 }
 
-export function useCreatePurchaseReturn(purchaseId: number) {
-  const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: (data: CreatePurchaseReturnRequest) =>
-      createPurchaseReturn(purchaseId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["purchase", purchaseId, "returns"],
-      });
-      queryClient.invalidateQueries({ queryKey: ["purchase", purchaseId, "balance"] });
-    },
-  });
-}

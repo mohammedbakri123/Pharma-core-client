@@ -11,8 +11,6 @@ import type {
   UpdatePurchaseItemRequest,
   PurchaseItemDto,
   PurchaseItemsResponse,
-  PurchaseReturnDto,
-  CreatePurchaseReturnRequest,
   CreatePurchasePaymentRequest,
 } from "@/types";
 
@@ -59,14 +57,6 @@ export const getPurchaseBalance = (id: number) =>
 
 export const getPurchaseItems = (id: number) =>
   api.get<PurchaseItemsResponse>(`/purchases/${id}/items`);
-
-export const getPurchaseReturns = (id: number) =>
-  api.get(`/purchases/${id}/returns`);
-
-export const createPurchaseReturn = (
-  id: number,
-  data: CreatePurchaseReturnRequest,
-) => api.post<PurchaseReturnDto>(`/purchases/${id}/return`, data);
 
 export const payPurchase = (id: number, data: CreatePurchasePaymentRequest) =>
   api.post(`/purchases/${id}/pay`, data);

@@ -151,6 +151,75 @@ export interface PurchaseReturnDto {
   refundPaymentId: number | null;
 }
 
+export enum PurchaseReturnStatus {
+  Draft = "draft",
+  Completed = "completed",
+  Cancelled = "cancelled",
+}
+
+export interface PurchaseReturnListItemDto {
+  purchaseReturnId: number;
+  purchaseId: number | null;
+  supplierId: number | null;
+  userId: number | null;
+  status: PurchaseReturnStatus;
+  totalAmount: number;
+  note: string | null;
+  createdAt: string;
+}
+
+export interface PurchaseReturnDetailsDto {
+  purchaseReturnId: number;
+  purchaseId: number | null;
+  supplierId: number | null;
+  userId: number | null;
+  status: PurchaseReturnStatus;
+  totalAmount: number;
+  note: string | null;
+  createdAt: string;
+  items: PurchaseReturnItemDto[];
+}
+
+export interface PurchaseReturnsListResponse {
+  purchaseId: number;
+  returns: PurchaseReturnListItemDto[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+  };
+}
+
+export interface PurchaseReturnBalanceDto {
+  purchaseReturnId: number;
+  totalAmount: number;
+  paidAmount: number;
+  remainingAmount: number;
+}
+
+export interface CompletePurchaseReturnResultDto {
+  purchaseReturnId: number;
+  status: PurchaseReturnStatus;
+  totalAmount: number;
+  completedAt: string;
+  stockMovementsCreated: number;
+}
+
+export interface UpdatePurchaseReturnRequest {
+  note?: string;
+}
+
+export interface AddPurchaseReturnItemRequest {
+  purchaseItemId: number;
+  batchId: number;
+  quantity: number;
+  unitPrice: number;
+}
+
+export interface UpdatePurchaseReturnItemRequest {
+  quantity: number;
+}
+
 export interface CreatePurchasePaymentRequest {
   method: number;
   amount: number;

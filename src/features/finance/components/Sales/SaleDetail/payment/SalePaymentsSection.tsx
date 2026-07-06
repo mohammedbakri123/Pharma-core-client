@@ -10,10 +10,10 @@ import {
   useSalePayments,
   useAddSalePayment,
 } from "@features/finance/hooks/usePayments";
-import type { PaymentDto } from "@/types";
+import type { PaymentDto, CreateSalePaymentRequest } from "@/types";
 import { PaymentMethod } from "@/types";
 import { methodLabels } from "@/types";
-import AddPaymentDialog from "./AddPaymentDialog";
+import AddPaymentDialog from "@features/finance/components/shared/AddPaymentDialog";
 
 import { toast } from "@/hooks/use-toast";
 
@@ -116,7 +116,7 @@ export default function SalePaymentsSection({
         open={addDialogOpen}
         onOpenChange={setAddDialogOpen}
         onAdd={(data) =>
-          addPaymentMutation.mutate(data, {
+          addPaymentMutation.mutate(data as CreateSalePaymentRequest, {
             onSuccess: () => {
               setAddDialogOpen(false);
               toast({

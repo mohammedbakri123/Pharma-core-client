@@ -10,10 +10,10 @@ import {
   useAddSaleReturnPayment,
 } from "@features/finance/hooks/usePayments";
 import { useGetSaleReturnBalance } from "@features/finance/hooks/useSalesReturns";
-import type { PaymentDto } from "@/types";
+import type { PaymentDto, CreateSalePaymentRequest } from "@/types";
 import { PaymentMethod } from "@/types";
 import { methodLabels } from "@/types";
-import AddPaymentDialog from "@features/finance/components/Sales/SaleDetail/payment/AddPaymentDialog";
+import AddPaymentDialog from "@features/finance/components/shared/AddPaymentDialog";
 import { toast } from "@/hooks/use-toast";
 
 interface SalesReturnPaymentSectionProps {
@@ -117,7 +117,7 @@ export default function SalesReturnPaymentSection({
         open={addDialogOpen}
         onOpenChange={setAddDialogOpen}
         onAdd={(data) =>
-          addPaymentMutation.mutate(data, {
+          addPaymentMutation.mutate(data as CreateSalePaymentRequest, {
             onSuccess: () => {
               setAddDialogOpen(false);
               toast({

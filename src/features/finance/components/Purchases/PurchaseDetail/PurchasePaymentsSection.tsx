@@ -9,9 +9,9 @@ import {
   usePayPurchase,
   usePurchasePayments,
 } from "../../../hooks/usePurchases";
-import type { PaymentDto } from "@/types";
+import type { PaymentDto, CreatePurchasePaymentRequest } from "@/types";
 import { PaymentMethod } from "@/types";
-import AddPurchasePaymentDialog from "./AddPurchasePaymentDialog";
+import AddPaymentDialog from "@features/finance/components/shared/AddPaymentDialog";
 
 interface PurchasePaymentsSectionProps {
   purchaseId: number;
@@ -112,13 +112,16 @@ export default function PurchasePaymentsSection({
 
       <Pagination total={pagination?.total} limit={pagination?.limit} />
 
-      <AddPurchasePaymentDialog
+      <AddPaymentDialog
         open={addDialogOpen}
         onOpenChange={setAddDialogOpen}
         onAdd={(data) =>
-          payPurchaseMutation.mutate(data, {
-            onSuccess: () => setAddDialogOpen(false),
-          })
+          payPurchaseMutation.mutate(
+            data as unknown as CreatePurchasePaymentRequest,
+            {
+              onSuccess: () => setAddDialogOpen(false),
+            },
+          )
         }
         isPending={payPurchaseMutation.isPending}
       />

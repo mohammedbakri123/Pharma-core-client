@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/ui/dialog";
 import {
   Select,
@@ -17,33 +17,76 @@ import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { PaymentMethod } from "@/types";
-import type { CreatePurchasePaymentRequest } from "@/types";
+import { formatCurrency } from "@/utils/formatters";
 
-interface AddPurchasePaymentDialogProps {
+interface AddPaymentDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAdd: (data: CreatePurchasePaymentRequest) => void;
+  onAdd: (data: {
+    method: string;
+    amount: number;
+    description?: string;
+  }) => void;
   isPending: boolean;
+  remainingAmount?: number;
 }
 
-export default function AddPurchasePaymentDialog({
+export default function AddPaymentDialog({
   open,
   onOpenChange,
   onAdd,
   isPending,
-}: AddPurchasePaymentDialogProps) {
+  remainingAmount,
+}: AddPaymentDialogProps) {
   const [amount, setAmount] = useState("");
   const [method, setMethod] = useState<string>(String(PaymentMethod.Cash));
   const [description, setDescription] = useState("");
+  const [amountError, setAmountError] = useState("");
+  const amountRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (open) {
+      setAmount("");
+      setMethod(String(PaymentMethod.Cash));
+      setDescription("");
+      setAmountError("");
+      setTimeout(() => amountRef.current?.focus(), 50);
+    }
+  }, [open]);
+
+  const handleAmountChange = (value: string) => {
+    setAmount(value);
+    setAmountError("");
+    if (remainingAmount !== undefined && value !== "") {
+      const numValue = Number(value);
+      if (numValue > remainingAmount) {
+        setAmountError(
+          `المبلغ يتجاوز المتبقي (${formatCurrency(remainingAmount)})`,
+        );
+      } else if (numValue <= 0) {
+        setAmountError("المبلغ يجب أن يكون أكبر من صفر");
+      }
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const numAmount = Number(amount);
+    if (remainingAmount !== undefined && numAmount > remainingAmount) {
+      setAmountError(
+        `المبلغ يتجاوز المتبقي (${formatCurrency(remainingAmount)})`,
+      );
+      return;
+    }
     onAdd({
-      method: Number(method),
-      amount: Number(amount),
+      method,
+      amount: numAmount,
       description: description || undefined,
     });
   };
+
+  const isSubmitDisabled =
+    isPending || !amount || Number(amount) <= 0 || amountError !== "";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -51,19 +94,34 @@ export default function AddPurchasePaymentDialog({
         <DialogHeader>
           <DialogTitle>إضافة دفعة جديدة</DialogTitle>
         </DialogHeader>
+
+        {remainingAmount !== undefined && remainingAmount > 0 && (
+          <div className="rounded-lg bg-muted/50 p-3 text-sm">
+            <span className="text-muted-foreground">المتبقي من الفاتورة: </span>
+            <span className="font-semibold text-foreground">
+              {formatCurrency(remainingAmount)}
+            </span>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="amount">المبلغ</Label>
             <Input
+              ref={amountRef}
               id="amount"
               type="number"
               min="0.01"
               step="0.01"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) => handleAmountChange(e.target.value)}
               placeholder="أدخل المبلغ"
+              className={amountError ? "border-destructive" : ""}
               required
             />
+            {amountError && (
+              <p className="text-sm text-destructive">{amountError}</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="method">طريقة الدفع</Label>
@@ -91,15 +149,7 @@ export default function AddPurchasePaymentDialog({
             />
           </div>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isPending}
-            >
-              إلغاء
-            </Button>
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" disabled={isSubmitDisabled}>
               {isPending ? "جاري الإضافة..." : "إضافة"}
             </Button>
           </DialogFooter>

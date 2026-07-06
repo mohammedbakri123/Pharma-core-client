@@ -7,7 +7,7 @@ import {
   useAddPurchaseItem,
   useDeletePurchaseItem,
   useUpdatePurchaseItem,
-} from "../../../hooks/usePurchases";
+} from "../../../../hooks/usePurchases";
 import type { PurchaseDetailsDto, PurchaseItemDetailsDto } from "@/types";
 import { PurchaseStatus } from "@/types";
 import AddPurchaseItemDialog from "./AddPurchaseItemDialog";

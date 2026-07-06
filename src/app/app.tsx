@@ -40,9 +40,9 @@ import SalesReturnItemsTab from "@features/finance/components/Sales/SaleDetail/r
 import SalesReturnPaymentsTab from "@features/finance/components/Sales/SaleDetail/returns/SalesReturnDetail/payment/SalesReturnPaymentsTab";
 import SaleReturnDetailPage from "@features/finance/pages/SaleReturnDetailPage";
 import PurchaseDetailPage from "@features/finance/pages/PurchaseDetailPage";
-import PurchaseItemsTab from "@features/finance/components/Purchases/PurchaseDetail/PurchaseItemsTab";
-import PurchasePaymentsTab from "@features/finance/components/Purchases/PurchaseDetail/PurchasePaymentsTab";
-import PurchaseReturnsTab from "@features/finance/components/Purchases/PurchaseDetail/PurchaseReturnsTab";
+import PurchaseItemsTab from "@features/finance/components/Purchases/PurchaseDetail/Items/PurchaseItemsTab";
+import PurchasePaymentsTab from "@features/finance/components/Purchases/PurchaseDetail/payment/PurchasePaymentsTab";
+import PurchaseReturnsTab from "@features/finance/components/Purchases/PurchaseDetail/returns/PurchaseReturnsTab";
 
 import SettingsLayout from "@features/settings/pages/SettingsPage";
 import SettingsGeneralPage from "@features/settings/components/general/GeneralSettings";

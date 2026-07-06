@@ -9,7 +9,7 @@ import {
   usePayPurchase,
   usePurchasePayments,
   useGetPurchaseBalance,
-} from "../../../hooks/usePurchases";
+} from "../../../../hooks/usePurchases";
 import type { PaymentDto } from "@/types";
 import { PaymentMethod } from "@/types";
 import AddPaymentDialog from "@features/finance/components/shared/AddPaymentDialog";

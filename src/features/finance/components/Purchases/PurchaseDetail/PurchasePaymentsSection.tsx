@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "@/ui/button";
 import { DataTable } from "@/ui/data-table";
+import { Pagination } from "@/ui/pagination";
 import { CreditCard, Plus } from "lucide-react";
 import { formatCurrency, formatDate } from "@/utils/formatters";
 import {
@@ -25,11 +27,19 @@ export default function PurchasePaymentsSection({
   purchaseId,
   isCompleted,
 }: PurchasePaymentsSectionProps) {
-  const { data: paymentsData, isLoading } = usePurchasePayments(purchaseId);
+  const [searchParams] = useSearchParams();
+  const page = Number(searchParams.get("page") ?? "1");
+  const limit = 10;
+
+  const { data: paymentsData, isLoading } = usePurchasePayments(purchaseId, {
+    page,
+    limit,
+  });
   const payPurchaseMutation = usePayPurchase(purchaseId);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
 
   const payments = paymentsData?.payments || [];
+  const pagination = paymentsData?.pagination;
 
   const columns = [
     {
@@ -99,6 +109,8 @@ export default function PurchasePaymentsSection({
         isLoading={isLoading}
         emptyMessage="لا توجد مدفوعات لهذه الفاتورة"
       />
+
+      <Pagination total={pagination?.total} limit={pagination?.limit} />
 
       <AddPurchasePaymentDialog
         open={addDialogOpen}

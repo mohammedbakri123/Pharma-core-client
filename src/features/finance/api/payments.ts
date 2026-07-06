@@ -4,6 +4,7 @@ import type {
   PaymentListResponse,
   CreatePaymentRequest,
   ReferencePaymentsResponse,
+  PaymentsQueryParams,
 } from "@/types";
 
 export const getPayments = (params?: {
@@ -22,8 +23,16 @@ export const getPayment = (id: number) =>
 export const createPayment = (data: CreatePaymentRequest) =>
   api.post<PaymentDto>("/payments", data);
 
-export const getSalePayments = (saleId: number) =>
-  api.get<ReferencePaymentsResponse>(`/payments/sale/${saleId}`);
+export const getSalePayments = (
+  saleId: number,
+  params?: PaymentsQueryParams,
+) =>
+  api.get<ReferencePaymentsResponse>(`/payments/sale/${saleId}`, { params });
 
-export const getPurchasePayments = (purchaseId: number) =>
-  api.get<ReferencePaymentsResponse>(`/payments/purchase/${purchaseId}`);
+export const getPurchasePayments = (
+  purchaseId: number,
+  params?: PaymentsQueryParams,
+) =>
+  api.get<ReferencePaymentsResponse>(`/payments/purchase/${purchaseId}`, {
+    params,
+  });

@@ -24,6 +24,7 @@ import type {
   UpdatePurchaseItemRequest,
   CreatePurchasePaymentRequest,
   CreatePurchaseReturnRequest,
+  PaymentsQueryParams,
 } from "@/types";
 
 export function usePurchases(params?: {
@@ -76,11 +77,14 @@ export function useGetPurchaseItems(id: number) {
   });
 }
 
-export function usePurchasePayments(purchaseId: number) {
+export function usePurchasePayments(
+  purchaseId: number,
+  params?: PaymentsQueryParams,
+) {
   return useQuery({
-    queryKey: ["purchase", purchaseId, "payments"],
+    queryKey: ["purchase", purchaseId, "payments", params],
     queryFn: async () => {
-      const response = await getPurchasePayments(purchaseId);
+      const response = await getPurchasePayments(purchaseId, params);
       return response.data;
     },
     enabled: !!purchaseId,

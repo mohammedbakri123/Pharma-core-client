@@ -55,9 +55,19 @@ export type CreateSalePaymentRequest = Omit<
   "referenceType" | "referenceId"
 >;
 
+export interface PaymentsQueryParams {
+  page: number;
+  limit: number;
+}
+
 export interface ReferencePaymentsResponse {
   saleId?: number;
   purchaseId?: number;
   payments: PaymentDto[];
   totalPaid: number;
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+  };
 }

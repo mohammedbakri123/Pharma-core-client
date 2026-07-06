@@ -16,16 +16,15 @@ import {
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
-import { PaymentMethod, PaymentReferenceType } from "@/types";
-import type { CreatePaymentRequest } from "@/types";
+import { PaymentMethod } from "@/types";
+import type { CreateSalePaymentRequest } from "@/types";
 import { formatCurrency } from "@/utils/formatters";
 
 interface AddPaymentDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAdd: (data: CreatePaymentRequest) => void;
+  onAdd: (data: CreateSalePaymentRequest) => void;
   isPending: boolean;
-  saleId: number;
   remainingAmount?: number;
 }
 
@@ -34,7 +33,6 @@ export default function AddPaymentDialog({
   onOpenChange,
   onAdd,
   isPending,
-  saleId,
   remainingAmount,
 }: AddPaymentDialogProps) {
   const [amount, setAmount] = useState("");
@@ -78,8 +76,6 @@ export default function AddPaymentDialog({
       return;
     }
     onAdd({
-      referenceType: PaymentReferenceType.Sale,
-      referenceId: saleId,
       method: method as PaymentMethod,
       amount: numAmount,
       description: description || undefined,

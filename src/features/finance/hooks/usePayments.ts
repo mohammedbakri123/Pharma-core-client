@@ -4,6 +4,7 @@ import {
   CreatePaymentRequest,
   CreateSalePaymentRequest,
   PaymentReferenceType,
+  PaymentsQueryParams,
 } from "../types/payment";
 
 export function usePayments(params?: {
@@ -23,11 +24,15 @@ export function usePayments(params?: {
     },
   });
 }
-export function useSalePayments(saleId: number) {
+
+export function useSalePayments(
+  saleId: number,
+  params?: PaymentsQueryParams,
+) {
   return useQuery({
-    queryKey: ["sale", saleId, "payments"],
+    queryKey: ["sale", saleId, "payments", params],
     queryFn: async () => {
-      const response = await getSalePayments(saleId);
+      const response = await getSalePayments(saleId, params);
       return response.data;
     },
     enabled: !!saleId,

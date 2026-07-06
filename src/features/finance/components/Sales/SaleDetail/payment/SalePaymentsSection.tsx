@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { DataTable } from "@/ui/data-table";
+import { Pagination } from "@/ui/pagination";
 import { Button } from "@/ui/button";
 import { CreditCard, Plus } from "lucide-react";
 import { formatCurrency, formatDate } from "@/utils/formatters";
@@ -24,12 +26,20 @@ export default function SalePaymentsSection({
   saleId,
   isCompleted,
 }: SalePaymentsSectionProps) {
-  const { data: paymentsData, isLoading } = useSalePayments(saleId);
+  const [searchParams] = useSearchParams();
+  const page = Number(searchParams.get("page") ?? "1");
+  const limit = 10;
+
+  const { data: paymentsData, isLoading } = useSalePayments(saleId, {
+    page,
+    limit,
+  });
   const addPaymentMutation = useAddSalePayment(saleId);
   const { data: balance } = useGetSaleBalance(saleId);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
 
   const payments = paymentsData?.payments || [];
+  const pagination = paymentsData?.pagination;
 
   const columns = [
     {
@@ -100,6 +110,8 @@ export default function SalePaymentsSection({
         emptyMessage="لا توجد مدفوعات لهذه الفاتورة"
       />
 
+      <Pagination total={pagination?.total} limit={pagination?.limit} />
+
       <AddPaymentDialog
         open={addDialogOpen}
         onOpenChange={setAddDialogOpen}
@@ -124,7 +136,6 @@ export default function SalePaymentsSection({
           })
         }
         isPending={addPaymentMutation.isPending}
-        saleId={saleId}
         remainingAmount={balance?.remainingAmount}
       />
     </div>

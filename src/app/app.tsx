@@ -43,6 +43,9 @@ import PurchaseDetailPage from "@features/finance/purchaseDetail/pages/PurchaseD
 import PurchaseItemsTab from "@features/finance/purchaseDetail/components/items/PurchaseItemsTab";
 import PurchasePaymentsTab from "@features/finance/purchaseDetail/components/payment/PurchasePaymentsTab";
 import PurchaseReturnsTab from "@features/finance/purchaseDetail/components/returns/PurchaseReturnsTab";
+import PurchaseReturnItemsTab from "@features/finance/purchaseReturn/components/items/PurchaseReturnItemsTab";
+import PurchaseReturnPaymentsTab from "@features/finance/purchaseReturn/components/payment/PurchaseReturnPaymentsTab";
+import PurchaseReturnDetailPage from "@features/finance/purchaseReturn/pages/PurchaseReturnDetailPage";
 
 import SettingsLayout from "@features/settings/pages/SettingsPage";
 import SettingsGeneralPage from "@features/settings/components/general/GeneralSettings";
@@ -146,6 +149,14 @@ function App() {
               <Route path="items" element={<PurchaseItemsTab />} />
               <Route path="payments" element={<PurchasePaymentsTab />} />
               <Route path="returns" element={<PurchaseReturnsTab />} />
+            </Route>
+            <Route
+              path="finance/purchases/:id/returns/:returnId"
+              element={<PurchaseReturnDetailPage />}
+            >
+              <Route index element={<Navigate to="items" replace />} />
+              <Route path="items" element={<PurchaseReturnItemsTab />} />
+              <Route path="payments" element={<PurchaseReturnPaymentsTab />} />
             </Route>
 
             <Route

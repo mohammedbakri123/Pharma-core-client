@@ -1,75 +1,100 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/ui/button";
 import { DataTable } from "@/ui/data-table";
-import { Plus, RotateCcw } from "lucide-react";
+import { Plus, RotateCcw, Eye } from "lucide-react";
 import { formatCurrency, formatDate } from "@/utils/formatters";
 import { usePurchaseReturns } from "../../../common/hooks/usePurchaseReturns";
-import type { PurchaseReturnDto } from "@/types";
+import { PurchaseReturnStatus } from "@/types";
+import type { PurchaseReturnListItemDto } from "@/types";
 import CreatePurchaseReturnDialog from "../../../purchaseReturn/components/CreatePurchaseReturnDialog";
+import PurchaseReturnStatusBadge from "../../../purchaseReturn/components/PurchaseReturnStatusBadge";
 
 interface PurchaseReturnsSectionProps {
   purchaseId: number;
   isCompleted: boolean;
 }
 
-function getReturns(data: unknown): PurchaseReturnDto[] {
-  if (Array.isArray(data)) return data as PurchaseReturnDto[];
-  if (
-    data &&
-    typeof data === "object" &&
-    "returns" in data &&
-    Array.isArray((data as { returns?: unknown }).returns)
-  ) {
-    return (data as { returns: PurchaseReturnDto[] }).returns;
-  }
-  return [];
-}
-
 export default function PurchaseReturnsSection({
   purchaseId,
   isCompleted,
 }: PurchaseReturnsSectionProps) {
+  const navigate = useNavigate();
   const { data: returnsData, isLoading } = usePurchaseReturns(purchaseId);
   const [returnDialogOpen, setReturnDialogOpen] = useState(false);
 
-  const returns = getReturns(returnsData);
+  const returns = returnsData?.returns || [];
 
   const columns = [
     {
       key: "index",
       header: "#",
       className: "text-muted-foreground w-12",
-      render: (_item: PurchaseReturnDto, index: number) => index + 1,
+      render: (_: PurchaseReturnListItemDto, index: number) => index + 1,
     },
     {
       key: "purchaseReturnId",
       header: "رقم المرتجع",
-      render: (item: PurchaseReturnDto) => (
-        <span className="font-medium">#{item.purchaseReturnId}</span>
+      render: (item: PurchaseReturnListItemDto) => (
+        <Button
+          variant="link"
+          className="h-auto p-0 font-medium text-primary cursor-pointer"
+          onClick={() =>
+            navigate(`/finance/purchases/${purchaseId}/returns/${item.purchaseReturnId}`)
+          }
+        >
+          #{item.purchaseReturnId}
+        </Button>
       ),
     },
     {
       key: "totalAmount",
       header: "الإجمالي",
       className: "font-mono font-semibold",
-      render: (item: PurchaseReturnDto) => formatCurrency(item.totalAmount),
+      render: (item: PurchaseReturnListItemDto) => formatCurrency(item.totalAmount),
+    },
+    {
+      key: "status",
+      header: "الحالة",
+      render: (item: PurchaseReturnListItemDto) => (
+        <PurchaseReturnStatusBadge
+          status={item.status ?? PurchaseReturnStatus.Draft}
+        />
+      ),
     },
     {
       key: "createdAt",
       header: "التاريخ",
-      render: (item: PurchaseReturnDto) => formatDate(item.createdAt),
+      render: (item: PurchaseReturnListItemDto) => formatDate(item.createdAt),
     },
     {
       key: "note",
       header: "ملاحظات",
-      render: (item: PurchaseReturnDto) =>
+      render: (item: PurchaseReturnListItemDto) =>
         item.note || <span className="text-muted-foreground/60">-</span>,
+    },
+    {
+      key: "actions",
+      header: "",
+      className: "w-16 text-left",
+      render: (item: PurchaseReturnListItemDto) => (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 cursor-pointer"
+          onClick={() =>
+            navigate(`/finance/purchases/${purchaseId}/returns/${item.purchaseReturnId}`)
+          }
+        >
+          <Eye className="w-4 h-4" />
+        </Button>
+      ),
     },
   ];
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-row-reverse items-center justify-between mb-4">
         <h3 className="text-sm font-medium text-muted-foreground">
           إجمالي {returns.length} مرتجع
         </h3>

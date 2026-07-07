@@ -4,13 +4,13 @@ import {
 } from "@tanstack/react-query";
 import { settingsApi } from "../api/system";
 
-import type { HealthCheckDto, BackupResultDto } from "@/types";
+// import type { HealthCheckDto, BackupResultDto } from "@/types";
 
 const PHARMACY_INFO_KEY = "pharmacy_info";
 
 
 export function useApiHealth() {
-  return useQuery<HealthCheckDto>({
+  return useQuery({
     queryKey: ["api-health"],
     queryFn: async () => {
       const res = await settingsApi.getHealth();
@@ -22,7 +22,7 @@ export function useApiHealth() {
 }
 
 export function useBackupDatabase() {
-  return useMutation<BackupResultDto, Error, void>({
+  return useMutation<unknown, Error, void>({
     mutationFn: async () => {
       const res = await settingsApi.backupDatabase();
       return res.data;

@@ -7,7 +7,7 @@ import {
 } from "../api/payments";
 import {
   CreatePaymentRequest,
-  CreateSalePaymentRequest,
+  CreatePaymentInput,
   PaymentReferenceType,
   PaymentsQueryParams,
 } from "../types/payment";
@@ -30,14 +30,11 @@ export function usePayments(params?: {
   });
 }
 
-export function useSalePayments(
-  saleId: number,
-  params?: PaymentsQueryParams,
-) {
+export function useSalePayments(saleId: number) {
   return useQuery({
-    queryKey: ["sale", saleId, "payments", params],
+    queryKey: ["sale", saleId, "payments"],
     queryFn: async () => {
-      const response = await getSalePayments(saleId, params);
+      const response = await getSalePayments(saleId);
       return response.data;
     },
     enabled: !!saleId,
@@ -47,7 +44,7 @@ export function useAddSalePayment(saleId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateSalePaymentRequest) =>
+    mutationFn: (data: CreatePaymentInput) =>
       createPayment({
         ...data,
         referenceType: PaymentReferenceType.Sale,
@@ -68,14 +65,11 @@ export function useAddSalePayment(saleId: number) {
   });
 }
 
-export function useSaleReturnPayments(
-  returnId: number,
-  params?: PaymentsQueryParams,
-) {
+export function useSaleReturnPayments(returnId: number) {
   return useQuery({
-    queryKey: ["sale", "return", returnId, "payments", params],
+    queryKey: ["sale", "return", returnId, "payments"],
     queryFn: async () => {
-      const response = await getSaleReturnPayments(returnId, params);
+      const response = await getSaleReturnPayments(returnId);
       return response.data;
     },
     enabled: !!returnId,
@@ -86,7 +80,7 @@ export function useAddSaleReturnPayment(saleId: number, returnId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateSalePaymentRequest) =>
+    mutationFn: (data: CreatePaymentInput) =>
       createPayment({
         ...data,
         referenceType: PaymentReferenceType.SalesReturn,

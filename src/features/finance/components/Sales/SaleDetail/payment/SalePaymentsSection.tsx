@@ -10,7 +10,7 @@ import {
   useSalePayments,
   useAddSalePayment,
 } from "@features/finance/hooks/usePayments";
-import type { PaymentDto, CreateSalePaymentRequest } from "@/types";
+import type { PaymentDto, CreatePaymentInput } from "@/types";
 import { PaymentMethod } from "@/types";
 import { methodLabels } from "@/types";
 import AddPaymentDialog from "@features/finance/components/shared/AddPaymentDialog";
@@ -30,10 +30,7 @@ export default function SalePaymentsSection({
   const page = Number(searchParams.get("page") ?? "1");
   const limit = 10;
 
-  const { data: paymentsData, isLoading } = useSalePayments(saleId, {
-    page,
-    limit,
-  });
+  const { data: paymentsData, isLoading } = useSalePayments(saleId);
   const addPaymentMutation = useAddSalePayment(saleId);
   const { data: balance } = useGetSaleBalance(saleId);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
@@ -116,7 +113,7 @@ export default function SalePaymentsSection({
         open={addDialogOpen}
         onOpenChange={setAddDialogOpen}
         onAdd={(data) =>
-          addPaymentMutation.mutate(data as CreateSalePaymentRequest, {
+          addPaymentMutation.mutate(data as CreatePaymentInput, {
             onSuccess: () => {
               setAddDialogOpen(false);
               toast({

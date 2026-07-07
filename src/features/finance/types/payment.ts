@@ -17,8 +17,8 @@ export enum PaymentReferenceType {
   Sale = "sale",
   Purchase = "purchase",
   Expense = "expense",
-  SalesReturn = "salesReturn",
-  PurchaseReturn = "purchaseReturn",
+  SalesReturn = "sales_Return",
+  PurchaseReturn = "purchase_Return",
 }
 
 export interface PaymentDto {
@@ -50,7 +50,7 @@ export interface CreatePaymentRequest {
   amount: number;
   description?: string;
 }
-export type CreateSalePaymentRequest = Omit<
+export type CreatePaymentInput = Omit<
   CreatePaymentRequest,
   "referenceType" | "referenceId"
 >;

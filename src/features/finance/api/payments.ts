@@ -23,24 +23,14 @@ export const getPayment = (id: number) =>
 export const createPayment = (data: CreatePaymentRequest) =>
   api.post<PaymentDto>("/payments", data);
 
-export const getSalePayments = (
-  saleId: number,
-  params?: PaymentsQueryParams,
-) =>
-  api.get<ReferencePaymentsResponse>(`/payments/sale/${saleId}`, { params });
+export const getSalePayments = (saleId: number) =>
+  api.get<ReferencePaymentsResponse>(`/payments/sale/${saleId}`);
 
-export const getPurchasePayments = (
-  purchaseId: number,
-  params?: PaymentsQueryParams,
-) =>
-  api.get<ReferencePaymentsResponse>(`/payments/purchase/${purchaseId}`, {
-    params,
-  });
+export const getPurchasePayments = (purchaseId: number) =>
+  api.get<ReferencePaymentsResponse>(`/payments/purchase/${purchaseId}`);
 
-export const getSaleReturnPayments = (
-  returnId: number,
-  params?: PaymentsQueryParams,
-) =>
-  api.get<ReferencePaymentsResponse>(`/payments/sales-return/${returnId}`, {
-    params,
-  });
+export const getSaleReturnPayments = (returnId: number) =>
+  api.get<ReferencePaymentsResponse>(`/payments/sales-return/${returnId}`);
+
+export const getPurchaseReturnPayments = (returnId: number) =>
+  api.get<ReferencePaymentsResponse>(`/payments/purchase-return/${returnId}`);

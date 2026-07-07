@@ -10,7 +10,7 @@ import {
   useAddSaleReturnPayment,
 } from "@features/finance/hooks/usePayments";
 import { useGetSaleReturnBalance } from "@features/finance/hooks/useSalesReturns";
-import type { PaymentDto, CreateSalePaymentRequest } from "@/types";
+import type { PaymentDto, CreatePaymentInput } from "@/types";
 import { PaymentMethod } from "@/types";
 import { methodLabels } from "@/types";
 import AddPaymentDialog from "@features/finance/components/shared/AddPaymentDialog";
@@ -31,10 +31,7 @@ export default function SalesReturnPaymentSection({
   const page = Number(searchParams.get("page") ?? "1");
   const limit = 10;
 
-  const { data: paymentsData, isLoading } = useSaleReturnPayments(returnId, {
-    page,
-    limit,
-  });
+  const { data: paymentsData, isLoading } = useSaleReturnPayments(returnId);
   const addPaymentMutation = useAddSaleReturnPayment(saleId, returnId);
   const { data: balance } = useGetSaleReturnBalance(saleId, returnId);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
@@ -117,7 +114,7 @@ export default function SalesReturnPaymentSection({
         open={addDialogOpen}
         onOpenChange={setAddDialogOpen}
         onAdd={(data) =>
-          addPaymentMutation.mutate(data as CreateSalePaymentRequest, {
+          addPaymentMutation.mutate(data as CreatePaymentInput, {
             onSuccess: () => {
               setAddDialogOpen(false);
               toast({
@@ -126,7 +123,7 @@ export default function SalesReturnPaymentSection({
                 variant: "success",
               });
             },
-            onError: () => {
+            onError: (error) => {
               toast({
                 title: "فشل الدفع",
                 description: "فشلت عملية الدفع حاول مجددا",

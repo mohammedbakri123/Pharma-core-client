@@ -7,6 +7,7 @@ export * from "../../features/people/api/suppliers";
 
 export * from "../../features/finance/common/api/sales";
 export * from "../../features/finance/common/api/salesReturns";
+export * from "../../features/finance/common/api/purchaseReturns";
 export * from "../../features/finance/common/api/purchases";
 export * from "../../features/finance/common/api/expenses";
 export * from "../../features/inventory/api/categories";

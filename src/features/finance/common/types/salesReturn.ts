@@ -1,13 +1,12 @@
 export interface SalesReturnItemDto {
   salesReturnItemId: number;
-  salesReturnId: number;
   saleItemId: number;
   batchId: number;
+  batchNumber?: string;
   quantity: number;
   unitPrice: number;
   totalPrice: number;
   medicineName?: string;
-  batchNumber?: string;
 }
 
 export interface SalesReturnDto {

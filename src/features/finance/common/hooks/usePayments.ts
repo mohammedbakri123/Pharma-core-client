@@ -4,6 +4,7 @@ import {
   getPayments,
   getSalePayments,
   getSaleReturnPayments,
+  getPurchaseReturnPayments,
 } from "../api/payments";
 import {
   CreatePaymentRequest,
@@ -96,6 +97,42 @@ export function useAddSaleReturnPayment(saleId: number, returnId: number) {
       });
       queryClient.invalidateQueries({
         queryKey: ["sale", saleId, "balance"],
+      });
+    },
+  });
+}
+
+export function usePurchaseReturnPayments(returnId: number) {
+  return useQuery({
+    queryKey: ["purchase", "return", returnId, "payments"],
+    queryFn: async () => {
+      const response = await getPurchaseReturnPayments(returnId);
+      return response.data;
+    },
+    enabled: !!returnId,
+  });
+}
+
+export function useAddPurchaseReturnPayment(purchaseId: number, returnId: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreatePaymentInput) =>
+      createPayment({
+        ...data,
+        referenceType: PaymentReferenceType.PurchaseReturn,
+        referenceId: returnId,
+      }),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["purchase", "return", returnId, "payments"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["purchase", purchaseId, "returns", returnId, "balance"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["purchase", purchaseId, "balance"],
       });
     },
   });

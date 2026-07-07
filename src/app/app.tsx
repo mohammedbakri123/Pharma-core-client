@@ -27,22 +27,22 @@ import CustomerSalesTab from "@features/people/components/CustomerDetails/Custom
 import CustomerStatementTab from "@features/people/components/CustomerDetails/CustomerStatementTab";
 
 import FinanceLayout from "@features/finance/Finance";
-import FinanceSalesPage from "@features/finance/pages/SalesPage";
-import FinancePurchasesPage from "@features/finance/pages/PurchasesPage";
-import FinanceExpensesPage from "@features/finance/pages/ExpensesPage";
-import FinancePaymentsPage from "@features/finance/pages/PaymentsPage";
+import FinanceSalesPage from "@features/finance/sales/pages/SalesPage";
+import FinancePurchasesPage from "@features/finance/purchase/pages/PurchasesPage";
+import FinanceExpensesPage from "@features/finance/expense/pages/ExpensesPage";
+import FinancePaymentsPage from "@features/finance/payment/pages/PaymentsPage";
 
-import SaleDetailPage from "@features/finance/pages/SaleDetailPage";
-import SaleItemsTab from "@features/finance/components/Sales/SaleDetail/Items/SaleItemsTab";
-import SalePaymentsTab from "@features/finance/components/Sales/SaleDetail/payment/SalePaymentsTab";
-import SaleReturnsTab from "@features/finance/components/Sales/SaleDetail/returns/SaleReturnsTab";
-import SalesReturnItemsTab from "@features/finance/components/Sales/SaleDetail/returns/SalesReturnDetail/Items/SalesReturnItemsTab";
-import SalesReturnPaymentsTab from "@features/finance/components/Sales/SaleDetail/returns/SalesReturnDetail/payment/SalesReturnPaymentsTab";
-import SaleReturnDetailPage from "@features/finance/pages/SaleReturnDetailPage";
-import PurchaseDetailPage from "@features/finance/pages/PurchaseDetailPage";
-import PurchaseItemsTab from "@features/finance/components/Purchases/PurchaseDetail/Items/PurchaseItemsTab";
-import PurchasePaymentsTab from "@features/finance/components/Purchases/PurchaseDetail/payment/PurchasePaymentsTab";
-import PurchaseReturnsTab from "@features/finance/components/Purchases/PurchaseDetail/returns/PurchaseReturnsTab";
+import SaleDetailPage from "@features/finance/saleDetail/pages/SaleDetailPage";
+import SaleItemsTab from "@features/finance/saleDetail/components/items/SaleItemsTab";
+import SalePaymentsTab from "@features/finance/saleDetail/components/payment/SalePaymentsTab";
+import SaleReturnsTab from "@features/finance/saleDetail/components/returns/SaleReturnsTab";
+import SalesReturnItemsTab from "@features/finance/saleReturn/components/items/SalesReturnItemsTab";
+import SalesReturnPaymentsTab from "@features/finance/saleReturn/components/payment/SalesReturnPaymentsTab";
+import SaleReturnDetailPage from "@features/finance/saleReturn/pages/SaleReturnDetailPage";
+import PurchaseDetailPage from "@features/finance/purchaseDetail/pages/PurchaseDetailPage";
+import PurchaseItemsTab from "@features/finance/purchaseDetail/components/items/PurchaseItemsTab";
+import PurchasePaymentsTab from "@features/finance/purchaseDetail/components/payment/PurchasePaymentsTab";
+import PurchaseReturnsTab from "@features/finance/purchaseDetail/components/returns/PurchaseReturnsTab";
 
 import SettingsLayout from "@features/settings/pages/SettingsPage";
 import SettingsGeneralPage from "@features/settings/components/general/GeneralSettings";

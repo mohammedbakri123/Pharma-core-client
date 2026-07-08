@@ -12,8 +12,9 @@ export default function PurchaseSummaryCards({
   purchase,
   balance,
 }: PurchaseSummaryCardsProps) {
+  console.log("PurchaseSummaryCards balance:", balance); // Debugging line
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
       <StatCard
         icon={Wallet}
         label="الإجمالي"
@@ -33,6 +34,13 @@ export default function PurchaseSummaryCards({
         icon={Banknote}
         label="المدفوع"
         value={balance ? formatCurrency(balance.paidAmount) : formatCurrency(0)}
+      />
+      <StatCard
+        icon={Banknote}
+        label="المسترجع"
+        value={
+          balance ? formatCurrency(balance.returnedAmount) : formatCurrency(0)
+        }
       />
       <StatCard
         icon={FileText}

@@ -66,6 +66,8 @@ export interface PurchaseBalanceDto {
   purchaseId: number;
   totalAmount: number;
   paidAmount: number;
+  returnedAmount: number;
+  refundedAmount: number;
   remainingAmount: number;
 }
 
@@ -194,6 +196,8 @@ export interface PurchaseReturnBalanceDto {
   purchaseReturnId: number;
   totalAmount: number;
   paidAmount: number;
+  returnedAmount: number;
+  refundedAmount: number;
   remainingAmount: number;
 }
 

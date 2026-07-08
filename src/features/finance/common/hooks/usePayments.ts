@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createPayment,
   getPayments,
+  getPaymentsOverview,
   getSalePayments,
   getSaleReturnPayments,
   getPurchaseReturnPayments,
@@ -13,19 +14,21 @@ import {
   PaymentsQueryParams,
 } from "../types/payment";
 
-export function usePayments(params?: {
-  page?: number;
-  limit?: number;
-  type?: number;
-  method?: number;
-  referenceType?: number;
-  from?: string;
-  to?: string;
-}) {
+export function usePayments(params?: PaymentsQueryParams) {
   return useQuery({
     queryKey: ["payments", params],
     queryFn: async () => {
       const response = await getPayments(params);
+      return response.data;
+    },
+  });
+}
+
+export function usePaymentsOverview(params?: PaymentsQueryParams) {
+  return useQuery({
+    queryKey: ["payments", "overview", params],
+    queryFn: async () => {
+      const response = await getPaymentsOverview(params);
       return response.data;
     },
   });

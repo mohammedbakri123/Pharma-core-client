@@ -5,17 +5,14 @@ import type {
   CreatePaymentRequest,
   ReferencePaymentsResponse,
   PaymentsQueryParams,
+  PaymentOverviewResponse,
 } from "@/types";
 
-export const getPayments = (params?: {
-  page?: number;
-  limit?: number;
-  type?: number;
-  method?: number;
-  referenceType?: number;
-  from?: string;
-  to?: string;
-}) => api.get<PaymentListResponse>("/payments", { params });
+export const getPayments = (params?: PaymentsQueryParams) =>
+  api.get<PaymentListResponse>("/payments", { params });
+
+export const getPaymentsOverview = (params?: PaymentsQueryParams) =>
+  api.get<PaymentOverviewResponse>("/payments/overview", { params });
 
 export const getPayment = (id: number) =>
   api.get<PaymentDto>(`/payments/${id}`);

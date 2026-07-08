@@ -43,6 +43,46 @@ export interface PaymentListResponse {
   };
 }
 
+export interface PaymentOverviewMethodSummary {
+  in: number;
+  out: number;
+  net: number;
+}
+
+export interface PaymentOverviewReferenceSummary {
+  sale: number;
+  purchase: number;
+  expense: number;
+  salesReturn: number;
+  purchaseReturn: number;
+}
+
+export interface PaymentOverviewSummary {
+  totalIn: number;
+  totalOut: number;
+  net: number;
+  cash: PaymentOverviewMethodSummary;
+  card: PaymentOverviewMethodSummary;
+  byReferenceType: PaymentOverviewReferenceSummary;
+}
+
+export interface PaymentOverviewItem extends PaymentDto {
+  parentReferenceId: number | null;
+  referenceLabel: string;
+  partyName: string | null;
+  referenceTotal: number | null;
+}
+
+export interface PaymentOverviewResponse {
+  summary: PaymentOverviewSummary;
+  payments: PaymentOverviewItem[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+  };
+}
+
 export interface CreatePaymentRequest {
   referenceType: PaymentReferenceType;
   referenceId: number;
@@ -56,8 +96,13 @@ export type CreatePaymentInput = Omit<
 >;
 
 export interface PaymentsQueryParams {
-  page: number;
-  limit: number;
+  page?: number;
+  limit?: number;
+  type?: PaymentType;
+  method?: PaymentMethod;
+  referenceType?: PaymentReferenceType;
+  from?: string;
+  to?: string;
 }
 
 export interface ReferencePaymentsResponse {

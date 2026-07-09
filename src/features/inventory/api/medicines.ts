@@ -5,6 +5,7 @@ import type {
   CreateMedicineRequest,
   UpdateMedicineRequest,
   GetMedicinesRequest,
+  StockMovementListResponse,
 } from "../types/Medicine";
 
 const getMedicines = (params?: GetMedicinesRequest) =>
@@ -33,6 +34,11 @@ const restoreMedicine = (id: number) => api.post(`/medicines/${id}/restore`);
 
 const hardDeleteMedicine = (id: number) => api.delete(`/medicines/${id}/hard`);
 
+const getMedicineMovements = (
+  id: number,
+  params?: { page?: number; limit?: number },
+) => api.get<StockMovementListResponse>(`/medicines/${id}/movements`, { params });
+
 export const MedicineApi = {
   getMedicines,
   getDeletedMedicines,
@@ -43,4 +49,5 @@ export const MedicineApi = {
   deleteMedicine,
   restoreMedicine,
   hardDeleteMedicine,
+  getMedicineMovements,
 };

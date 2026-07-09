@@ -54,6 +54,28 @@ export interface GetMedicinesRequest {
   categoryId: number | null;
   search?: string;
 }
+export interface StockMovementItemDto {
+  stockMovementId: number;
+  medicineId: number;
+  batchId: number;
+  quantity: number;
+  type: number;
+  referenceType: number;
+  referenceId: number;
+  createdAt: string;
+  medicineName?: string | null;
+  batchNumber?: string | null;
+}
+
+export interface StockMovementListResponse {
+  items: StockMovementItemDto[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+  };
+}
+
 ///TODO: this shouldn't be here any way
 
 // export interface PosMedicineDto {

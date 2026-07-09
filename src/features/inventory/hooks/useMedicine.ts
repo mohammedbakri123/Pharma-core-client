@@ -5,6 +5,7 @@ import {
   UpdateMedicineRequest,
 } from "../types/Medicine";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
 
 export function useMedicineList(params: GetMedicinesRequest) {
   return useQuery({
@@ -48,5 +49,34 @@ export function useCreateMedicine() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["medicines-list"] });
     },
+  });
+}
+
+export function useMedicine(id: number) {
+  return useQuery({
+    queryKey: ["medicine", id],
+    queryFn: async () => {
+      const response = await MedicineApi.getMedicine(id);
+      return response.data;
+    },
+    enabled: !!id,
+  });
+}
+
+export function useMedicineMovements(id: number) {
+  const [searchParams] = useSearchParams();
+
+  const params = {
+    page: Number(searchParams.get("page") ?? "1"),
+    limit: Number(searchParams.get("limit") ?? "10"),
+  };
+
+  return useQuery({
+    queryKey: ["medicine-movements", id, params],
+    queryFn: async () => {
+      const response = await MedicineApi.getMedicineMovements(id, params);
+      return response.data;
+    },
+    enabled: !!id,
   });
 }

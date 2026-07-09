@@ -19,12 +19,14 @@ import {
   DropdownMenuTrigger,
 } from "@/ui/dropdown-menu";
 import { Button } from "@/ui/button";
-import { Edit2, MoreHorizontal, Trash2 } from "lucide-react";
+import { Edit2, Eye, MoreHorizontal, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { CardContent } from "@/ui/card";
 import { Pagination } from "@/ui/pagination";
 
 export default function MedicineTable() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const [editingMedicine, setEditingMedicine] = useState<MedicineDto | null>(
     null,
@@ -109,6 +111,14 @@ export default function MedicineTable() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-40">
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                navigate(`/inventory/medicines/${m.medicineId}`);
+              }}
+            >
+              <Eye className="w-4 h-4" /> عرض التفاصيل
+            </DropdownMenuItem>
             <DropdownMenuItem
               onSelect={(e) => {
                 e.preventDefault();

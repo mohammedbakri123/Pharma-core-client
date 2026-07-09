@@ -15,6 +15,10 @@ import InventoryAdjustmentsPage from "@features/inventory/pages/AdjustmentsPage"
 import StockItemDetailPage from "@features/inventory/pages/StockItemDetailPage";
 import StockItemOverview from "@features/inventory/components/StockItemDetail/StockItemOverview";
 import StockItemBatches from "@features/inventory/components/StockItemDetail/StockItemBatches";
+import MedicineDetailPage from "@features/inventory/pages/MedicineDetailPage";
+import MedicineDetailOverview from "@features/inventory/components/MedicineDetail/MedicineDetailOverview";
+import MedicineDetailBatches from "@features/inventory/components/MedicineDetail/MedicineDetailBatches";
+import MedicineDetailMovements from "@features/inventory/components/MedicineDetail/MedicineDetailMovements";
 
 import POS from "@features/pos/Pos";
 
@@ -101,6 +105,12 @@ function App() {
               <Route index element={<Navigate to="overview" replace />} />
               <Route path="overview" element={<StockItemOverview />} />
               <Route path="batches" element={<StockItemBatches />} />
+            </Route>
+            <Route path="inventory/medicines/:id" element={<MedicineDetailPage />}>
+              <Route index element={<Navigate to="overview" replace />} />
+              <Route path="overview" element={<MedicineDetailOverview />} />
+              <Route path="batches" element={<MedicineDetailBatches />} />
+              <Route path="movements" element={<MedicineDetailMovements />} />
             </Route>
 
             <Route path="pos" element={<POS />} />

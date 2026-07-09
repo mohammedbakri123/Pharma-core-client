@@ -3,8 +3,8 @@ import { Button } from "@/ui/button";
 import { Separator } from "@/ui/separator";
 import { Spinner } from "@/ui/spinner";
 import { Plus, Check } from "lucide-react";
-import { useCartContext } from "../context/pos-cart-context";
-import { usePaymentRows } from "../hooks/use-payment-rows";
+import { useCartContext } from "../../context/pos-cart-context";
+import { usePaymentRows } from "../../hooks/use-payment-rows";
 import DiscountInput from "./DiscountInput";
 import PaymentRow from "./PaymentRow";
 

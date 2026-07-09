@@ -1,5 +1,5 @@
 import { CreditCard, Banknote, X } from "lucide-react";
-import type { PosPaymentRequest } from "../types/pos";
+import type { PosPaymentRequest } from "../../types/pos";
 
 const methodLabels: Record<string, string> = {
   cash: "نقداً",

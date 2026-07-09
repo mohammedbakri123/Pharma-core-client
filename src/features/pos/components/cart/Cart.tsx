@@ -1,6 +1,6 @@
 import { CreditCard, User, Trash2 } from "lucide-react";
 import { Button } from "@/ui/button";
-import { useCartContext } from "../context/pos-cart-context";
+import { useCartContext } from "../../context/pos-cart-context";
 import CartItem from "./CartItem";
 import CartSummary from "./CartSummary";
 

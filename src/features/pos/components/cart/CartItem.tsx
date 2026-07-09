@@ -1,7 +1,7 @@
 import { Button } from "@/ui/button";
 import { Minus, Plus } from "lucide-react";
-import { useCartContext } from "../context/pos-cart-context";
-import type { PosCartItem } from "../types/pos";
+import { useCartContext } from "../../context/pos-cart-context";
+import type { PosCartItem } from "../../types/pos";
 
 interface CartItemProps {
   item: PosCartItem;

@@ -4,7 +4,7 @@ import { usePosProducts } from "./hooks/use-pos-products";
 import { CartProvider, useCartContext } from "./context/pos-cart-context";
 import POSSearch from "./components/POSSearch";
 import ProductGrid from "./components/ProductGrid";
-import Cart from "./components/Cart";
+import Cart from "./components/cart/Cart";
 import ReceiptModal from "./components/ReceiptModal";
 import CustomerSelect from "./components/CustomerSelect";
 

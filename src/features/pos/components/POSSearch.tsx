@@ -2,7 +2,12 @@ import { Input } from "@/ui/input";
 import { Button } from "@/ui/button";
 import { Search, ScanBarcode, LayoutGrid, List } from "lucide-react";
 
-export default function POSSearch({ searchQuery, setSearchQuery }: any) {
+interface POSSearchProps {
+  searchQuery: string;
+  setSearchQuery: (value: string) => void;
+}
+
+export default function POSSearch({ searchQuery, setSearchQuery }: POSSearchProps) {
   return (
     <div className="flex gap-3">
       <div className="relative flex-1">

@@ -3,69 +3,58 @@ import { Button } from "@/ui/button";
 import { Separator } from "@/ui/separator";
 import { Spinner } from "@/ui/spinner";
 import { CreditCard, Banknote, Plus, X, Check } from "lucide-react";
+import { useCartContext } from "../context/pos-cart-context";
+import type { PosPaymentRequest } from "../types/pos";
 
 const methodLabels: Record<string, string> = {
   cash: "نقداً",
   card: "بطاقة",
 };
 
-export default function CartSummary({
-  subtotal,
-  discount,
-  onDiscountChange,
-  total,
-  payments,
-  onPaymentsChange,
-  change,
-  note,
-  onNoteChange,
-  cart,
-  onCheckout,
-  isPending,
-}: any) {
-  const [showNote, setShowNote] = useState(false);
+export default function CartSummary() {
+  const {
+    cart, subtotal, discount, total, payments,
+    paidAmount, change, note, isPending,
+    setDiscount, setPayments, setNote, handleCheckout,
+  } = useCartContext();
 
-  const totalPaid = payments.reduce(
-    (s: number, p: any) => s + Number(p.amount),
-    0,
-  );
+  const totalPaid = paidAmount;
   const remaining = Math.max(0, total - totalPaid);
   const isFullyPaid = totalPaid >= total;
-  const hasCash = payments.some((p: any) => p.method === "cash");
+  const hasCash = payments.some((p) => p.method === "cash");
+  const [showNote, setShowNote] = useState(false);
 
   const addRow = useCallback(() => {
-    const paid = payments.reduce((s: number, p: any) => s + Number(p.amount), 0);
-    onPaymentsChange([...payments, { method: "cash", amount: Math.max(0, total - paid) }]);
-  }, [payments, total, onPaymentsChange]);
+    const paid = payments.reduce((s: number, p: PosPaymentRequest) => s + Number(p.amount), 0);
+    setPayments([...payments, { method: "cash", amount: Math.max(0, total - paid) }]);
+  }, [payments, total, setPayments]);
 
   const removeRow = useCallback(
-    (i: number) => onPaymentsChange(payments.filter((_: any, idx: number) => idx !== i)),
-    [payments, onPaymentsChange],
+    (i: number) => setPayments(payments.filter((_, idx) => idx !== i)),
+    [payments, setPayments],
   );
 
   const updateRow = useCallback(
     (i: number, field: string, value: any) => {
-      const next = payments.map((p: any, idx: number) =>
+      const next = payments.map((p, idx) =>
         idx === i ? { ...p, [field]: value } : p,
       );
 
       if (field === "amount") {
         const others = next.reduce(
-          (s: number, p: any, idx: number) => s + (idx !== i ? Number(p.amount) : 0),
+          (s, p, idx) => s + (idx !== i ? Number(p.amount) : 0),
           0,
         );
         const maxAllowed = Math.max(0, total - others);
-        next[i] = { ...next[i], amount: Math.min(Number(value), maxAllowed + Number(value)) };
         const capped = Math.min(Number(value), maxAllowed);
-        // For card, cap at remaining; for cash, allow overpayment
         if (next[i]!.method === "card") {
-          next[i] = { ...next[i], amount: Math.min(capped, maxAllowed) };
+          next[i] = { method: next[i]!.method, amount: Math.min(capped, maxAllowed) };
         }
       }
 
-      onPaymentsChange(next);
+      setPayments(next);
     },
-    [payments, total, onPaymentsChange],
+    [payments, total, setPayments],
   );
 
   const toggleMethod = useCallback(
@@ -74,18 +63,18 @@ export default function CartSummary({
       const newMethod = current.method === "cash" ? "card" : "cash";
       if (newMethod === "card") {
         const others = payments.reduce(
-          (s: number, p: any, idx: number) => s + (idx !== i ? Number(p.amount) : 0),
+          (s, p, idx) => s + (idx !== i ? Number(p.amount) : 0),
           0,
         );
         const maxAllowed = Math.max(0, total - others);
         const next = [...payments];
         next[i] = { method: "card", amount: Math.min(Number(current.amount), maxAllowed) };
-        onPaymentsChange(next);
+        setPayments(next);
       } else {
         updateRow(i, "method", "cash");
       }
     },
-    [payments, total, onPaymentsChange, updateRow],
+    [payments, total, setPayments, updateRow],
   );
 
   return (
@@ -106,7 +95,7 @@ export default function CartSummary({
               step={0.5}
               value={discount}
               onChange={(e) =>
-                onDiscountChange(Math.max(0, Number(e.target.value)))
+                setDiscount(Math.max(0, Number(e.target.value)))
               }
               className="w-20 h-7 text-left text-sm bg-background rounded border border-border px-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               placeholder="0.00"
@@ -137,10 +126,9 @@ export default function CartSummary({
           )}
         </div>
 
-        {payments.map((p: any, i: number) => {
+        {payments.map((p, i) => {
           const others = payments.reduce(
-            (s: number, pp: any, idx: number) =>
-              s + (idx !== i ? Number(pp.amount) : 0),
+            (s, pp, idx) => s + (idx !== i ? Number(pp.amount) : 0),
             0,
           );
           const maxAllowed = Math.max(0, total - others);
@@ -240,7 +228,7 @@ export default function CartSummary({
       {showNote && (
         <textarea
           value={note}
-          onChange={(e) => onNoteChange(e.target.value)}
+          onChange={(e) => setNote(e.target.value)}
           placeholder="ملاحظة للفاتورة..."
           className="w-full h-16 resize-none text-sm bg-background rounded border border-border p-2"
         />
@@ -250,7 +238,7 @@ export default function CartSummary({
         className="w-full text-lg py-6 font-bold shadow-lg shadow-primary/20"
         size="lg"
         disabled={cart.length === 0 || !isFullyPaid || isPending}
-        onClick={onCheckout}
+        onClick={handleCheckout}
       >
         {isPending ? (
           <span className="flex items-center gap-2">

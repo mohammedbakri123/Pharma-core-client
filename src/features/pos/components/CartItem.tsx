@@ -1,11 +1,15 @@
 import { Button } from "@/ui/button";
 import { Minus, Plus } from "lucide-react";
+import { useCartContext } from "../context/pos-cart-context";
+import type { PosCartItem } from "../types/pos";
 
-export default function CartItem({
-  item,
-  updateQuantity,
-  removeFromCart,
-}: any) {
+interface CartItemProps {
+  item: PosCartItem;
+}
+
+export default function CartItem({ item }: CartItemProps) {
+  const { updateQuantity, removeFromCart } = useCartContext();
+
   return (
     <div className="flex items-center gap-3 animate-in fade-in slide-in-from-left-4 duration-300 text-right">
       <div className="w-10 h-10 rounded bg-muted flex items-center justify-center font-bold text-muted-foreground text-xs">

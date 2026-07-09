@@ -29,6 +29,13 @@ export interface PosCheckoutPaymentDto {
   amount: number;
 }
 
+export interface PosCartItem {
+  medicineId: number;
+  name: string;
+  price: number;
+  quantity: number;
+}
+
 export interface PosCheckoutResultDto {
   saleId: number;
   paymentIds: number[];

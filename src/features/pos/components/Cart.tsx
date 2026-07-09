@@ -1,28 +1,17 @@
 import { CreditCard, User, Trash2 } from "lucide-react";
 import { Button } from "@/ui/button";
+import { useCartContext } from "../context/pos-cart-context";
 import CartItem from "./CartItem";
 import CartSummary from "./CartSummary";
 
-export default function Cart({
-  cart,
-  updateQuantity,
-  removeFromCart,
-  selectedCustomer,
-  onCustomerClick,
-  payments,
-  onPaymentsChange,
-  discount,
-  onDiscountChange,
-  note,
-  onNoteChange,
-  subtotal,
-  total,
-  paidAmount,
-  change,
-  onCheckout,
-  onClearCart,
-  isPending,
-}: any) {
+export default function Cart() {
+  const {
+    cart,
+    selectedCustomer,
+    setShowCustomerSelect,
+    clearCart,
+  } = useCartContext();
+
   return (
     <div className="w-100 bg-card rounded-xl shadow-xl border border-border flex flex-col overflow-hidden">
       <div className="p-4 bg-muted/50 border-b border-border">
@@ -34,7 +23,7 @@ export default function Cart({
                 variant="ghost"
                 size="icon"
                 className="h-7 w-7 text-muted-foreground hover:text-destructive"
-                onClick={onClearCart}
+                onClick={clearCart}
               >
                 <Trash2 className="w-4 h-4" />
               </Button>
@@ -43,7 +32,7 @@ export default function Cart({
         </div>
 
         <button
-          onClick={onCustomerClick}
+          onClick={() => setShowCustomerSelect(true)}
           className="flex items-center gap-1.5 text-sm bg-card px-2.5 py-1.5 rounded border hover:border-primary/50 transition-colors w-full"
         >
           <User className="w-3.5 h-3.5 text-muted-foreground" />
@@ -62,32 +51,13 @@ export default function Cart({
             <p>السلة فارغة</p>
           </div>
         ) : (
-          cart.map((item: any) => (
-            <CartItem
-              key={item.medicineId}
-              item={item}
-              updateQuantity={updateQuantity}
-              removeFromCart={removeFromCart}
-            />
+          cart.map((item) => (
+            <CartItem key={item.medicineId} item={item} />
           ))
         )}
       </div>
 
-      <CartSummary
-        subtotal={subtotal}
-        discount={discount}
-        onDiscountChange={onDiscountChange}
-        total={total}
-        payments={payments}
-        onPaymentsChange={onPaymentsChange}
-        paidAmount={paidAmount}
-        change={change}
-        note={note}
-        onNoteChange={onNoteChange}
-        cart={cart}
-        onCheckout={onCheckout}
-        isPending={isPending}
-      />
+      <CartSummary />
     </div>
   );
 }

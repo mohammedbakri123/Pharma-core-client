@@ -1,26 +1,46 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { ScrollArea } from "@/ui/scroll-area";
 import { Spinner } from "@/ui/spinner";
 import ProductCard from "./ProductCard";
 import type { StockAlertDto } from "@features/inventory/types/inventory";
+import { useCartContext } from "../context/pos-cart-context";
+import { useAddToCart } from "../hooks/use-add-to-cart";
 
-export default function ProductGrid({
-  products,
-  addToCart,
-  addingIds,
-  loading,
-  initialLoading,
-  hasMore,
-  loadMore,
-}: {
+interface ProductGridProps {
   products: StockAlertDto[];
-  addToCart: (id: number) => void;
-  addingIds: Set<number>;
+  getProductName: (medicineId: number) => string | undefined;
   loading: boolean;
   initialLoading: boolean;
   hasMore: boolean;
   loadMore: () => void;
-}) {
+}
+
+export default function ProductGrid({
+  products,
+  getProductName,
+  loading,
+  initialLoading,
+  hasMore,
+  loadMore,
+}: ProductGridProps) {
+  const { addItem } = useCartContext();
+  const [addingIds, setAddingIds] = useState<Set<number>>(new Set());
+  const addToCartBase = useAddToCart(addItem, getProductName);
+  const addToCart = useCallback(
+    async (medicineId: number) => {
+      setAddingIds((prev) => new Set(prev).add(medicineId));
+      try {
+        await addToCartBase(medicineId);
+      } finally {
+        setAddingIds((prev) => {
+          const next = new Set(prev);
+          next.delete(medicineId);
+          return next;
+        });
+      }
+    },
+    [addToCartBase],
+  );
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

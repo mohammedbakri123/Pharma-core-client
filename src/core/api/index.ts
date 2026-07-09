@@ -13,3 +13,4 @@ export * from "../../features/finance/common/api/expenses";
 export * from "../../features/inventory/api/categories";
 export * from "../../features/settings/api/users";
 export * from "../../features/settings/api/system";
+export * from "../../features/pos/api/pos";

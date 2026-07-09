@@ -59,6 +59,15 @@ export default function MedicineTable() {
 
   const columns: Column<MedicineDto>[] = [
     {
+      key: "name",
+      header: "الاسم الإنجليزي",
+      render: (item) => (
+        <span className="font-semibold text-foreground flex items-center gap-2">
+          {item.name}
+        </span>
+      ),
+    },
+    {
       key: "MedicineArabicName",
       header: "الاسم",
       render: (m) => (

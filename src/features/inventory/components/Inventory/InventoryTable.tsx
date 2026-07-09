@@ -43,6 +43,15 @@ export default function InventoryTable() {
 
   const columns: Column<StockAlertDto>[] = [
     {
+      key: "name",
+      header: "الاسم الإنجليزي",
+      render: (item) => (
+        <span className="font-semibold text-foreground flex items-center gap-2">
+          {item.name}
+        </span>
+      ),
+    },
+    {
       key: "arabicName",
       header: "الاسم",
       render: (item) => (
@@ -51,6 +60,7 @@ export default function InventoryTable() {
         </span>
       ),
     },
+
     {
       key: "barcode",
       header: "الباركود",

@@ -53,23 +53,4 @@ export interface StockWithBatchesDto {
   batches: BatchStockDto[];
 }
 
-export interface AdjustmentRequest {
-  medicineId: number;
-  batchId: number;
-  quantity: number;
-  type: number; // StockMovementType as int
-  userId: number;
-  reason?: string;
-}
 
-export interface AdjustmentWithStockMovementDto {
-  adjustmentId: number;
-  medicineId: number;
-  batchId: number;
-  quantity: number;
-  type: number;
-  reason: string | null;
-  createdAt: string;
-  medicineName: string;
-  batchNumber: string | null;
-}

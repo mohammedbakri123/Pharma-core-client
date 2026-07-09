@@ -11,7 +11,6 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import InventoryLayout from "@features/inventory/Inventory";
 import InventoryStockPage from "@features/inventory/pages/InventoryPage";
 import InventoryMedicinesPage from "@features/inventory/pages/MedicinePage";
-import InventoryAdjustmentsPage from "@features/inventory/pages/AdjustmentsPage";
 import StockItemDetailPage from "@features/inventory/pages/StockItemDetailPage";
 import StockItemOverview from "@features/inventory/components/StockItemDetail/StockItemOverview";
 import StockItemBatches from "@features/inventory/components/StockItemDetail/StockItemBatches";
@@ -96,10 +95,6 @@ function App() {
               <Route index element={<Navigate to="stock" replace />} />
               <Route path="stock" element={<InventoryStockPage />} />
               <Route path="medicines" element={<InventoryMedicinesPage />} />
-              <Route
-                path="adjustments"
-                element={<InventoryAdjustmentsPage />}
-              />
             </Route>
             <Route path="inventory/stock/:id" element={<StockItemDetailPage />}>
               <Route index element={<Navigate to="overview" replace />} />

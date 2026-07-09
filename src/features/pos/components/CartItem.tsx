@@ -24,7 +24,7 @@ export default function CartItem({
           variant="outline"
           size="icon"
           className="h-6 w-6 rounded-full"
-          onClick={() => updateQuantity(item.id, -1)}
+          onClick={() => updateQuantity(item.medicineId, -1)}
         >
           <Minus className="w-3 h-3" />
         </Button>
@@ -37,19 +37,19 @@ export default function CartItem({
           variant="outline"
           size="icon"
           className="h-6 w-6 rounded-full"
-          onClick={() => updateQuantity(item.id, 1)}
+          onClick={() => updateQuantity(item.medicineId, 1)}
         >
           <Plus className="w-3 h-3" />
         </Button>
       </div>
 
-      <div className="text-left min-w-[80px]">
+      <div className="text-left min-w-20">
         <div className="font-bold text-sm">
           {(item.price * item.quantity).toFixed(2)} ر.س
         </div>
 
         <button
-          onClick={() => removeFromCart(item.id)}
+          onClick={() => removeFromCart(item.medicineId)}
           className="text-destructive text-[10px] hover:underline"
         >
           حذف

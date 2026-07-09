@@ -1,138 +1,206 @@
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { useDebounce } from "@/hooks/use-debounce";
+import { usePosProducts } from "./hooks/use-pos-products";
+import { usePosCheckout } from "./hooks/use-pos-checkout";
+import inventoryApi from "@features/inventory/api/inventory";
 import POSSearch from "./components/POSSearch";
 import ProductGrid from "./components/ProductGrid";
 import Cart from "./components/Cart";
+import ReceiptModal from "./components/ReceiptModal";
+import CustomerSelect from "./components/CustomerSelect";
+import type { PosCheckoutResultDto, PosPaymentRequest } from "./types/pos";
 
-const products = [
-  {
-    id: 1,
-    name: "أموكسيسيلين 500 ملغ",
-    price: 12.5,
-    category: "مضادات حيوية",
-    color: "bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400",
-  },
-  {
-    id: 2,
-    name: "ايبوبروفين 400 ملغ",
-    price: 8.99,
-    category: "مسكنات آلام",
-    color: "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400",
-  },
-  {
-    id: 3,
-    name: "باراسيتامول 500 ملغ",
-    price: 5.0,
-    category: "مسكنات آلام",
-    color: "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400",
-  },
-  {
-    id: 4,
-    name: "فيتامين سي 1000 ملغ",
-    price: 15.0,
-    category: "مكملات غذائية",
-    color:
-      "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400",
-  },
-  {
-    id: 5,
-    name: "ضمادات (عبوة)",
-    price: 4.5,
-    category: "إسعافات أولية",
-    color:
-      "bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400",
-  },
-  {
-    id: 6,
-    name: "شراب للسعال",
-    price: 12.0,
-    category: "البرد والإنفلونزا",
-    color:
-      "bg-purple-100 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400",
-  },
-  {
-    id: 7,
-    name: "كريم مطهر",
-    price: 7.25,
-    category: "إسعافات أولية",
-    color:
-      "bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400",
-  },
-  {
-    id: 8,
-    name: "ميزان حرارة",
-    price: 25.0,
-    category: "أجهزة طبية",
-    color: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
-  },
-  {
-    id: 9,
-    name: "كمامات (10 قطع)",
-    price: 3.5,
-    category: "وقاية",
-    color: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
-  },
-];
+interface CartItem {
+  medicineId: number;
+  name: string;
+  price: number;
+  quantity: number;
+}
+
+function defaultPayments(total: number): PosPaymentRequest[] {
+  return [{ method: "cash" as const, amount: total }];
+}
 
 export default function POS() {
-  const [cart, setCart] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearch = useDebounce(searchQuery, 400);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const addToCart = (product: any) => {
-    setCart((prev: any) => {
-      const existing = prev.find((i: any) => i.id === product.id);
-      if (existing) {
-        return prev.map((i: any) =>
-          i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i
-        );
+  const {
+    products,
+    loading,
+    initialLoading,
+    hasMore,
+    loadMore,
+  } = usePosProducts(debouncedSearch);
+
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [addingIds, setAddingIds] = useState<Set<number>>(new Set());
+  const [selectedCustomer, setSelectedCustomer] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+  const [payments, setPayments] = useState<PosPaymentRequest[]>([]);
+  const [discount, setDiscount] = useState(0);
+  const [note, setNote] = useState("");
+  const [showCustomerSelect, setShowCustomerSelect] = useState(false);
+
+  const checkout = usePosCheckout();
+  const [receipt, setReceipt] = useState<PosCheckoutResultDto | null>(null);
+
+  const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+  const total = Math.max(0, subtotal - discount);
+  const paidAmount = payments.reduce((s, p) => s + p.amount, 0);
+  const change = Math.max(0, paidAmount - total);
+
+  useEffect(() => {
+    if (cart.length > 0 && payments.length === 0) {
+      setPayments(defaultPayments(total));
+    }
+  }, [cart.length]);
+
+  const addToCart = useCallback(
+    async (medicineId: number) => {
+      const product = products.find((p) => p.medicineId === medicineId);
+      if (!product) return;
+
+      setAddingIds((prev) => new Set(prev).add(medicineId));
+      try {
+        const stockRes = await inventoryApi.GetStockByMedicine(medicineId);
+        const sellPrice = stockRes.data.batches[0]?.sellPrice ?? 0;
+
+        setCart((prev) => {
+          const existing = prev.find((i) => i.medicineId === medicineId);
+          if (existing)
+            return prev.map((i) =>
+              i.medicineId === medicineId
+                ? { ...i, quantity: i.quantity + 1 }
+                : i,
+            );
+          return [
+            ...prev,
+            {
+              medicineId,
+              name: product.arabicName ?? product.name,
+              price: sellPrice,
+              quantity: 1,
+            },
+          ];
+        });
+      } finally {
+        setAddingIds((prev) => {
+          const next = new Set(prev);
+          next.delete(medicineId);
+          return next;
+        });
       }
-      return [...prev, { ...product, quantity: 1 }];
-    });
-  };
+    },
+    [products],
+  );
 
-  const updateQuantity = (id: number, delta: number) => {
-    setCart((prev: any) =>
+  const updateQuantity = useCallback((medicineId: number, delta: number) => {
+    setCart((prev) =>
       prev
-        .map((item: any) =>
-          item.id === id
-            ? { ...item, quantity: Math.max(0, item.quantity + delta) }
-            : item
+        .map((i) =>
+          i.medicineId === medicineId
+            ? { ...i, quantity: Math.max(0, i.quantity + delta) }
+            : i,
         )
-        .filter((item: any) => item.quantity > 0)
+        .filter((i) => i.quantity > 0),
+    );
+  }, []);
+
+  const removeFromCart = useCallback((medicineId: number) => {
+    setCart((prev) => prev.filter((i) => i.medicineId !== medicineId));
+  }, []);
+
+  const handleCheckout = () => {
+    if (cart.length === 0) return;
+    const validPayments = payments.filter((p) => p.amount > 0);
+    if (validPayments.length === 0) return;
+
+    checkout.mutate(
+      {
+        items: cart.map((i) => ({
+          medicineId: i.medicineId,
+          quantity: i.quantity,
+        })),
+        payments: validPayments,
+        customerId: selectedCustomer?.id,
+        discount,
+        note: note || undefined,
+      },
+      {
+        onSuccess: (result) => {
+          setReceipt(result);
+          setCart([]);
+          setDiscount(0);
+          setPayments([]);
+          setNote("");
+          setSelectedCustomer(null);
+        },
+      },
     );
   };
 
-  const removeFromCart = (id: number) => {
-    setCart((prev: any) => prev.filter((i: any) => i.id !== id));
-  };
-
-  const subtotal = cart.reduce(
-    (sum: number, item: any) => sum + item.price * item.quantity,
-    0
-  );
-
-  const tax = subtotal * 0.15;
-  const total = subtotal + tax;
-
-  const filteredProducts = products.filter((p) =>
-    p.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const clearCart = useCallback(() => {
+    setCart([]);
+    setDiscount(0);
+    setPayments([]);
+    setNote("");
+  }, []);
 
   return (
-    <div className="flex h-[calc(100vh-8rem)] gap-6" dir="rtl">
-      <div className="flex-1 flex flex-col gap-4">
-        <POSSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+    <>
+      <div className="flex h-[calc(100vh-8rem)] gap-6" dir="rtl">
+        <div className="flex-1 flex flex-col gap-4">
+          <POSSearch
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+          />
+          <ProductGrid
+            products={products}
+            addToCart={addToCart}
+            addingIds={addingIds}
+            loading={loading}
+            initialLoading={initialLoading}
+            hasMore={hasMore}
+            loadMore={loadMore}
+            viewMode={viewMode}
+          />
+        </div>
 
-        <ProductGrid products={filteredProducts} addToCart={addToCart} />
+        <Cart
+          cart={cart}
+          updateQuantity={updateQuantity}
+          removeFromCart={removeFromCart}
+          selectedCustomer={selectedCustomer}
+          onCustomerClick={() => setShowCustomerSelect(true)}
+          payments={payments}
+          onPaymentsChange={setPayments}
+          discount={discount}
+          onDiscountChange={setDiscount}
+          note={note}
+          onNoteChange={setNote}
+          subtotal={subtotal}
+          total={total}
+          paidAmount={paidAmount}
+          change={change}
+          onCheckout={handleCheckout}
+          onClearCart={clearCart}
+          isPending={checkout.isPending}
+        />
       </div>
 
-      <Cart
-        cart={cart}
-        updateQuantity={updateQuantity}
-        removeFromCart={removeFromCart}
-        subtotal={subtotal}
-        tax={tax}
-        total={total}
+      <CustomerSelect
+        open={showCustomerSelect}
+        onOpenChange={setShowCustomerSelect}
+        onSelect={setSelectedCustomer}
       />
-    </div>
+
+      <ReceiptModal receipt={receipt} onClose={() => setReceipt(null)} />
+    </>
   );
 }

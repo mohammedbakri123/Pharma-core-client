@@ -1,18 +1,16 @@
-import { PaymentMethod } from "../../finance/common/types/payment";
-
 export interface PosCheckoutItemRequest {
   medicineId: number;
   quantity: number;
 }
 
 export interface PosPaymentRequest {
-  method: PaymentMethod;
+  method: "cash" | "card";
   amount: number;
 }
 
 export interface PosCheckoutRequest {
   items: PosCheckoutItemRequest[];
-  payment: PosPaymentRequest;
+  payments: PosPaymentRequest[];
   customerId?: number;
   discount: number;
   note?: string;
@@ -26,16 +24,21 @@ export interface PosCheckoutItemDto {
   totalPrice: number;
 }
 
+export interface PosCheckoutPaymentDto {
+  method: "cash" | "card";
+  amount: number;
+}
+
 export interface PosCheckoutResultDto {
   saleId: number;
-  paymentId: number;
+  paymentIds: number[];
   status: string;
   subtotal: number;
   discount: number;
   totalAmount: number;
-  paymentMethod: PaymentMethod;
+  payments: PosCheckoutPaymentDto[];
   paidAmount: number;
-  change: number;
+  changeAmount: number;
   items: PosCheckoutItemDto[];
   createdAt: string;
   customerId: number | null;

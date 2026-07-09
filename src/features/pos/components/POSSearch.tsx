@@ -2,12 +2,7 @@ import { Input } from "@/ui/input";
 import { Button } from "@/ui/button";
 import { Search, ScanBarcode, LayoutGrid, List } from "lucide-react";
 
-export default function POSSearch({
-  searchQuery,
-  setSearchQuery,
-  viewMode,
-  onViewModeChange,
-}: any) {
+export default function POSSearch({ searchQuery, setSearchQuery }: any) {
   return (
     <div className="flex gap-3">
       <div className="relative flex-1">
@@ -18,25 +13,6 @@ export default function POSSearch({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-      </div>
-
-      <div className="flex gap-1">
-        <Button
-          variant={viewMode === "grid" ? "default" : "outline"}
-          size="icon"
-          className="h-11 w-11 shrink-0"
-          onClick={() => onViewModeChange("grid")}
-        >
-          <LayoutGrid className="w-5 h-5" />
-        </Button>
-        <Button
-          variant={viewMode === "list" ? "default" : "outline"}
-          size="icon"
-          className="h-11 w-11 shrink-0"
-          onClick={() => onViewModeChange("list")}
-        >
-          <List className="w-5 h-5" />
-        </Button>
       </div>
 
       <Button variant="outline" size="icon" className="h-11 w-11 shrink-0">

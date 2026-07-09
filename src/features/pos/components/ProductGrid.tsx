@@ -12,7 +12,6 @@ export default function ProductGrid({
   initialLoading,
   hasMore,
   loadMore,
-  viewMode,
 }: {
   products: StockAlertDto[];
   addToCart: (id: number) => void;
@@ -21,7 +20,6 @@ export default function ProductGrid({
   initialLoading: boolean;
   hasMore: boolean;
   loadMore: () => void;
-  viewMode: "grid" | "list";
 }) {
   const sentinelRef = useRef<HTMLDivElement>(null);
 
@@ -57,38 +55,22 @@ export default function ProductGrid({
 
   return (
     <ScrollArea className="flex-1 pl-4">
-      {viewMode === "list" ? (
-        <div className="space-y-1.5 pb-4">
-          {products.map((product) => (
-            <ProductCard
-              key={product.medicineId}
-              product={product}
-              onClick={addToCart}
-              isAdding={addingIds.has(product.medicineId)}
-              viewMode="list"
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-4">
-          {products.map((product) => (
-            <ProductCard
-              key={product.medicineId}
-              product={product}
-              onClick={addToCart}
-              isAdding={addingIds.has(product.medicineId)}
-              viewMode="grid"
-            />
-          ))}
-        </div>
-      )}
-
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-4">
+        {products.map((product) => (
+          <ProductCard
+            key={product.medicineId}
+            product={product}
+            onClick={addToCart}
+            isAdding={addingIds.has(product.medicineId)}
+            viewMode="grid"
+          />
+        ))}
+      </div>
       {loading && (
         <div className="flex justify-center py-4">
           <Spinner />
         </div>
       )}
-
       <div ref={sentinelRef} className="h-4" />
     </ScrollArea>
   );

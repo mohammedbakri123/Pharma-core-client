@@ -24,15 +24,9 @@ function defaultPayments(total: number): PosPaymentRequest[] {
 export default function POS() {
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 400);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const {
-    products,
-    loading,
-    initialLoading,
-    hasMore,
-    loadMore,
-  } = usePosProducts(debouncedSearch);
+  const { products, loading, initialLoading, hasMore, loadMore } =
+    usePosProducts(debouncedSearch);
 
   const [cart, setCart] = useState<CartItem[]>([]);
   const [addingIds, setAddingIds] = useState<Set<number>>(new Set());
@@ -157,8 +151,6 @@ export default function POS() {
           <POSSearch
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
-            viewMode={viewMode}
-            onViewModeChange={setViewMode}
           />
           <ProductGrid
             products={products}
@@ -168,7 +160,6 @@ export default function POS() {
             initialLoading={initialLoading}
             hasMore={hasMore}
             loadMore={loadMore}
-            viewMode={viewMode}
           />
         </div>
 

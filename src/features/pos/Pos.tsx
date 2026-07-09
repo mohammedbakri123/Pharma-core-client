@@ -6,7 +6,7 @@ import POSSearch from "./components/POSSearch";
 import ProductGrid from "./components/ProductGrid";
 import Cart from "./components/cart/Cart";
 import ReceiptModal from "./components/ReceiptModal";
-import CustomerSelect from "./components/CustomerSelect";
+import CustomerSelect from "./components/cart/CustomerSelect";
 
 function POSContent() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -15,8 +15,13 @@ function POSContent() {
   const { products, loading, initialLoading, hasMore, loadMore } =
     usePosProducts(debouncedSearch);
 
-  const { showCustomerSelect, setShowCustomerSelect, setSelectedCustomer, receipt, setReceipt } =
-    useCartContext();
+  const {
+    showCustomerSelect,
+    setShowCustomerSelect,
+    setSelectedCustomer,
+    receipt,
+    setReceipt,
+  } = useCartContext();
 
   const getProductName = useCallback(
     (medicineId: number) => {

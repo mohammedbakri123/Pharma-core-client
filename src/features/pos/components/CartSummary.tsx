@@ -1,15 +1,12 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { Button } from "@/ui/button";
 import { Separator } from "@/ui/separator";
 import { Spinner } from "@/ui/spinner";
-import { CreditCard, Banknote, Plus, X, Check } from "lucide-react";
+import { Plus, Check } from "lucide-react";
 import { useCartContext } from "../context/pos-cart-context";
-import type { PosPaymentRequest } from "../types/pos";
-
-const methodLabels: Record<string, string> = {
-  cash: "نقداً",
-  card: "بطاقة",
-};
+import { usePaymentRows } from "../hooks/use-payment-rows";
+import DiscountInput from "./DiscountInput";
+import PaymentRow from "./PaymentRow";
 
 export default function CartSummary() {
   const {
@@ -18,64 +15,13 @@ export default function CartSummary() {
     setDiscount, setPayments, setNote, handleCheckout,
   } = useCartContext();
 
-  const totalPaid = paidAmount;
-  const remaining = Math.max(0, total - totalPaid);
-  const isFullyPaid = totalPaid >= total;
-  const hasCash = payments.some((p) => p.method === "cash");
   const [showNote, setShowNote] = useState(false);
 
-  const addRow = useCallback(() => {
-    const paid = payments.reduce((s: number, p: PosPaymentRequest) => s + Number(p.amount), 0);
-    setPayments([...payments, { method: "cash", amount: Math.max(0, total - paid) }]);
-  }, [payments, total, setPayments]);
+  const remaining = Math.max(0, total - paidAmount);
+  const isFullyPaid = paidAmount >= total;
+  const hasCash = payments.some((p) => p.method === "cash");
 
-  const removeRow = useCallback(
-    (i: number) => setPayments(payments.filter((_, idx) => idx !== i)),
-    [payments, setPayments],
-  );
-
-  const updateRow = useCallback(
-    (i: number, field: string, value: any) => {
-      const next = payments.map((p, idx) =>
-        idx === i ? { ...p, [field]: value } : p,
-      );
-
-      if (field === "amount") {
-        const others = next.reduce(
-          (s, p, idx) => s + (idx !== i ? Number(p.amount) : 0),
-          0,
-        );
-        const maxAllowed = Math.max(0, total - others);
-        const capped = Math.min(Number(value), maxAllowed);
-        if (next[i]!.method === "card") {
-          next[i] = { method: next[i]!.method, amount: Math.min(capped, maxAllowed) };
-        }
-      }
-
-      setPayments(next);
-    },
-    [payments, total, setPayments],
-  );
-
-  const toggleMethod = useCallback(
-    (i: number) => {
-      const current = payments[i]!;
-      const newMethod = current.method === "cash" ? "card" : "cash";
-      if (newMethod === "card") {
-        const others = payments.reduce(
-          (s, p, idx) => s + (idx !== i ? Number(p.amount) : 0),
-          0,
-        );
-        const maxAllowed = Math.max(0, total - others);
-        const next = [...payments];
-        next[i] = { method: "card", amount: Math.min(Number(current.amount), maxAllowed) };
-        setPayments(next);
-      } else {
-        updateRow(i, "method", "cash");
-      }
-    },
-    [payments, total, setPayments, updateRow],
-  );
+  const { addRow, removeRow, updateRow, toggleMethod } = usePaymentRows(payments, total, setPayments);
 
   return (
     <div className="p-4 bg-muted/50 border-t border-border space-y-3">
@@ -85,24 +31,7 @@ export default function CartSummary() {
           <span>{subtotal.toFixed(2)} ر.س</span>
         </div>
 
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-muted-foreground shrink-0">الخصم</span>
-          <div className="flex items-center gap-1">
-            <input
-              type="number"
-              min={0}
-              max={subtotal}
-              step={0.5}
-              value={discount}
-              onChange={(e) =>
-                setDiscount(Math.max(0, Number(e.target.value)))
-              }
-              className="w-20 h-7 text-left text-sm bg-background rounded border border-border px-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              placeholder="0.00"
-            />
-            <span className="text-xs text-muted-foreground">ر.س</span>
-          </div>
-        </div>
+        <DiscountInput subtotal={subtotal} discount={discount} onDiscountChange={setDiscount} />
 
         <Separator className="my-2" />
 
@@ -134,60 +63,17 @@ export default function CartSummary() {
           const maxAllowed = Math.max(0, total - others);
 
           return (
-            <div key={i} className="flex items-center gap-2">
-              <div className="flex-1 grid grid-cols-2 gap-2 bg-background rounded border border-border p-2">
-                <button
-                  onClick={() => toggleMethod(i)}
-                  className={`flex items-center justify-center gap-1.5 text-xs h-8 rounded transition-colors ${
-                    p.method === "cash"
-                      ? "bg-primary/10 text-primary font-medium"
-                      : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  <Banknote className="w-3.5 h-3.5" />
-                  {methodLabels.cash}
-                </button>
-                <button
-                  onClick={() => toggleMethod(i)}
-                  className={`flex items-center justify-center gap-1.5 text-xs h-8 rounded transition-colors ${
-                    p.method === "card"
-                      ? "bg-primary/10 text-primary font-medium"
-                      : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  <CreditCard className="w-3.5 h-3.5" />
-                  {methodLabels.card}
-                </button>
-                <div className="col-span-2 flex items-center gap-1">
-                  <input
-                    type="number"
-                    min={0}
-                    step={0.5}
-                    value={p.amount}
-                    onChange={(e) => {
-                      const val = Math.max(0, Number(e.target.value));
-                      const capped =
-                        p.method === "card"
-                          ? Math.min(val, maxAllowed)
-                          : val;
-                      updateRow(i, "amount", capped);
-                    }}
-                    className="w-full h-7 text-left text-sm bg-background rounded border border-border px-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  />
-                  <span className="text-xs text-muted-foreground shrink-0">
-                    ر.س
-                  </span>
-                </div>
-              </div>
-              {payments.length > 1 && (
-                <button
-                  onClick={() => removeRow(i)}
-                  className="text-muted-foreground hover:text-destructive transition-colors shrink-0"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
-            </div>
+            <PaymentRow
+              key={i}
+              payment={p}
+              index={i}
+              total={total}
+              totalPayments={payments.length}
+              maxAllowed={maxAllowed}
+              onToggleMethod={toggleMethod}
+              onUpdateRow={updateRow}
+              onRemoveRow={removeRow}
+            />
           );
         })}
       </div>

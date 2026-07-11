@@ -6,6 +6,7 @@ export interface GetStockAlertQuery {
   page?: number;
   limit?: number;
   search?: string | null;
+  ExcludeZeroStock?: boolean;
 }
 
 export enum StockStatus {

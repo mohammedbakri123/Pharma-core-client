@@ -21,6 +21,7 @@ export function usePosProducts(search: string) {
           limit,
           LowStockThreshold: null,
           ExpiringDays: null,
+          ExcludeZeroStock: true,
         });
         setTotal(res.data.pagination.total);
         if (append) {

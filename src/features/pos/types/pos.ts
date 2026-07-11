@@ -34,6 +34,7 @@ export interface PosCartItem {
   name: string;
   price: number;
   quantity: number;
+  availableStock: number;
 }
 
 export interface PosCheckoutResultDto {

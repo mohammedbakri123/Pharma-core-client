@@ -33,8 +33,11 @@ function POSContent() {
 
   return (
     <>
-      <div className="flex h-[calc(100vh-8rem)] gap-6" dir="rtl">
-        <div className="flex-1 flex flex-col gap-4">
+      <div
+        className="grid h-[calc(100vh-8rem)] min-h-[34rem] grid-cols-[minmax(0,1fr)_26rem] gap-4 overflow-hidden xl:gap-6"
+        dir="rtl"
+      >
+        <div className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)] gap-4">
           <POSSearch
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}

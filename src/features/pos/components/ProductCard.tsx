@@ -42,14 +42,16 @@ export default function ProductCard({
   viewMode: "grid" | "list";
 }) {
   const name = product.arabicName ?? product.name;
+  const outOfStock = product.totalQuantity <= 0;
+  const disabled = isAdding || outOfStock;
 
   if (viewMode === "list") {
     return (
       <button
         onClick={() => onClick(product.medicineId)}
-        disabled={isAdding}
+        disabled={disabled}
         className={`w-full flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 hover:bg-muted/50 transition-colors text-right ${
-          isAdding ? "pointer-events-none opacity-60" : ""
+          disabled ? "pointer-events-none opacity-60" : ""
         }`}
       >
         <div
@@ -74,7 +76,7 @@ export default function ProductCard({
   return (
     <Card
       className={`cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 group bg-card ${
-        isAdding ? "pointer-events-none opacity-60" : ""
+        disabled ? "pointer-events-none opacity-60" : ""
       }`}
       onClick={() => onClick(product.medicineId)}
     >

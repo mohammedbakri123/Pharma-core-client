@@ -59,7 +59,7 @@ export default function ProductGrid({
 
   if (initialLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex min-h-0 flex-1 items-center justify-center">
         <Spinner className="w-8 h-8" />
       </div>
     );
@@ -67,14 +67,14 @@ export default function ProductGrid({
 
   if (products.length === 0) {
     return (
-      <div className="flex-1 flex items-center justify-center text-muted-foreground">
+      <div className="flex min-h-0 flex-1 items-center justify-center text-muted-foreground">
         ابدأ بالبحث عن المنتجات
       </div>
     );
   }
 
   return (
-    <ScrollArea className="flex-1 pl-4">
+    <ScrollArea className="min-h-0 pl-4">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-4">
         {products.map((product) => (
           <ProductCard

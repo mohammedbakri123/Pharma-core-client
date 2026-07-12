@@ -1,109 +1,94 @@
-import { Spinner } from "@/ui/spinner";
-import { Card, CardContent } from "@/ui/card";
-import { Package } from "lucide-react";
+import { Check } from "lucide-react";
 import type { StockAlertDto } from "@features/inventory/types/inventory";
 
-const colors = [
-  "bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400",
-  "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400",
-  "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400",
-  "bg-purple-100 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400",
-  "bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400",
-  "bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400",
+const gradients = [
+  "from-primary/15 to-primary/5",
+  "from-blue-500/15 to-blue-500/5",
+  "from-amber-500/15 to-amber-500/5",
+  "from-rose-500/15 to-rose-500/5",
+  "from-violet-500/15 to-violet-500/5",
+  "from-emerald-500/15 to-emerald-500/5",
+  "from-orange-500/15 to-orange-500/5",
+  "from-cyan-500/15 to-cyan-500/5",
 ];
 
-function getColor(id: number) {
-  return colors[id % colors.length] ?? colors[0]!;
-}
-
-function StockBadge({ total }: { total: number }) {
-  if (total <= 5)
-    return (
-      <span className="text-[10px] text-amber-500 dark:text-amber-400 font-medium">
-        {total} متبقي
-      </span>
-    );
-  return (
-    <span className="text-[10px] text-muted-foreground">
-      {total} متبقي
-    </span>
-  );
+function getGradient(id: number) {
+  return gradients[id % gradients.length] ?? gradients[0]!;
 }
 
 export default function ProductCard({
   product,
   onClick,
   isAdding,
-  viewMode,
+  cartQuantity,
 }: {
   product: StockAlertDto;
   onClick: (id: number) => void;
   isAdding: boolean;
-  viewMode: "grid" | "list";
+  cartQuantity: number;
 }) {
   const name = product.arabicName ?? product.name;
   const outOfStock = product.totalQuantity <= 0;
+  const lowStock = product.totalQuantity > 0 && product.totalQuantity <= 5;
   const disabled = isAdding || outOfStock;
 
-  if (viewMode === "list") {
-    return (
-      <button
-        onClick={() => onClick(product.medicineId)}
-        disabled={disabled}
-        className={`w-full flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 hover:bg-muted/50 transition-colors text-right ${
-          disabled ? "pointer-events-none opacity-60" : ""
-        }`}
-      >
-        <div
-          className={`w-9 h-9 rounded-full ${getColor(product.medicineId)} flex items-center justify-center font-bold text-xs shrink-0`}
-        >
-          {isAdding ? <Spinner className="w-4 h-4" /> : name.charAt(0)}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="text-sm font-medium truncate">{name}</div>
-          <div className="text-xs text-muted-foreground">
-            {product.categoryName ?? ""}
-          </div>
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <Package className="w-3.5 h-3.5 text-muted-foreground" />
-          <StockBadge total={product.totalQuantity} />
-        </div>
-      </button>
-    );
-  }
-
   return (
-    <Card
-      className={`cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 group bg-card ${
-        disabled ? "pointer-events-none opacity-60" : ""
-      }`}
+    <button
       onClick={() => onClick(product.medicineId)}
+      disabled={disabled}
+      className="group relative flex flex-col rounded-2xl border border-border/50 bg-card p-4 text-right transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 disabled:pointer-events-none"
+      style={{ opacity: outOfStock ? 0.4 : undefined }}
     >
-      <CardContent className="p-4 flex flex-col items-center text-center h-full justify-between gap-3">
-        <div
-          className={`w-12 h-12 rounded-full ${getColor(product.medicineId)} flex items-center justify-center font-bold text-lg mb-1 group-hover:scale-110 transition-transform`}
-        >
-          {isAdding ? <Spinner className="w-5 h-5" /> : name.charAt(0)}
+      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-b ${getGradient(product.medicineId)} opacity-0 transition-opacity duration-200 group-hover:opacity-100`} />
+
+      <div className="relative z-10 flex flex-col gap-2.5">
+        {cartQuantity > 0 && (
+          <div className="absolute left-0 top-0 flex h-6 min-w-[1.5rem] items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-bold text-primary-foreground">
+            {cartQuantity}
+          </div>
+        )}
+
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5">
+            <span
+              className={`inline-block h-2 w-2 rounded-full ${
+                outOfStock
+                  ? "bg-destructive"
+                  : lowStock
+                    ? "bg-amber-500"
+                    : "bg-emerald-500"
+              }`}
+            />
+            <span
+              className={`text-[11px] font-medium ${
+                outOfStock
+                  ? "text-destructive"
+                  : lowStock
+                    ? "text-amber-500"
+                    : "text-muted-foreground"
+              }`}
+            >
+              {outOfStock ? "نفد" : `${product.totalQuantity}`}
+            </span>
+          </div>
+          {!disabled && (
+            <div className="flex h-6 w-6 items-center justify-center rounded-full border border-border/50 bg-card text-muted-foreground opacity-0 shadow-sm transition-all duration-200 group-hover:border-primary/30 group-hover:bg-primary/10 group-hover:text-primary group-hover:opacity-100">
+              <Check className="h-3 w-3" />
+            </div>
+          )}
         </div>
 
-        <div>
-          <h3 className="font-medium text-sm line-clamp-2 leading-tight mb-1">
+        <div className="space-y-0.5">
+          <h3 className="line-clamp-2 text-sm font-semibold leading-snug">
             {name}
           </h3>
-          <div className="flex items-center justify-center gap-1">
-            <StockBadge total={product.totalQuantity} />
-            {product.categoryName && (
-              <>
-                <span className="text-[10px] text-muted-foreground">·</span>
-                <span className="text-[10px] text-muted-foreground">
-                  {product.categoryName}
-                </span>
-              </>
-            )}
-          </div>
+          {product.categoryName && (
+            <p className="text-[11px] text-muted-foreground/70">
+              {product.categoryName}
+            </p>
+          )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </button>
   );
 }

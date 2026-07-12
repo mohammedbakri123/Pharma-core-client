@@ -34,25 +34,31 @@ function POSContent() {
   return (
     <>
       <div
-        className="grid h-[calc(100vh-8rem)] min-h-[34rem] grid-cols-[minmax(0,1fr)_26rem] gap-4 overflow-hidden xl:gap-6"
+        className="flex h-dvh animate-in fade-in duration-500"
         dir="rtl"
       >
-        <div className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)] gap-4">
-          <POSSearch
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-          />
-          <ProductGrid
-            products={products}
-            getProductName={getProductName}
-            loading={loading}
-            initialLoading={initialLoading}
-            hasMore={hasMore}
-            loadMore={loadMore}
-          />
+        <div className="flex min-w-0 flex-1 flex-col gap-3 p-3 xl:gap-4 xl:p-4">
+          <div className="shrink-0 animate-in fade-in slide-in-from-top-2 duration-400">
+            <POSSearch
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+            />
+          </div>
+          <div className="min-h-0 flex-1 animate-in fade-in duration-500 delay-150 [animation-fill-mode:both]">
+            <ProductGrid
+              products={products}
+              getProductName={getProductName}
+              loading={loading}
+              initialLoading={initialLoading}
+              hasMore={hasMore}
+              loadMore={loadMore}
+            />
+          </div>
         </div>
 
-        <Cart />
+        <div className="w-[28rem] min-w-0 shrink-0 animate-in fade-in slide-in-from-left-3 duration-500 delay-200 [animation-fill-mode:both]">
+          <Cart />
+        </div>
       </div>
 
       <CustomerSelect

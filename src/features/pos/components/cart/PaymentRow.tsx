@@ -35,60 +35,73 @@ export default function PaymentRow({
     return Number.isFinite(amount) ? Math.max(0, amount) : 0;
   };
 
+  const isCard = payment.method === "card";
+  const atCardLimit = isCard && maxAllowed <= 0;
+
   return (
     <div className="flex items-center gap-2">
-      <div className="flex-1 grid grid-cols-2 gap-2 bg-background rounded-lg border border-border p-2">
-        <button
-          onClick={() => onToggleMethod(index)}
-          disabled={disabled}
-          className={`flex items-center justify-center gap-1.5 text-xs h-8 rounded transition-colors ${
-            payment.method === "cash"
-              ? "bg-primary/10 text-primary font-medium"
-              : "bg-muted text-muted-foreground"
-          }`}
-        >
-          <Banknote className="w-3.5 h-3.5" />
-          {methodLabels.cash}
-        </button>
-        <button
-          onClick={() => onToggleMethod(index)}
-          disabled={disabled}
-          className={`flex items-center justify-center gap-1.5 text-xs h-8 rounded transition-colors ${
-            payment.method === "card"
-              ? "bg-primary/10 text-primary font-medium"
-              : "bg-muted text-muted-foreground"
-          }`}
-        >
-          <CreditCard className="w-3.5 h-3.5" />
-          {methodLabels.card}
-        </button>
-        <div className="col-span-2 flex items-center gap-1">
+      <div className="flex-1 rounded-xl border border-border/40 bg-background/30 p-2">
+        <div className="flex gap-1.5">
+          <button
+            onClick={() => onToggleMethod(index)}
+            disabled={disabled}
+            className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-1.5 text-xs font-medium transition-all duration-150 ${
+              !isCard
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "bg-muted/50 text-muted-foreground hover:bg-muted"
+            }`}
+          >
+            <Banknote className="h-3.5 w-3.5" />
+            {methodLabels.cash}
+          </button>
+          <button
+            onClick={() => onToggleMethod(index)}
+            disabled={disabled}
+            className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-1.5 text-xs font-medium transition-all duration-150 ${
+              isCard
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "bg-muted/50 text-muted-foreground hover:bg-muted"
+            }`}
+          >
+            <CreditCard className="h-3.5 w-3.5" />
+            {methodLabels.card}
+          </button>
+        </div>
+
+        <div className="mt-2 flex items-center gap-1.5">
           <input
             type="number"
             min={0}
             step={0.5}
             value={payment.amount}
-            disabled={disabled}
+            disabled={disabled || atCardLimit}
             onChange={(e) => {
               const val = parseAmount(e.target.value);
-              const capped =
-                payment.method === "card"
-                  ? Math.min(val, maxAllowed)
-                  : val;
+              const capped = isCard ? Math.min(val, maxAllowed) : val;
               onUpdateRow(index, "amount", capped);
             }}
-            className="w-full h-8 text-left text-sm bg-background rounded border border-border px-2 disabled:opacity-60 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            className="h-8 flex-1 rounded-lg border border-border/50 bg-background px-2 text-left text-sm tabular-nums transition-colors focus:border-primary/30 focus:outline-none focus:ring-1 focus:ring-primary/20 disabled:opacity-40 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           />
-          <span className="text-xs text-muted-foreground shrink-0">ر.س</span>
+          <span className="text-[11px] text-muted-foreground">ر.س</span>
         </div>
+
+        {isCard && maxAllowed > 0 && (
+          <p className="mt-1 text-right text-[10px] text-muted-foreground/50">
+            الحد الأقصى للبطاقة: {maxAllowed.toFixed(2)} ر.س
+          </p>
+        )}
+        {isCard && atCardLimit && (
+          <p className="mt-1 text-right text-[10px] text-amber-500">تم الوصول للحد الأقصى للبطاقة</p>
+        )}
       </div>
+
       {totalPayments > 1 && (
         <button
           onClick={() => onRemoveRow(index)}
           disabled={disabled}
-          className="text-muted-foreground hover:text-destructive transition-colors shrink-0"
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-muted-foreground/30 transition-colors hover:bg-destructive/10 hover:text-destructive"
         >
-          <X className="w-4 h-4" />
+          <X className="h-4 w-4" />
         </button>
       )}
     </div>

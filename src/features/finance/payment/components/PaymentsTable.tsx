@@ -14,7 +14,10 @@ import {
 } from "@/types";
 import { Eye } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { usePaymentsOverview } from "../../common/hooks/usePayments";
+import {
+  useGetFilters,
+  usePaymentsOverview,
+} from "../../common/hooks/usePayments";
 
 const typeLabels: Record<PaymentType, string> = {
   [PaymentType.Incoming]: "قبض",
@@ -28,24 +31,6 @@ const referenceLabels: Record<string, string> = {
   salesreturn: "مرتجع بيع",
   purchasereturn: "مرتجع شراء",
 };
-
-function getFilters(searchParams: URLSearchParams): PaymentsQueryParams {
-  return {
-    page: Number(searchParams.get("page") ?? "1"),
-    limit: Number(searchParams.get("limit") ?? "10"),
-    ...(searchParams.get("type")
-      ? { type: searchParams.get("type") as PaymentType }
-      : {}),
-    ...(searchParams.get("method")
-      ? { method: searchParams.get("method") as PaymentMethod }
-      : {}),
-    ...(searchParams.get("referenceType")
-      ? { referenceType: searchParams.get("referenceType") as PaymentReferenceType }
-      : {}),
-    ...(searchParams.get("from") ? { from: searchParams.get("from")! } : {}),
-    ...(searchParams.get("to") ? { to: searchParams.get("to")! } : {}),
-  };
-}
 
 function normalizeReferenceType(referenceType: PaymentReferenceType | string) {
   return String(referenceType).toLowerCase().replaceAll("_", "");
@@ -73,15 +58,19 @@ function getReferenceTypeLabel(referenceType: PaymentReferenceType | string) {
 export default function PaymentsTable() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const filters = getFilters(searchParams);
-  const { data, isLoading, isError, refetch } = usePaymentsOverview(filters);
+
+  const { data, isLoading, isError, refetch } = usePaymentsOverview(
+    useGetFilters(searchParams),
+  );
 
   const columns: Column<PaymentOverviewItem>[] = [
     {
       key: "paymentId",
       header: "#",
       render: (payment) => (
-        <span className="font-semibold text-foreground">#{payment.paymentId}</span>
+        <span className="font-semibold text-foreground">
+          #{payment.paymentId}
+        </span>
       ),
     },
     {

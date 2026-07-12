@@ -12,6 +12,8 @@ import {
   CreatePaymentInput,
   PaymentReferenceType,
   PaymentsQueryParams,
+  PaymentType,
+  PaymentMethod,
 } from "../types/payment";
 
 export function usePayments(params?: PaymentsQueryParams) {
@@ -116,7 +118,10 @@ export function usePurchaseReturnPayments(returnId: number) {
   });
 }
 
-export function useAddPurchaseReturnPayment(purchaseId: number, returnId: number) {
+export function useAddPurchaseReturnPayment(
+  purchaseId: number,
+  returnId: number,
+) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -139,4 +144,28 @@ export function useAddPurchaseReturnPayment(purchaseId: number, returnId: number
       });
     },
   });
+}
+
+export function useGetFilters(
+  searchParams: URLSearchParams,
+): PaymentsQueryParams {
+  return {
+    page: Number(searchParams.get("page") ?? "1"),
+    limit: Number(searchParams.get("limit") ?? "10"),
+    ...(searchParams.get("type")
+      ? { type: searchParams.get("type") as PaymentType }
+      : {}),
+    ...(searchParams.get("method")
+      ? { method: searchParams.get("method") as PaymentMethod }
+      : {}),
+    ...(searchParams.get("referenceType")
+      ? {
+          referenceType: searchParams.get(
+            "referenceType",
+          ) as PaymentReferenceType,
+        }
+      : {}),
+    ...(searchParams.get("from") ? { from: searchParams.get("from")! } : {}),
+    ...(searchParams.get("to") ? { to: searchParams.get("to")! } : {}),
+  };
 }

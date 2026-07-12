@@ -1,6 +1,9 @@
 import { CardContent } from "@/ui/card";
 import { useSearchParams } from "react-router-dom";
-import { usePaymentsOverview } from "../../common/hooks/usePayments";
+import {
+  useGetFilters,
+  usePaymentsOverview,
+} from "../../common/hooks/usePayments";
 import {
   Banknote,
   Calculator,
@@ -17,31 +20,9 @@ import {
 } from "@/types";
 import { SummaryTile } from "./PaymentSummaryTile";
 
-function getFilters(searchParams: URLSearchParams): PaymentsQueryParams {
-  return {
-    page: Number(searchParams.get("page") ?? "1"),
-    limit: Number(searchParams.get("limit") ?? "10"),
-    ...(searchParams.get("type")
-      ? { type: searchParams.get("type") as PaymentType }
-      : {}),
-    ...(searchParams.get("method")
-      ? { method: searchParams.get("method") as PaymentMethod }
-      : {}),
-    ...(searchParams.get("referenceType")
-      ? {
-          referenceType: searchParams.get(
-            "referenceType",
-          ) as PaymentReferenceType,
-        }
-      : {}),
-    ...(searchParams.get("from") ? { from: searchParams.get("from")! } : {}),
-    ...(searchParams.get("to") ? { to: searchParams.get("to")! } : {}),
-  };
-}
-
 export default function PaymentsSummaryCards() {
   const [searchParams] = useSearchParams();
-  const { data } = usePaymentsOverview(getFilters(searchParams));
+  const { data } = usePaymentsOverview(useGetFilters(searchParams));
   const summary = data?.summary;
 
   return (

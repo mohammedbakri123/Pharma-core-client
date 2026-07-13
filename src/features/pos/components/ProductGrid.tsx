@@ -28,18 +28,6 @@ function SkeletonCard() {
   );
 }
 
-function SkeletonRow() {
-  return (
-    <div className="flex animate-pulse items-center gap-3 rounded-xl border border-border/40 bg-card px-3 py-2.5">
-      <div className="min-w-0 flex-1 space-y-1.5">
-        <div className="h-4 w-2/3 rounded bg-muted" />
-        <div className="h-3 w-1/3 rounded bg-muted" />
-      </div>
-      <div className="h-8 w-8 shrink-0 rounded-full bg-muted" />
-    </div>
-  );
-}
-
 export default function ProductGrid({
   products,
   getProductName,
@@ -95,16 +83,9 @@ export default function ProductGrid({
 
   if (initialLoading) {
     return (
-      <div className="h-full space-y-2 sm:grid sm:grid-cols-2 sm:gap-2 sm:space-y-0 md:grid-cols-3 md:gap-3 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="grid h-full grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {Array.from({ length: 15 }).map((_, i) => (
-          <div key={i} className="sm:hidden">
-            <SkeletonRow />
-          </div>
-        ))}
-        {Array.from({ length: 15 }).map((_, i) => (
-          <div key={`card-${i}`} className="hidden sm:block">
-            <SkeletonCard />
-          </div>
+          <SkeletonCard key={i} />
         ))}
       </div>
     );
@@ -138,26 +119,7 @@ export default function ProductGrid({
 
   return (
     <div className="h-full overflow-y-auto pl-1 sm:pl-2">
-      {/* Mobile: single-column list with dividers */}
-      <div className="divide-y divide-border/30 sm:hidden">
-        {products.map((product, index) => (
-          <div
-            key={product.medicineId}
-            className="animate-in fade-in slide-in-from-bottom-1 duration-200"
-            style={{ animationDelay: `${(index % 15) * 20}ms`, animationFillMode: "both" }}
-          >
-            <ProductCard
-              product={product}
-              onClick={addToCart}
-              isAdding={addingIds.has(product.medicineId)}
-              cartQuantity={cartQuantities(product.medicineId)}
-            />
-          </div>
-        ))}
-      </div>
-
-      {/* Desktop: grid */}
-      <div className="hidden grid-cols-2 gap-2 pb-3 sm:grid sm:gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="grid grid-cols-2 gap-2 pb-3 sm:gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {products.map((product, index) => (
           <div
             key={product.medicineId}
@@ -175,18 +137,11 @@ export default function ProductGrid({
       </div>
 
       {loading && (
-        <>
-          <div className="space-y-2 sm:hidden">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <SkeletonRow key={`skel-row-${i}`} />
-            ))}
-          </div>
-          <div className="hidden grid-cols-2 gap-2 pb-3 sm:grid sm:gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <SkeletonCard key={`skeleton-${i}`} />
-            ))}
-          </div>
-        </>
+        <div className="grid grid-cols-2 gap-2 pb-3 sm:gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <SkeletonCard key={`skeleton-${i}`} />
+          ))}
+        </div>
       )}
 
       <div ref={sentinelRef} className="h-2" />

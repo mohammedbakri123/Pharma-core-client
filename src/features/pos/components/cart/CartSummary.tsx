@@ -22,8 +22,8 @@ export default function CartSummary() {
   const { addRow, removeRow, updateRow, toggleMethod } = usePaymentRows(payments, total, setPayments);
 
   return (
-    <div className="flex max-h-[45dvh] flex-col border-t border-border/50">
-      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-3">
+    <div className="flex max-h-[40dvh] flex-col border-t border-border/50 sm:max-h-[45dvh]">
+      <div className="min-h-0 flex-1 space-y-2.5 overflow-y-auto p-2.5 sm:space-y-3 sm:p-3">
         {cart.length > 0 && (
           <>
             <div className="rounded-xl border border-border/40 bg-background/50 p-3">
@@ -156,11 +156,11 @@ export default function CartSummary() {
         )}
       </div>
 
-      <div className="shrink-0 border-t border-border/50 bg-card p-3">
+      <div className="shrink-0 border-t border-border/50 bg-card p-2.5 sm:p-3">
         <button
           disabled={!canCheckout || cart.length === 0}
           onClick={handleCheckout}
-          className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary font-bold text-sm text-primary-foreground shadow-lg shadow-primary/20 transition-all duration-200 hover:bg-primary/90 hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40"
+          className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary font-bold text-sm text-primary-foreground shadow-lg shadow-primary/20 transition-all duration-200 hover:bg-primary/90 hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40 sm:h-12"
         >
           {isPending ? (
             <span className="flex items-center gap-2">

@@ -20,6 +20,7 @@ interface CartContextValue {
   change: number;
   isPending: boolean;
   showCustomerSelect: boolean;
+  showMobileCart: boolean;
   checkoutIssue: string | null;
   canCheckout: boolean;
 
@@ -32,6 +33,7 @@ interface CartContextValue {
   setNote: (note: string) => void;
   setSelectedCustomer: (customer: { id: number; name: string } | null) => void;
   setShowCustomerSelect: (open: boolean) => void;
+  setShowMobileCart: (open: boolean) => void;
   setReceipt: (receipt: PosCheckoutResultDto | null) => void;
   handleCheckout: () => void;
 }
@@ -117,6 +119,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [note, setNote] = useState("");
   const [selectedCustomer, setSelectedCustomer] = useState<{ id: number; name: string } | null>(null);
   const [showCustomerSelect, setShowCustomerSelect] = useState(false);
+  const [showMobileCart, setShowMobileCart] = useState(false);
   const [receipt, setReceipt] = useState<PosCheckoutResultDto | null>(null);
 
   const checkout = usePosCheckout();
@@ -254,6 +257,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             setPayments([]);
             setNote("");
             setSelectedCustomer(null);
+            setShowMobileCart(false);
           },
       },
     );
@@ -274,6 +278,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         change,
         isPending: checkout.isPending,
         showCustomerSelect,
+        showMobileCart,
         checkoutIssue,
         canCheckout,
         addItem,
@@ -285,6 +290,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setNote,
         setSelectedCustomer,
         setShowCustomerSelect,
+        setShowMobileCart,
         setReceipt,
         handleCheckout,
       }}

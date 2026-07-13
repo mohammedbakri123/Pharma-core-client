@@ -36,7 +36,7 @@ export default function ProductCard({
     <button
       onClick={() => onClick(product.medicineId)}
       disabled={disabled}
-      className="group relative flex flex-col rounded-2xl border border-border/50 bg-card p-4 text-right transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 disabled:pointer-events-none"
+      className="group relative flex flex-col rounded-2xl border border-border/50 bg-card p-3 text-right transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 disabled:pointer-events-none sm:p-4"
       style={{ opacity: outOfStock ? 0.4 : undefined }}
     >
       <div className={`absolute inset-0 rounded-2xl bg-gradient-to-b ${getGradient(product.medicineId)} opacity-0 transition-opacity duration-200 group-hover:opacity-100`} />

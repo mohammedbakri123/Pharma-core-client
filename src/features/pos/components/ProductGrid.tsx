@@ -83,7 +83,7 @@ export default function ProductGrid({
 
   if (initialLoading) {
     return (
-      <div className="grid h-full grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="grid h-full grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {Array.from({ length: 15 }).map((_, i) => (
           <SkeletonCard key={i} />
         ))}
@@ -118,8 +118,8 @@ export default function ProductGrid({
   }
 
   return (
-    <div className="h-full overflow-y-auto pl-2">
-      <div className="grid grid-cols-2 gap-3 pb-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+    <div className="h-full overflow-y-auto pl-1 sm:pl-2">
+      <div className="grid grid-cols-2 gap-2 pb-3 sm:gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {products.map((product, index) => (
           <div
             key={product.medicineId}
@@ -137,7 +137,7 @@ export default function ProductGrid({
       </div>
 
       {loading && (
-        <div className="grid grid-cols-2 gap-3 pb-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        <div className="grid grid-cols-2 gap-2 pb-3 sm:gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {Array.from({ length: 6 }).map((_, i) => (
             <SkeletonCard key={`skeleton-${i}`} />
           ))}

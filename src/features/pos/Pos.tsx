@@ -4,7 +4,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { usePosProducts } from "./hooks/use-pos-products";
 import { CartProvider, useCartContext } from "./context/pos-cart-context";
 import POSSearch from "./components/POSSearch";
-import ProductGrid from "./components/ProductGrid";
+import ProductList from "./components/ProductList";
 import Cart from "./components/cart/Cart";
 import ReceiptModal from "./components/ReceiptModal";
 import CustomerSelect from "./components/cart/CustomerSelect";
@@ -26,7 +26,9 @@ function MobileCartButton() {
           {itemCount}
         </span>
       </div>
-      <span className="text-sm font-bold tabular-nums">{subtotal.toFixed(2)} ر.س</span>
+      <span className="text-sm font-bold tabular-nums">
+        {subtotal.toFixed(2)} ر.س
+      </span>
     </button>
   );
 }
@@ -56,10 +58,7 @@ function POSContent() {
 
   return (
     <>
-      <div
-        className="flex h-dvh animate-in fade-in duration-500"
-        dir="rtl"
-      >
+      <div className="flex h-dvh animate-in fade-in duration-500" dir="rtl">
         <div className="flex min-w-0 flex-1 flex-col gap-2 p-2 sm:gap-3 sm:p-3 lg:gap-4 lg:p-4">
           <div className="shrink-0 animate-in fade-in slide-in-from-top-2 duration-400">
             <POSSearch
@@ -67,8 +66,8 @@ function POSContent() {
               setSearchQuery={setSearchQuery}
             />
           </div>
-          <div className="min-h-0 flex-1 animate-in fade-in duration-500 delay-150 [animation-fill-mode:both]">
-            <ProductGrid
+          <div className="min-h-0 flex-1 animate-in fade-in duration-500 delay-150 fill-mode-[both]">
+            <ProductList
               products={products}
               getProductName={getProductName}
               loading={loading}
@@ -79,7 +78,7 @@ function POSContent() {
           </div>
         </div>
 
-        <div className="hidden w-[28rem] min-w-0 shrink-0 animate-in fade-in slide-in-from-left-3 duration-500 delay-200 [animation-fill-mode:both] lg:block">
+        <div className="hidden w-md min-w-0 shrink-0 animate-in fade-in slide-in-from-left-3 duration-500 delay-200 fill-mode-[both] lg:block">
           <Cart />
         </div>
       </div>

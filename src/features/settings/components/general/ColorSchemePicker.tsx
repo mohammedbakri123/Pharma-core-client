@@ -1,8 +1,23 @@
+import { useEffect, useState } from "react";
 import { useColorScheme } from "../../hooks/useColorScheme";
 import { Check } from "lucide-react";
 
 export default function ColorSchemePicker() {
   const { schemes, activeId, setScheme } = useColorScheme();
+  const [dark, setDark] = useState(() =>
+    document.documentElement.classList.contains("dark")
+  );
+
+  useEffect(() => {
+    const obs = new MutationObserver(() => {
+      setDark(document.documentElement.classList.contains("dark"));
+    });
+    obs.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    return () => obs.disconnect();
+  }, []);
 
   return (
     <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
@@ -18,7 +33,7 @@ export default function ColorSchemePicker() {
                 ? `hsl(${scheme.primary})`
                 : "hsl(var(--border))",
               background: isActive
-                ? `hsl(${scheme.accent})`
+                ? `hsl(${dark ? scheme["accent-dark"] : scheme.accent})`
                 : "hsl(var(--card))",
             }}
           >
@@ -56,7 +71,7 @@ export default function ColorSchemePicker() {
               />
               <div
                 className="h-2 w-5 rounded-full"
-                style={{ background: `hsl(${scheme.accent})` }}
+                style={{ background: `hsl(${dark ? scheme["accent-dark"] : scheme.accent})` }}
               />
               <div
                 className="h-2 w-3 rounded-full opacity-40"

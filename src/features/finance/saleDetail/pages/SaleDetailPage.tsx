@@ -47,7 +47,7 @@ export default function SaleDetailPage() {
             <Button
               variant="default"
               size="sm"
-              onClick={() => navigate("/finance")}
+              onClick={() => navigate("/finance/sales")}
             >
               العودة إلى المبيعات
             </Button>

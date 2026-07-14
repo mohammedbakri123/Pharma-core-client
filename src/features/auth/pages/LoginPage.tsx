@@ -3,6 +3,7 @@ import { useLogin } from "../hooks/useAuth";
 import { LoginForm } from "../components/LoginForm";
 import AuthLayout from "../components/AuthLayout";
 import { toast } from "@/hooks/use-toast";
+import { UserRole } from "../types";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -18,14 +19,15 @@ export default function LoginPage() {
       description: "يرجى الانتظار",
     });
     loginMutation.mutate(data, {
-      onSuccess: () => {
+      onSuccess: (response) => {
         t.update({
           id: t.id,
           title: "تم تسجيل الدخول بنجاح",
           description: "مرحباً بك",
           variant: "success",
         });
-        navigate("/");
+        const role = response.data.user.role;
+        navigate(role === UserRole.Cashier ? "/pos" : "/");
       },
       onError: (error: any) => {
         const message =

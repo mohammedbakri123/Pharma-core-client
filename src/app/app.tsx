@@ -7,6 +7,12 @@ import NotFound from "@/pages/NotFoundPage";
 import LoginPage from "@/pages/LoginPage";
 import { Layout } from "@/layout/layout";
 import { ProtectedRoute } from "./ProtectedRoute";
+import { UserRole } from "@features/auth";
+import RoleRedirect from "./RoleRedirect";
+
+const AdminOnly = ({ children }: { children: React.ReactNode }) => (
+  <ProtectedRoute roles={[UserRole.Admin]}>{children}</ProtectedRoute>
+);
 
 import InventoryLayout from "@features/inventory/Inventory";
 import InventoryStockPage from "@features/inventory/pages/InventoryPage";
@@ -88,7 +94,14 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route index element={<DashboardPage />} />
+            <Route
+              index
+              element={
+                <AdminOnly>
+                  <DashboardPage />
+                </AdminOnly>
+              }
+            />
 
             {/* Inventory */}
             <Route path="inventory" element={<InventoryLayout />}>
@@ -128,7 +141,7 @@ function App() {
 
             {/* Finance */}
             <Route path="finance" element={<FinanceLayout />}>
-              <Route index element={<Navigate to="payments" replace />} />
+              <Route index element={<RoleRedirect adminPath="payments" defaultPath="sales" />} />
               <Route path="payments" element={<FinancePaymentsPage />} />
               <Route path="sales" element={<FinanceSalesPage />} />
               <Route path="purchases" element={<FinancePurchasesPage />} />
@@ -174,7 +187,7 @@ function App() {
 
             {/* Settings */}
             <Route path="settings" element={<SettingsLayout />}>
-              <Route index element={<Navigate to="general" replace />} />
+              <Route index element={<RoleRedirect adminPath="general" defaultPath="general" />} />
               <Route path="general" element={<SettingsGeneralPage />} />
               <Route path="users" element={<SettingsUsersPage />} />
               <Route path="backup" element={<SettingsBackupPage />} />

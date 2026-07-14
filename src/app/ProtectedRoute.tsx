@@ -4,17 +4,18 @@ import { UserRole } from "@features/auth";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  role?: UserRole;
+  /** Allow only these roles. If omitted, any authenticated user can access. */
+  roles?: UserRole[];
 }
 
-export function ProtectedRoute({ children, role }: ProtectedRouteProps) {
+export function ProtectedRoute({ children, roles }: ProtectedRouteProps) {
   const { isAuthenticated, user } = useAuth();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  if (role && user?.role !== role) {
+  if (roles && user?.role && !roles.includes(user.role)) {
     return <Navigate to="/" replace />;
   }
 

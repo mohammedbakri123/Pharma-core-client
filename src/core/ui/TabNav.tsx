@@ -1,11 +1,15 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { cn } from "@/utils/utils";
 import type { ReactNode } from "react";
+import { useAuth } from "@features/auth/hooks/useAuth";
+import { type UserRole } from "@features/auth";
 
 interface TabItem {
   to: string;
   label: string;
   icon?: ReactNode;
+  /** If provided, the tab is only visible to these roles. */
+  allowedRoles?: UserRole[];
 }
 
 interface TabNavProps {
@@ -19,15 +23,22 @@ export default function TabNav({
   variant = "pill",
   children,
 }: TabNavProps) {
+  const { user } = useAuth();
+
+  const visibleTabs = tabs.filter((tab) => {
+    if (!tab.allowedRoles) return true;
+    return tab.allowedRoles.includes(user?.role!);
+  });
+
   return (
     <>
       {variant === "pill" ? (
         <div className="overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden mb-6">
           <div
             className="grid max-w-lg bg-muted/40 p-1.5 rounded-xl border border-border/40 gap-1"
-            style={{ gridTemplateColumns: `repeat(${tabs.length}, 1fr)` }}
+            style={{ gridTemplateColumns: `repeat(${visibleTabs.length}, 1fr)` }}
           >
-            {tabs.map((tab) => (
+            {visibleTabs.map((tab) => (
               <NavLink
                 key={tab.to}
                 to={tab.to}
@@ -50,7 +61,7 @@ export default function TabNav({
       ) : (
         <div className="overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden px-4 md:px-6 border-b border-border/40 bg-muted/5">
           <div className="flex justify-start gap-4 md:gap-6 p-0 h-12 rounded-none whitespace-nowrap">
-            {tabs.map((tab) => (
+            {visibleTabs.map((tab) => (
               <NavLink
                 key={tab.to}
                 to={tab.to}

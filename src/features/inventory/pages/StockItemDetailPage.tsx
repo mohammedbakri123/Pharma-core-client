@@ -47,7 +47,7 @@ export default function StockItemDetailPage() {
             <Button
               variant="default"
               size="sm"
-              onClick={() => navigate("/inventory")}
+              onClick={() => navigate("/inventory/stock")}
             >
               العودة إلى المخزون
             </Button>

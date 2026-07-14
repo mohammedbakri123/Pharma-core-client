@@ -52,7 +52,7 @@ export default function PurchaseDetailPage() {
             <Button
               variant="default"
               size="sm"
-              onClick={() => navigate("/finance")}
+              onClick={() => navigate("/finance/purchases")}
             >
               العودة إلى المشتريات
             </Button>

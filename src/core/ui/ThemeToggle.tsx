@@ -10,6 +10,7 @@ export default function ThemeToggle() {
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDarkMode);
     localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+    window.dispatchEvent(new CustomEvent("theme-change"));
   }, [isDarkMode]);
 
   useEffect(() => {

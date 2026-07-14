@@ -1,7 +1,10 @@
 import { createRoot } from "react-dom/client";
 import App from "./app/app";
 import { Toaster } from "react-hot-toast";
+import { initColorScheme } from "@features/settings/hooks/useColorScheme";
 import "./core/styles/index.css";
+
+initColorScheme();
 
 createRoot(document.getElementById("root")!).render(
   <>

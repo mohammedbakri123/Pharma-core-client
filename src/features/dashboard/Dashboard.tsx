@@ -3,8 +3,8 @@ import { AlertTriangle, RefreshCw } from "lucide-react";
 
 import { Button } from "@/ui/button";
 import { Card, CardContent } from "@/ui/card";
-import { Spinner } from "@/ui/spinner";
 import { CashflowPanel } from "./components/CashflowPanel";
+import { KpiSummarySkeleton } from "./components/KpiSummarySkeleton";
 import { DashboardHeader } from "./components/DashboardHeader";
 import { InventoryPanel } from "./components/InventoryPanel";
 import { KpiSummary } from "./components/KpiSummary";
@@ -23,8 +23,9 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-[420px] items-center justify-center">
-        <Spinner />
+      <div className="space-y-5">
+        <div className="h-10 w-48 animate-pulse rounded bg-muted" />
+        <KpiSummarySkeleton />
       </div>
     );
   }

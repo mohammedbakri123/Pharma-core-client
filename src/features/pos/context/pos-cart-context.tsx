@@ -1,8 +1,20 @@
-import { createContext, useContext, useState, useCallback, useEffect, useMemo, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  type ReactNode,
+} from "react";
 import { toast } from "@/hooks/use-toast";
 import { useLocalStorageState } from "@/core/hooks/use-local-storage-state";
 import { usePosCheckout } from "../hooks/use-pos-checkout";
-import type { PosCartItem, PosCheckoutResultDto, PosPaymentRequest } from "../types/pos";
+import type {
+  PosCartItem,
+  PosCheckoutResultDto,
+  PosPaymentRequest,
+} from "../types/pos";
 
 const POS_CART_STORAGE_KEY = "pos-cart-state";
 
@@ -27,7 +39,12 @@ interface CartContextValue {
   checkoutIssue: string | null;
   canCheckout: boolean;
 
-  addItem: (medicineId: number, name: string, price: number, availableStock: number) => void;
+  addItem: (
+    medicineId: number,
+    name: string,
+    price: number,
+    availableStock: number,
+  ) => void;
   updateQuantity: (medicineId: number, delta: number) => void;
   removeFromCart: (medicineId: number) => void;
   clearCart: () => void;
@@ -71,7 +88,10 @@ function getCheckoutIssue({
   selectedCustomer: { id: number; name: string } | null;
 }) {
   if (cart.length === 0) return "أضف منتجاً واحداً على الأقل";
-  if (selectedCustomer && (!Number.isInteger(selectedCustomer.id) || selectedCustomer.id <= 0)) {
+  if (
+    selectedCustomer &&
+    (!Number.isInteger(selectedCustomer.id) || selectedCustomer.id <= 0)
+  ) {
     return "بيانات العميل غير صحيحة";
   }
 
@@ -87,13 +107,17 @@ function getCheckoutIssue({
   );
   if (invalidItem) return "يوجد صنف غير صالح في السلة";
 
-  const overStockItem = cart.find((item) => item.quantity > item.availableStock);
-  if (overStockItem) return `الكمية المطلوبة من ${overStockItem.name} أكبر من المخزون`;
+  const overStockItem = cart.find(
+    (item) => item.quantity > item.availableStock,
+  );
+  if (overStockItem)
+    return `الكمية المطلوبة من ${overStockItem.name} أكبر من المخزون`;
 
   if (!isPositiveFinite(subtotal)) return "المجموع الفرعي غير صالح";
   if (!Number.isFinite(discount) || discount < 0) return "قيمة الخصم غير صحيحة";
   if (discount >= subtotal) return "الخصم يجب أن يكون أقل من المجموع الفرعي";
-  if (!isPositiveFinite(total)) return "إجمالي الفاتورة يجب أن يكون أكبر من صفر";
+  if (!isPositiveFinite(total))
+    return "إجمالي الفاتورة يجب أن يكون أكبر من صفر";
 
   const invalidPayment = payments.find(
     (payment) =>
@@ -105,9 +129,12 @@ function getCheckoutIssue({
 
   const validPayments = payments.filter((payment) => payment.amount > 0);
   if (validPayments.length === 0) return "أدخل مبلغ الدفع";
-  if (paidAmount + MONEY_EPSILON < total) return "المبلغ المدفوع أقل من الإجمالي";
+  if (paidAmount + MONEY_EPSILON < total)
+    return "المبلغ المدفوع أقل من الإجمالي";
 
-  const hasCashPayment = validPayments.some((payment) => payment.method === "cash");
+  const hasCashPayment = validPayments.some(
+    (payment) => payment.method === "cash",
+  );
   if (!hasCashPayment && paidAmount > total + MONEY_EPSILON) {
     return "لا يمكن دفع مبلغ أكبر من الإجمالي بالبطاقة فقط";
   }
@@ -132,42 +159,76 @@ const persistedInitialState: PersistedCartState = {
 };
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [persisted, setPersisted] = useLocalStorageState<PersistedCartState>(persistedInitialState, POS_CART_STORAGE_KEY);
+  const [persisted, setPersisted] = useLocalStorageState<PersistedCartState>(
+    persistedInitialState,
+    POS_CART_STORAGE_KEY,
+  );
 
-  const setCart = useCallback((updater: PosCartItem[] | ((prev: PosCartItem[]) => PosCartItem[])) => {
-    setPersisted((prev) => ({
-      ...prev,
-      cart: typeof updater === "function" ? updater(prev.cart) : updater,
-    }));
-  }, [setPersisted]);
+  const setCart = useCallback(
+    (updater: PosCartItem[] | ((prev: PosCartItem[]) => PosCartItem[])) => {
+      setPersisted((prev) => ({
+        ...prev,
+        cart: typeof updater === "function" ? updater(prev.cart) : updater,
+      }));
+    },
+    [setPersisted],
+  );
 
-  const setPayments = useCallback((updater: PosPaymentRequest[] | ((prev: PosPaymentRequest[]) => PosPaymentRequest[])) => {
-    setPersisted((prev) => ({
-      ...prev,
-      payments: typeof updater === "function" ? updater(prev.payments) : updater,
-    }));
-  }, [setPersisted]);
+  const setPayments = useCallback(
+    (
+      updater:
+        | PosPaymentRequest[]
+        | ((prev: PosPaymentRequest[]) => PosPaymentRequest[]),
+    ) => {
+      setPersisted((prev) => ({
+        ...prev,
+        payments:
+          typeof updater === "function" ? updater(prev.payments) : updater,
+      }));
+    },
+    [setPersisted],
+  );
 
-  const setDiscount = useCallback((updater: number | ((prev: number) => number)) => {
-    setPersisted((prev) => ({
-      ...prev,
-      discount: typeof updater === "function" ? updater(prev.discount) : updater,
-    }));
-  }, [setPersisted]);
+  const setDiscount = useCallback(
+    (updater: number | ((prev: number) => number)) => {
+      setPersisted((prev) => ({
+        ...prev,
+        discount:
+          typeof updater === "function" ? updater(prev.discount) : updater,
+      }));
+    },
+    [setPersisted],
+  );
 
-  const setNote = useCallback((updater: string | ((prev: string) => string)) => {
-    setPersisted((prev) => ({
-      ...prev,
-      note: typeof updater === "function" ? updater(prev.note) : updater,
-    }));
-  }, [setPersisted]);
+  const setNote = useCallback(
+    (updater: string | ((prev: string) => string)) => {
+      setPersisted((prev) => ({
+        ...prev,
+        note: typeof updater === "function" ? updater(prev.note) : updater,
+      }));
+    },
+    [setPersisted],
+  );
 
-  const setSelectedCustomer = useCallback((updater: { id: number; name: string } | null | ((prev: { id: number; name: string } | null) => { id: number; name: string } | null)) => {
-    setPersisted((prev) => ({
-      ...prev,
-      selectedCustomer: typeof updater === "function" ? updater(prev.selectedCustomer) : updater,
-    }));
-  }, [setPersisted]);
+  const setSelectedCustomer = useCallback(
+    (
+      updater:
+        | { id: number; name: string }
+        | null
+        | ((
+            prev: { id: number; name: string } | null,
+          ) => { id: number; name: string } | null),
+    ) => {
+      setPersisted((prev) => ({
+        ...prev,
+        selectedCustomer:
+          typeof updater === "function"
+            ? updater(prev.selectedCustomer)
+            : updater,
+      }));
+    },
+    [setPersisted],
+  );
 
   const { cart, payments, discount, note, selectedCustomer } = persisted;
 
@@ -177,7 +238,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const checkout = usePosCheckout();
 
-  const subtotal = normalizeMoney(cart.reduce((s, i) => s + i.price * i.quantity, 0));
+  const subtotal = normalizeMoney(
+    cart.reduce((s, i) => s + i.price * i.quantity, 0),
+  );
   const total = normalizeMoney(Math.max(0, subtotal - discount));
   const paidAmount = normalizeMoney(payments.reduce((s, p) => s + p.amount, 0));
   const change = Math.max(0, paidAmount - total);
@@ -209,55 +272,81 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [discount, subtotal]);
 
-  const addItem = useCallback((medicineId: number, name: string, price: number, availableStock: number) => {
-    if (!Number.isInteger(medicineId) || medicineId <= 0 || !isPositiveFinite(price)) {
-      toast({
-        title: "لا يمكن إضافة المنتج",
-        description: "بيانات السعر أو المنتج غير صحيحة.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const safeStock = Math.max(0, Math.floor(availableStock));
-    if (safeStock <= 0) {
-      toast({
-        title: "نفد المخزون",
-        description: "لا يمكن بيع منتج بدون مخزون متاح.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setCart((prev) => {
-      const existing = prev.find((i) => i.medicineId === medicineId);
-      if (existing) {
-        if (existing.quantity >= safeStock) {
-          toast({
-            title: "الكمية غير متاحة",
-            description: `المخزون المتاح من ${existing.name} هو ${safeStock}.`,
-            variant: "destructive",
-          });
-          return prev;
-        }
-
-        return prev.map((i) =>
-          i.medicineId === medicineId
-            ? { ...i, price, availableStock: safeStock, quantity: i.quantity + 1 }
-            : i,
-        );
+  const addItem = useCallback(
+    (
+      medicineId: number,
+      name: string,
+      price: number,
+      availableStock: number,
+    ) => {
+      if (
+        !Number.isInteger(medicineId) ||
+        medicineId <= 0 ||
+        !isPositiveFinite(price)
+      ) {
+        toast({
+          title: "لا يمكن إضافة المنتج",
+          description: "بيانات السعر أو المنتج غير صحيحة.",
+          variant: "destructive",
+        });
+        return;
       }
 
-      return [...prev, { medicineId, name, price, availableStock: safeStock, quantity: 1 }];
-    });
-  }, []);
+      const safeStock = Math.max(0, Math.floor(availableStock));
+      if (safeStock <= 0) {
+        toast({
+          title: "نفد المخزون",
+          description: "لا يمكن بيع منتج بدون مخزون متاح.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setCart((prev) => {
+        const existing = prev.find((i) => i.medicineId === medicineId);
+        if (existing) {
+          if (existing.quantity >= safeStock) {
+            toast({
+              title: "الكمية غير متاحة",
+              description: `المخزون المتاح من ${existing.name} هو ${safeStock}.`,
+              variant: "destructive",
+            });
+            return prev;
+          }
+
+          return prev.map((i) =>
+            i.medicineId === medicineId
+              ? {
+                  ...i,
+                  price,
+                  availableStock: safeStock,
+                  quantity: i.quantity + 1,
+                }
+              : i,
+          );
+        }
+
+        return [
+          ...prev,
+          { medicineId, name, price, availableStock: safeStock, quantity: 1 },
+        ];
+      });
+    },
+    [],
+  );
 
   const updateQuantity = useCallback((medicineId: number, delta: number) => {
     setCart((prev) =>
       prev
         .map((i) =>
           i.medicineId === medicineId
-            ? { ...i, quantity: Math.min(i.availableStock, Math.max(0, i.quantity + delta)) }
+            ? {
+                ...i,
+                quantity: Math.min(
+                  i.availableStock,
+                  Math.max(0, i.quantity + delta),
+                ),
+              }
             : i,
         )
         .filter((i) => i.quantity > 0),
@@ -304,17 +393,25 @@ export function CartProvider({ children }: { children: ReactNode }) {
       },
       {
         onSuccess: (result) => {
-            setReceipt(result);
-            setCart([]);
-            setDiscount(0);
-            setPayments([]);
-            setNote("");
-            setSelectedCustomer(null);
-            setShowMobileCart(false);
-          },
+          setReceipt(result);
+          setCart([]);
+          setDiscount(0);
+          setPayments([]);
+          setNote("");
+          setSelectedCustomer(null);
+          setShowMobileCart(false);
+        },
       },
     );
-  }, [cart, payments, discount, note, selectedCustomer, checkout, checkoutIssue]);
+  }, [
+    cart,
+    payments,
+    discount,
+    note,
+    selectedCustomer,
+    checkout,
+    checkoutIssue,
+  ]);
 
   return (
     <CartContext.Provider
@@ -355,6 +452,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
 export function useCartContext() {
   const ctx = useContext(CartContext);
-  if (!ctx) throw new Error("useCartContext must be used within a CartProvider");
+  if (!ctx)
+    throw new Error("useCartContext must be used within a CartProvider");
   return ctx;
 }

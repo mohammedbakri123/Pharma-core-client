@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { toast } from "@/hooks/use-toast";
-import { useLocalStorageState } from "@/core/hooks/use-local-storage-state";
+import { useLocalStorageState } from "@/hooks/use-local-storage-state";
 import { usePosCheckout } from "../hooks/use-pos-checkout";
 import type {
   PosCartItem,

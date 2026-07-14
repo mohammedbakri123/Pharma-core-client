@@ -9,7 +9,38 @@ import {
 } from "./table";
 import { cn } from "@/utils/utils";
 import { SearchX } from "lucide-react";
-import { Spinner } from "./spinner";
+
+function TableSkeleton({ colCount }: { colCount: number }) {
+  return (
+    <div className="overflow-x-auto" dir="rtl">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            {Array.from({ length: colCount }).map((_, i) => (
+              <TableHead key={i}>
+                <div className="h-3 w-16 animate-pulse rounded bg-muted" />
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {Array.from({ length: 5 }).map((_, row) => (
+            <TableRow key={row}>
+              {Array.from({ length: colCount }).map((_, col) => (
+                <TableCell key={col}>
+                  <div
+                    className="h-3 animate-pulse rounded bg-muted"
+                    style={{ width: `${50 + ((row * 7 + col * 13) % 40)}%` }}
+                  />
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
 
 export interface Column<T> {
   key: string;
@@ -48,12 +79,7 @@ export function DataTable<T>({
   containerClassName,
 }: DataTableProps<T>) {
   if (isLoading) {
-    return (
-      <div className="py-10 text-center flex flex-col items-center justify-center gap-2">
-        <Spinner size={"lg"} />
-        <span className="text-sm text-muted-foreground">جاري التحميل...</span>
-      </div>
-    );
+    return <TableSkeleton colCount={columns.length} />;
   }
 
   if (isError) {

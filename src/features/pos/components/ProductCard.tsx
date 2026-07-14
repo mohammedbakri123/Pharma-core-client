@@ -79,7 +79,7 @@ export default function ProductCard({
         </div>
 
         <div className="space-y-0.5">
-          <h3 className="line-clamp-2 text-sm font-semibold leading-snug">
+          <h3 className="line-clamp-2 text-sm font-semibold leading-snug" title={name}>
             {name}
           </h3>
           {product.categoryName && (

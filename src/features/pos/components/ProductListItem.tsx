@@ -102,16 +102,17 @@ export default function ProductListItem({
 
         {/* Product info */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-baseline gap-2.5">
-            <h3 className="truncate text-[13px] font-semibold text-foreground/90 leading-tight">
-              {name}
-            </h3>
-            {product.categoryName && (
-              <span className="flex-shrink-0 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">
-                {product.categoryName}
-              </span>
-            )}
-          </div>
+          <h3
+            className="line-clamp-2 text-[13px] font-semibold text-foreground/90 leading-tight"
+            title={name}
+          >
+            {name}
+          </h3>
+          {product.categoryName && (
+            <span className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">
+              {product.categoryName}
+            </span>
+          )}
 
           <div className="mt-1 flex items-center gap-3">
             {product.barcode && (

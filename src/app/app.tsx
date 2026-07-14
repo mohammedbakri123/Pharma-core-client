@@ -101,7 +101,10 @@ function App() {
               <Route path="overview" element={<StockItemOverview />} />
               <Route path="batches" element={<StockItemBatches />} />
             </Route>
-            <Route path="inventory/medicines/:id" element={<MedicineDetailPage />}>
+            <Route
+              path="inventory/medicines/:id"
+              element={<MedicineDetailPage />}
+            >
               <Route index element={<Navigate to="overview" replace />} />
               <Route path="overview" element={<MedicineDetailOverview />} />
               <Route path="batches" element={<MedicineDetailBatches />} />

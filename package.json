@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite dev --host 0.0.0.0 --port 5000",
+    "dev:mobile": "vite dev --host 0.0.0.0 --port 5000 --mode mobile",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0 --port 5000",
     "check": "tsc"

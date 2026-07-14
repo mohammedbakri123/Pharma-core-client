@@ -11,3 +11,4 @@ export * from "../../features/finance/common/types/expense";
 export * from "../../features/finance/common/types/salesReturn";
 export * from "../../features/pos/types/pos";
 export * from "../../features/dashboard/types/dashboard";
+export * from "./headerSearch";

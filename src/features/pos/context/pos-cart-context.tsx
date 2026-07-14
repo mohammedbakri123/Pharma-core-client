@@ -1,7 +1,10 @@
 import { createContext, useContext, useState, useCallback, useEffect, useMemo, type ReactNode } from "react";
 import { toast } from "@/hooks/use-toast";
+import { useLocalStorageState } from "@/core/hooks/use-local-storage-state";
 import { usePosCheckout } from "../hooks/use-pos-checkout";
 import type { PosCartItem, PosCheckoutResultDto, PosPaymentRequest } from "../types/pos";
+
+const POS_CART_STORAGE_KEY = "pos-cart-state";
 
 function defaultPayments(): PosPaymentRequest[] {
   return [{ method: "cash" as const, amount: 0 }];
@@ -112,12 +115,62 @@ function getCheckoutIssue({
   return null;
 }
 
+interface PersistedCartState {
+  cart: PosCartItem[];
+  payments: PosPaymentRequest[];
+  discount: number;
+  note: string;
+  selectedCustomer: { id: number; name: string } | null;
+}
+
+const persistedInitialState: PersistedCartState = {
+  cart: [],
+  payments: [],
+  discount: 0,
+  note: "",
+  selectedCustomer: null,
+};
+
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [cart, setCart] = useState<PosCartItem[]>([]);
-  const [payments, setPayments] = useState<PosPaymentRequest[]>([]);
-  const [discount, setDiscount] = useState(0);
-  const [note, setNote] = useState("");
-  const [selectedCustomer, setSelectedCustomer] = useState<{ id: number; name: string } | null>(null);
+  const [persisted, setPersisted] = useLocalStorageState<PersistedCartState>(persistedInitialState, POS_CART_STORAGE_KEY);
+
+  const setCart = useCallback((updater: PosCartItem[] | ((prev: PosCartItem[]) => PosCartItem[])) => {
+    setPersisted((prev) => ({
+      ...prev,
+      cart: typeof updater === "function" ? updater(prev.cart) : updater,
+    }));
+  }, [setPersisted]);
+
+  const setPayments = useCallback((updater: PosPaymentRequest[] | ((prev: PosPaymentRequest[]) => PosPaymentRequest[])) => {
+    setPersisted((prev) => ({
+      ...prev,
+      payments: typeof updater === "function" ? updater(prev.payments) : updater,
+    }));
+  }, [setPersisted]);
+
+  const setDiscount = useCallback((updater: number | ((prev: number) => number)) => {
+    setPersisted((prev) => ({
+      ...prev,
+      discount: typeof updater === "function" ? updater(prev.discount) : updater,
+    }));
+  }, [setPersisted]);
+
+  const setNote = useCallback((updater: string | ((prev: string) => string)) => {
+    setPersisted((prev) => ({
+      ...prev,
+      note: typeof updater === "function" ? updater(prev.note) : updater,
+    }));
+  }, [setPersisted]);
+
+  const setSelectedCustomer = useCallback((updater: { id: number; name: string } | null | ((prev: { id: number; name: string } | null) => { id: number; name: string } | null)) => {
+    setPersisted((prev) => ({
+      ...prev,
+      selectedCustomer: typeof updater === "function" ? updater(prev.selectedCustomer) : updater,
+    }));
+  }, [setPersisted]);
+
+  const { cart, payments, discount, note, selectedCustomer } = persisted;
+
   const [showCustomerSelect, setShowCustomerSelect] = useState(false);
   const [showMobileCart, setShowMobileCart] = useState(false);
   const [receipt, setReceipt] = useState<PosCheckoutResultDto | null>(null);

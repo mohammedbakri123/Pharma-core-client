@@ -11,12 +11,10 @@ import {
   getCustomerDebt,
   getCustomerUnpaidSales,
   getCustomerStatement,
-  payCustomerDebt,
 } from "../api/customers";
 import type {
   CreateCustomerRequest,
   UpdateCustomerRequest,
-  PaymentMethod,
 } from "@/types";
 
 export function useCustomers(params?: {
@@ -137,16 +135,4 @@ export function useCustomerStatement(id: number, from?: string, to?: string) {
   });
 }
 
-export function usePayCustomerDebt(id: number) {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (data: {
-      amount: number;
-      method: PaymentMethod;
-      description?: string;
-    }) => payCustomerDebt(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["customers"] });
-    },
-  });
-}
+

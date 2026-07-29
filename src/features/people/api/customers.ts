@@ -8,8 +8,6 @@ import type {
   CustomerSalesResponse,
   CustomerUnpaidSalesResponse,
   SalesStatementDto,
-  PayCustomerDebtResult,
-  PaymentMethod,
 } from "@/types";
 
 export const getCustomers = (params?: {
@@ -61,7 +59,4 @@ export const getCustomerStatement = (
     params: { from, to },
   });
 
-export const payCustomerDebt = (
-  id: number,
-  data: { amount: number; method: PaymentMethod; description?: string },
-) => api.post<PayCustomerDebtResult>(`/customers/${id}/pay`, data);
+

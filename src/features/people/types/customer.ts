@@ -91,22 +91,4 @@ export interface SalesStatementDto {
   closingBalance: number;
 }
 
-export interface AppliedSalePayment {
-  saleId: number;
-  amountApplied: number;
-  remainingBalance: number;
-}
 
-export interface CustomerBalanceSummary {
-  totalDebt: number;
-  newBalance: number;
-}
-
-export interface PayCustomerDebtResult {
-  paymentId: number;
-  amount: number;
-  method: number;
-  createdAt: string | null;
-  appliedToSales: AppliedSalePayment[];
-  customerBalance: CustomerBalanceSummary;
-}

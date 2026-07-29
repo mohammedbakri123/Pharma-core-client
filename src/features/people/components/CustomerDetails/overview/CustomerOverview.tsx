@@ -7,7 +7,6 @@ import { Spinner } from "@/ui/spinner";
 import { DollarSign, Receipt, Percent, Undo2, Ban } from "lucide-react";
 import StatCard from "./StatCard";
 import UnpaidSalesTable from "./UnpaidSalesTable";
-import PayDebtForm from "../PayDebtForm";
 
 interface CustomerOverviewProps {
   customerId: number;
@@ -81,9 +80,7 @@ export default function CustomerOverview({
         />
       </div>
 
-      <PayDebtForm customerId={customerId} maxAmount={debtData.netBalance} />
-
-      <UnpaidSalesTable unpaidSales={unpaidSales} />
+      <UnpaidSalesTable unpaidSales={unpaidSales} customerId={customerId} />
     </div>
   );
 }

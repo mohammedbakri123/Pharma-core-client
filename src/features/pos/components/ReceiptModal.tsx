@@ -1,9 +1,10 @@
-import { Printer, CheckCircle2 } from "lucide-react";
+import { Printer, CheckCircle2, Usb } from "lucide-react";
 import {
   Dialog,
   DialogContent,
 } from "@/ui/dialog";
 import type { PosCheckoutResultDto } from "../types/pos";
+import { useThermalPrinter, buildBrowserReceiptHtml } from "../hooks/use-thermal-printer";
 
 const methodLabels: Record<string, string> = {
   cash: "نقداً",
@@ -11,6 +12,8 @@ const methodLabels: Record<string, string> = {
 };
 
 function ReceiptContent({ receipt }: { receipt: PosCheckoutResultDto }) {
+  const { state, printOrFallback } = useThermalPrinter();
+
   const date = new Date(receipt.createdAt);
   const timeStr = date.toLocaleTimeString("ar-SA", { hour: "2-digit", minute: "2-digit" });
   const dateStr = date.toLocaleDateString("ar-SA", { day: "numeric", month: "long", year: "numeric" });
@@ -99,13 +102,31 @@ function ReceiptContent({ receipt }: { receipt: PosCheckoutResultDto }) {
         </div>
       </div>
 
-      <button
-        onClick={() => window.print()}
-        className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-border/50 text-sm font-medium transition-colors hover:bg-muted/50 active:scale-[0.98]"
-      >
-        <Printer className="h-4 w-4" />
-        طباعة الفاتورة
-      </button>
+      <div className="flex flex-col gap-2">
+        <button
+          onClick={() => printOrFallback(receipt)}
+          disabled={state.connected && !state.device}
+          className="flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground text-sm font-medium transition-colors hover:bg-primary/90 active:scale-[0.98] disabled:opacity-50"
+        >
+          <Usb className="h-4 w-4" />
+          {state.connected ? "طباعة على الفاتورة الحرارية" : "طباعة الفاتورة"}
+        </button>
+
+        <button
+          onClick={() => {
+            const win = window.open("", "_blank", "width=400,height=600");
+            if (!win) return;
+            win.document.write(buildBrowserReceiptHtml(receipt));
+            win.document.close();
+            win.focus();
+            win.print();
+          }}
+          className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-border/50 text-sm font-medium transition-colors hover:bg-muted/50 active:scale-[0.98]"
+        >
+          <Printer className="h-4 w-4" />
+          طباعة عادية
+        </button>
+      </div>
     </div>
   );
 }

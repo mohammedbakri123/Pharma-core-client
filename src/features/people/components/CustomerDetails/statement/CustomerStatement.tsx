@@ -25,7 +25,7 @@ export default function CustomerStatement({ customerId }: CustomerStatementProps
   );
 
   const statement = data;
-  const entries = statement?.entries || [];
+  const entries = statement?.entries.reverse() || [];
   const openingBalance = statement?.openingBalance ?? 0;
   const closingBalance = statement?.closingBalance ?? 0;
 
